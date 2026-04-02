@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.4 | April 2026 | Status: Systems Locked (Layer 1)
+> Version 0.5 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -57,10 +57,16 @@ Browser-based idle/incremental game. Minimal UI noise. Meaningful decisions. Dar
 | **Knowledge** | **Gnosis** | Gathered from Planet A via gateway | Research, automation unlocks, gateway efficiency |
 | **Energy** | **Voltis** | Gathered from Planet B via gateway | Fuelling automation — automation costs Voltis to sustain |
 
-**Cross-dependencies (mid-game, Trifecta phase):**
+**Cross-dependencies (phased activation, not all-at-once):**
 - Anima production needs Voltis (automation consumes it)
 - Voltis production needs Gnosis (research drives gateway efficiency)
 - Gnosis production needs Anima (cultists need Anima to sustain the channel)
+
+**Phased introduction:**
+1. **Milestone 4 (~1:30h):** First link — Gnosis channel costs Anima. Player learns "one resource feeds another."
+2. **Milestone 9 (~6:30h):** Second link — Voltis production needs Gnosis research level. Two of three links active.
+3. **Milestone 10 (~8:00h):** Third link — Anima automation costs Voltis. Full triangle closed. Trifecta gauge lights up.
+4. **Milestone 11 (~9:30h):** Trifecta self-sustaining. Player has had ~8 hours of gradually increasing complexity.
 
 **Soft cap — Slow Overflow:**
 Above the resource cap, production slows dramatically but never fully stops. Creates a natural rhythm of spending to keep flowing. Never bricks a run. Overflow rate: ~10% of normal production above cap.
@@ -95,8 +101,18 @@ Cultists distribute themselves automatically based on **player-set priorities**.
 - Each expedition requires 1–3 cultists (player chooses how many to commit)
 - More cultists on a gateway = higher throughput but more devotion surface to manage
 
-### 6.4 Losses
-Two types — intentional and preventable:
+### 6.4 Minimum Cultist Floor
+
+**Global floor of 3 cultists.** No mechanic can reduce the cult below 3 members. This applies to all loss types:
+
+- **Devotion collapse:** If losing a cultist would drop count below 3, the gateway goes offline instead. The cultist stays but is stunned/unavailable for 5 minutes. Still punishing, but recoverable.
+- **Expedition loss:** Cultists "narrowly escape" — they return empty-handed but alive.
+- **Sacrifice:** Cannot sacrifice if it would drop below 3. Button grayed out with explanation.
+
+The Devotion keystone talent ("collapse impossible, gateway goes offline") still has value: it prevents the 5-minute stun penalty entirely.
+
+### 6.5 Losses
+Two types — intentional and preventable (subject to floor above):
 
 **Intentional:**
 - **Sacrifice** — player manually sacrifices a cultist for a permanent passive Anima boost. Significant early-game decision.
@@ -106,7 +122,7 @@ Two types — intentional and preventable:
 - **Devotion collapse** — if a gateway's devotion hits zero, the cultist assigned there abandons the cult. Lost permanently. This is the bad outcome the devotion system exists to prevent.
 - Always telegraphed well in advance — devotion gauge turns red long before collapse.
 
-### 6.5 Prestige Interaction
+### 6.6 Prestige Interaction
 Each Rehearsal run preserves recruitment speed improvements. Cultists don't carry over — you rebuild the pool each run, but faster each time.
 
 ---
@@ -118,8 +134,10 @@ Each gateway has a **Devotion meter** (0–100%) that slowly decays over time. A
 **The Discipline action:**
 - Player taps a gateway to **Discipline** its cultists — curse them, punish them, re-consecrate the site
 - Resets devotion to 100%
+- **Base cooldown: 3 minutes per gateway.** In a 5-min session, always available at least once. With 4-6h decay rate, needed roughly every 60-90 minutes — infrequent by design.
 - Early game: per-gateway action
-- Mid-game research unlock (**Overseer's Rite**): single global action disciplines all gateways at once
+- Mid-game research unlock (**Overseer's Rite**): single global action disciplines all gateways at once. **5 minute cooldown** (slightly longer than per-gateway to maintain strategic tension).
+- Talent modifier: "50% faster recharge" → per-gateway 1.5 min, global 2.5 min
 
 **Design guardrails:**
 - Decay is slow — a 5-min session always has time to act
@@ -414,14 +432,17 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 
 ## 18. Open Questions (Remaining)
 
-| # | Question | Priority |
-|---|---|---|
-| 1 | **Rehearsal checkpoint exact positions** — milestones 8/11/13 feel right but need playtesting | High |
-| 2 | **Expedition success rate formula** — what variables feed it beyond devotion? Cultist count? Talent bonuses? | Medium |
-| 3 | **Cultist passive recruitment rate** — X minutes per cultist. Needs calibration. | Medium (impl) |
-| 4 | **Resource soft cap values** — at what absolute amount does slowdown kick in? Needs playtesting. | Low (impl) |
-| 5 | **Choice pool — complete the 25** — 10 seeded above, 15 more to write during implementation | Low (content) |
-| 6 | **Artifact flavour text** — one line per artifact for reveal moment | Low (content) |
+| # | Question | Priority | Status |
+|---|---|---|---|
+| 1 | **Rehearsal checkpoint exact positions** — milestones 8/11/13 feel right but need playtesting | High | Open |
+| 2 | **Expedition success rate formula** — proposed formula in #25 | Medium | Proposed — needs playtesting |
+| 3 | **Cultist passive recruitment rate** — proposed 1 per 20 min base in #23 | Medium | Proposed — needs playtesting |
+| 4 | **Resource soft cap values** — proposed values in #24 | Low | Proposed — needs playtesting |
+| 5 | **Choice pool — complete the 25** — 10 seeded above, 15 more to write during implementation | Low (content) | Open |
+| 6 | **Artifact flavour text** — one line per artifact for reveal moment | Low (content) | Open |
+| ~~7~~ | ~~Discipline cooldown base rate~~ | ~~High~~ | Resolved — 3 min per-gateway, 5 min global (§7, #26) |
+| ~~8~~ | ~~Trifecta activation timing~~ | ~~High~~ | Resolved — phased at milestones 4/9/10 (§5) |
+| ~~9~~ | ~~Cultist minimum floor vs. devotion collapse~~ | ~~High~~ | Resolved — global floor of 3 (§6.4) |
 
 ---
 
@@ -441,4 +462,5 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 
 ---
 
-*Next steps: Resolve Open Questions §18 → per-module system specs → implementation kickoff*
+*Next steps: Resolve remaining Open Questions §18 → per-module system specs → implementation kickoff.*
+*All systems tracked as GitHub issues (#1–#26). See `dependency-map.md` for implementation order.*

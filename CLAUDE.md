@@ -3,7 +3,7 @@
 ## Project Context
 
 Browser-based idle/incremental game. React 18 + TypeScript + Vite + Zustand + Tailwind v4.
-Full design: `docs/CONCEPT.md` (v0.4). Implementation order: `docs/dependency-map.md`.
+Full design: `docs/CONCEPT.md` (v0.5). Implementation order: `docs/dependency-map.md`. 25 open GitHub issues (#1–#26).
 
 ## Core Rules
 
@@ -52,9 +52,14 @@ npx vitest run <file>  # Run a single test file
 npm run lint           # Lint
 ```
 
+## Workflow Rules
+
+- **Commit and push after every change.** Each meaningful code or doc change gets its own commit pushed to the remote. Do not batch unrelated changes.
+- **Keep docs and issues in sync.** When implementation changes affect design (new decisions, resolved questions, changed constraints), update the relevant docs (`CONCEPT.md`, `dependency-map.md`, `CLAUDE.md`) and GitHub issues. Close issues when complete. Update the Current State section below.
+
 ## Current State
 
 See `docs/dependency-map.md` for implementation phases. Update this section as work progresses.
 
 **Phase:** Pre-development (scaffolding)
-**Next:** #2 Engine contracts → #17 Save/load
+**Next:** #1 Repo bootstrap → #2 Engine contracts → #17 Save/load
