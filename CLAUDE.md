@@ -2,7 +2,7 @@
 
 ## Project Context
 
-Browser-based idle/incremental game. React 18 + TypeScript + Vite + Zustand + Tailwind v4.
+Browser-based idle/incremental game. React 19 + TypeScript 6 + Vite 8 + Zustand 5 + Tailwind CSS v4.
 Full design: `docs/CONCEPT.md` (v0.5). Implementation order: `docs/dependency-map.md`. 25 open GitHub issues (#1–#26).
 
 ## Core Rules
@@ -37,7 +37,9 @@ src/utils/     → Formatting, math helpers, localStorage wrapper
 
 - **Global cultist floor of 3** — no mechanic (sacrifice, devotion collapse, expedition loss) can reduce below this
 - **Offline devotion floor at 15%** — prevents permanent cultist loss while player is away
-- **Trifecta phases in gradually** at milestones 4 → 9 → 10, not all at once
+- **Trifecta phases in gradually** at milestones 4 → 7 → 8 → 9. Balance earns a Harmony bonus (reward), imbalance is not punished
+- **Artifacts are gamechanging rewards** — each grants a permanent power boost, not just story progress
+- **Devotion is per-gateway only** — does NOT affect expedition speed, only gateway throughput and expedition outcome odds (snapshot at departure)
 - **Discipline cooldown:** 3 min per-gateway base, 5 min global (Overseer's Rite)
 - **Max 1 active corruption** — second corruption auto-cleanses first at half cost
 - **Thematic naming:** every mechanic name belongs in the game world. Numbers are resources, buttons are rituals, upgrades are forbidden knowledge. This applies to UI text, function names visible to players, and tooltip copy.

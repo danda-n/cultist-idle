@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.5 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.6 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -21,7 +21,7 @@ Browser-based idle/incremental game. Minimal UI noise. Meaningful decisions. Dar
 |---|---|
 | **One Big Goal** | The Summoning is always visible. Every system exists to serve it. |
 | **Meaningful Idle** | The game runs while you're away, but your decisions shape how fast. No pointless clicking. |
-| **Trifecta Balance** | Three resources cross-support each other. Imbalance is a designed mechanic — obvious to spot, satisfying to fix. |
+| **Trifecta Synergy** | Three resources cross-support each other. Balance is rewarded with efficiency bonuses — not required, but satisfying to achieve. |
 | **Devotion as Engagement** | Cultists have a devotion meter. Neglect it and throughput suffers. Intervening is quick and atmospheric. |
 | **Prestige that Feels Good** | Rehearsal happens during the run. Each attempt is faster and more competent than the last. |
 | **Clean Information** | One screen. What matters now. Complexity earns its way onto the screen. |
@@ -58,20 +58,23 @@ Browser-based idle/incremental game. Minimal UI noise. Meaningful decisions. Dar
 | **Energy** | **Voltis** | Gathered from Planet B via gateway | Fuelling automation — automation costs Voltis to sustain |
 
 **Cross-dependencies (phased activation, not all-at-once):**
-- Anima production needs Voltis (automation consumes it)
-- Voltis production needs Gnosis (research drives gateway efficiency)
-- Gnosis production needs Anima (cultists need Anima to sustain the channel)
+- Anima automation consumes Voltis
+- Voltis production benefits from Gnosis research level
+- Gnosis channelling costs Anima to sustain
+
+**Trifecta philosophy — reward balance, don't punish imbalance:**
+Each resource works independently. Cross-dependencies create *costs* (Anima to channel, Voltis to automate), not *penalties*. When all three resources are above a threshold simultaneously, the player earns a **Harmony bonus** — a global production multiplier (e.g. +15-25%). Losing Harmony isn't a punishment — it's losing a bonus. The player can choose to focus on one resource and sacrifice efficiency, or maintain balance for the boost. Upgrading one resource never *breaks* anything — it just means the other two haven't caught up yet for the bonus.
 
 **Phased introduction:**
-1. **Milestone 4 (~1:30h):** First link — Gnosis channel costs Anima. Player learns "one resource feeds another."
-2. **Milestone 9 (~6:30h):** Second link — Voltis production needs Gnosis research level. Two of three links active.
-3. **Milestone 10 (~8:00h):** Third link — Anima automation costs Voltis. Full triangle closed. Trifecta gauge lights up.
-4. **Milestone 11 (~9:30h):** Trifecta self-sustaining. Player has had ~8 hours of gradually increasing complexity.
+1. **Milestone 4 (~0:45h):** First link — Gnosis channel costs Anima. Player learns "one resource feeds another."
+2. **Milestone 7 (~3:00h):** Second link — Voltis production benefits from Gnosis research level. Two of three links active.
+3. **Milestone 8 (~4:00h):** Third link — Anima automation costs Voltis. Full triangle closed. Harmony bonus available.
+4. **Milestone 9 (~5:00h):** Trifecta self-sustaining possible. Player has had ~4 hours of gradually increasing complexity.
 
 **Soft cap — Slow Overflow:**
-Above the resource cap, production slows dramatically but never fully stops. Creates a natural rhythm of spending to keep flowing. Never bricks a run. Overflow rate: ~10% of normal production above cap.
+Above the resource cap, production slows dramatically but never fully stops. Creates a natural rhythm of spending to keep flowing. Never bricks a run. Overflow rate: ~10% of normal production above cap. Overnight idle accumulates meaningful progress without skipping 10 steps — soft cap ensures the player returns to a nudge forward, not a leap.
 
-**Trifecta UI:** Permanent three-bar or triangular gauge always on screen. Below sustain threshold = turns red. Fix is always one obvious action. No math, no diagnosis puzzle.
+**Trifecta UI:** Permanent three-bar or triangular gauge always on screen. Harmony bonus status shown prominently (active/inactive + current multiplier). When one resource falls behind, the gauge shows which one — one obvious action to restore the bonus. No math, no diagnosis puzzle.
 
 ---
 
@@ -129,7 +132,7 @@ Each Rehearsal run preserves recruitment speed improvements. Cultists don't carr
 
 ## 7. Devotion System
 
-Each gateway has a **Devotion meter** (0–100%) that slowly decays over time. As devotion falls, cultist throughput at that gateway drops proportionally.
+Each gateway has a **Devotion meter** (0–100%) that slowly decays over time. Devotion is strictly per-gateway — not per-cultist. As devotion falls, cultist throughput at that gateway drops proportionally.
 
 **The Discipline action:**
 - Player taps a gateway to **Discipline** its cultists — curse them, punish them, re-consecrate the site
@@ -156,7 +159,7 @@ Each gateway has a **Devotion meter** (0–100%) that slowly decays over time. A
 Gateway is open but not self-sustaining. Player **Channels** — spends Anima for a burst of Gnosis or Voltis. Feels like reaching through a portal. Primary gathering method before automation.
 
 ### 8.2 Sustained Channel (research unlock)
-Spend Gnosis to unlock a slow passive trickle from the gateway. Costs Voltis to sustain (once Planet B is open). Sacrifices burst efficiency for idle comfort.
+Spend Gnosis to unlock a slow passive trickle from the gateway. Before Planet B: sustained channel costs only Anima. After Voltis exists: costs Voltis to sustain (this is the third Trifecta link). Sacrifices burst efficiency for idle comfort.
 
 ### 8.3 Devotion connection
 Cultists maintain the channel. Their devotion level directly affects trickle rate. Neglected gateway = devotion decay = slower trickle. Discipline restores it. This is why active engagement never fully disappears — it's tending, not clicking.
@@ -184,13 +187,13 @@ Player chooses a run identity. Resource-constrained — can't fully pursue both 
 
 | | **Automation Path** | **Acceleration Path** |
 |---|---|---|
-| Focus | Reduce manual intervention; global Discipline unlock; Trifecta nudge assist | Boost production rates; faster gateway travel; higher Voltis yield |
+| Focus | Reduce manual intervention; global Discipline unlock; Harmony bonus boost | Boost production rates; faster expeditions; higher Voltis yield |
 | Trade-off | Slower raw output, cleaner idle | Higher ceiling, more active attention needed |
 | Prestige synergy | Compounds well across runs | Faster individual run speed |
 
 Both paths reach the same endgame capability. Playstyle choice, not power level.
 
-**Trifecta balance (Automation path unlock):** Soft nudge only — if one resource dips below threshold, production marginally shifts to compensate. Does not fully auto-balance. Player still needs to intervene for significant imbalances. Nudge is visible so player knows it's working.
+**Harmony boost (Automation path unlock):** Increases the Harmony bonus multiplier by an additional +10%. Combined with the base bonus, this makes maintaining Trifecta balance more rewarding for idle-focused players without punishing those who don't.
 
 ---
 
@@ -198,8 +201,10 @@ Both paths reach the same endgame capability. Playstyle choice, not power level.
 
 ### 10.1 Sending
 - Assign 1–3 cultists via priority system
-- Timer scales with devotion level — devoted cultists move faster
-- Multiple expeditions run in parallel, each costs Voltis to sustain the open gateway
+- Base expedition timer depends on destination and cultist count (more cultists = faster)
+- Devotion does NOT affect expedition speed — devotion is a gateway mechanic, not an expedition mechanic. Expedition risk is determined by devotion at the *departure gateway* (snapshot at send time), affecting outcome odds only (see §10.2), not timer.
+- Multiple expeditions run in parallel (base cap: 2, upgradeable to 3 via talent keystone)
+- Early expeditions (before Voltis) are free. Once Voltis exists, each active expedition costs Voltis to sustain the open gateway.
 - Runs fully in background — no required interaction while active
 
 ### 10.2 Return Outcomes
@@ -244,22 +249,24 @@ Choices are drawn from a weighted pool. Minor choices appear often, major occasi
 
 ## 11. The Six Ritual Artifacts
 
-3 crafted, 3 discovered. Visually grouped by acquisition type. Player always knows at a glance what kind of effort each requires.
+3 crafted, 3 discovered. Each artifact is a **gamechanging reward** — not just a cost for story progress. Completing an artifact should feel like a power spike that opens new strategic options.
 
-| # | Name | Type | Primary requirement | Unlocks after |
-|---|---|---|---|---|
-| 1 | **Cindermark** | Crafted | Anima-heavy | Milestone 3 |
-| 2 | **Voidwreath** | Discovered | Planet A expedition | Milestone 5 |
-| 3 | **Whisperlock** | Crafted | Gnosis + Anima | Milestone 6 |
-| 4 | **Hungering Lens** | Discovered | Planet B exploration | Milestone 10 |
-| 5 | **Unbinding** | Crafted | All three trifecta resources | Milestone 11 |
-| 6 | **Voicecaller** | Discovered | Full trifecta at high threshold | Milestone 12 |
+| # | Name | Type | Cost | Reward on completion | Unlocks after |
+|---|---|---|---|---|---|
+| 1 | **Cindermark** | Crafted | Anima-heavy | Passive Anima production +30%, cultist sacrifice yields doubled | Milestone 3 |
+| 2 | **Voidwreath** | Discovered | Planet A expedition | Gnosis channel efficiency +40%, unlocks a third expedition slot temporarily | Milestone 5 |
+| 3 | **Whisperlock** | Crafted | Gnosis + Anima | Research speed +50%, Phase 1 nodes auto-complete on Rehearsal | Milestone 6 |
+| 4 | **Hungering Lens** | Discovered | Planet B expedition | Voltis soft cap doubled, automation costs -25% | Milestone 8 |
+| 5 | **Unbinding** | Crafted | All three trifecta resources | Harmony bonus doubled (e.g. +30-50%), Trifecta threshold lowered | Milestone 9 |
+| 6 | **Voicecaller** | Discovered | Full trifecta expedition at high threshold | All production rates +20%, Devotion decay halved permanently | Milestone 11 |
 
-**Crafted artifacts:** Spend resources in defined ratios. Cost requires planning — player may need to temporarily redirect production. This is a designed spike of active engagement.
+**Crafted artifacts:** Spend resources in defined ratios. Cost requires planning — player may need to temporarily redirect production. This is a designed spike of active engagement. The reward makes the sacrifice worth it.
 
-**Discovered artifacts:** Send cultists on an expedition. They return with the artifact, a Choice event, or partial loot. Expedition for a discovered artifact has higher stakes than a standard resource run.
+**Discovered artifacts:** Send cultists on an expedition. They return with the artifact, a Choice event, or partial loot. Expedition for a discovered artifact has higher stakes than a standard resource run. Higher risk, but the reward justifies the gamble.
 
-**Artifact screen:** Always accessible. Locked slots show silhouettes and vague requirement hints. Filling a slot triggers a visual moment — the ritual circle advances. One flavour line per artifact on reveal (content pass TBD).
+**Artifact rewards persist through Rehearsal.** Completed artifacts (and their bonuses) survive prestige. This means each run accumulates permanent power — artifacts are the tangible trophies that make Rehearsal feel worthwhile.
+
+**Artifact screen:** Always accessible. Locked slots show silhouettes, vague requirement hints, AND a preview of the reward. The player should always know what they're working toward. Filling a slot triggers a visual moment — the ritual circle advances. One flavour line per artifact on reveal (content pass TBD).
 
 ---
 
@@ -270,9 +277,9 @@ Talent points (called **Dark Boons**) are earned through **Rehearsal** — prest
 
 | Rehearsal checkpoint | Boons earned |
 |---|---|
-| After milestone 8 (first idle moment) | 1 Boon |
-| After milestone 11 (Trifecta balanced) | 2 Boons |
-| After milestone 13 (all artifacts visible) | 3 Boons |
+| After milestone 8 (idle moment) | 1 Boon |
+| After milestone 10 (full Trifecta) | 2 Boons |
+| After milestone 11 (first artifact) | 3 Boons |
 
 Boons accumulate across runs. By run 3–4, player has 4–6 total Boons to allocate.
 
@@ -298,39 +305,39 @@ Boons are spent **between runs** at the Rehearsal screen. Most nodes cost 1 Boon
 - *(Keystone, 2pts)* Can run 3 parallel expeditions instead of 2
 
 **Trifecta (2 nodes)**
-- Trifecta auto-nudge twice per hour instead of once
+- Harmony bonus threshold lowered by 20% (easier to maintain)
 - Voltis overflow converts to Anima at 50% rate
 
 ---
 
-## 13. Milestones (14 across ~12–15 hours)
+## 13. Milestones (14 across ~10–12 hours)
 
-Each is a moment — flavour, visual beat, arrival feeling.
+Each is a moment — flavour, visual beat, arrival feeling. Early milestones are deliberately compressed — the player should hit a new system every 10-20 minutes in the first hour. Pacing slows as complexity grows.
 
 | # | Name | What it unlocks | First-run timing |
 |---|---|---|---|
-| 1 | **The First Conjuring** | Core loop begins | ~0:05 |
-| 2 | **The First Construct** | Building system revealed | ~0:20 |
-| 3 | **The Sacrifice** | First automation; Cindermark craftable | ~0:45 |
-| 4 | **The Gateway Opens** | Planet A accessible | ~1:30 |
-| 5 | **First Gnosis** | Research system unlocks; Voidwreath expedition available | ~2:30 |
-| 6 | **The First Research** | First meaningful choice; Whisperlock craftable | ~3:30 |
-| 7 | **Devotion Crisis** | Devotion system introduced naturally | ~4:30 |
-| 8 | **The Idle Moment** | Anima + Gnosis self-sustain; Rehearsal available | ~5:30 |
-| 9 | **The Discovery** | Planet B found; Voltis teased | ~6:30 |
-| 10 | **First Voltis** | Automation affordable; Hungering Lens expedition available | ~8:00 |
-| 11 | **The Trifecta** | Full idle loop; Unbinding craftable; Rehearsal available | ~9:30 |
-| 12 | **The First Artifact** | First artifact completed (any of the 6); ritual circle stirs | ~10:30 |
+| 1 | **The First Conjuring** | Core loop begins | ~0:02 |
+| 2 | **The First Construct** | Building system revealed; Altar upgradeable | ~0:10 |
+| 3 | **The Sacrifice** | First automation (passive Anima); Cindermark craftable | ~0:25 |
+| 4 | **The Gateway Opens** | Planet A accessible; first Trifecta link (Gnosis costs Anima) | ~0:45 |
+| 5 | **First Gnosis** | Research system unlocks; Voidwreath expedition available | ~1:15 |
+| 6 | **The First Research** | Research Phase 2 branches; Whisperlock craftable | ~2:00 |
+| 7 | **Devotion Crisis** | Devotion decay begins on gateways; Discipline action introduced | ~3:00 |
+| 8 | **The Idle Moment** | Anima + Gnosis self-sustain; Hungering Lens expedition; second Trifecta link; Rehearsal available | ~4:00 |
+| 9 | **The Discovery** | Planet B found; Voltis production begins; third Trifecta link; Harmony bonus available; Unbinding craftable | ~5:00 |
+| 10 | **The Trifecta** | Full idle loop; Rehearsal available | ~6:30 |
+| 11 | **The First Artifact** | First artifact completed (any of the 6); ritual circle stirs; Voicecaller expedition available; Rehearsal available | ~7:30 |
+| 12 | **The Hunt** | All 6 artifacts visible | ~8:30 |
+| 13 | **The Gathering** | 4+ artifacts completed; final push | ~9:30 |
+| 14 | **THE SUMMONING** | Layer 1 complete | ~10–12h |
 
-> **Milestone 12 note:** This triggers on the *first completed artifact*, regardless of which one. While Cindermark is craftable from milestone 3, its resource cost is tuned so that completion realistically occurs around this timing window. If a player manages to complete one earlier through aggressive play, the milestone fires early — that's a reward, not a bug. Subsequent artifact completions do not re-trigger this milestone.
-| 13 | **The Hunt** | All 6 artifacts visible; Voicecaller expedition available; Rehearsal available | ~11:30 |
-| 14 | **THE SUMMONING** | Layer 1 complete | ~13–15h |
+> **Milestone 11 note:** This triggers on the *first completed artifact*, regardless of which one. While Cindermark is craftable from milestone 3, its resource cost is tuned so that completion realistically occurs around this timing window. If a player manages to complete one earlier through aggressive play, the milestone fires early — that's a reward, not a bug. Subsequent artifact completions do not re-trigger this milestone.
 
 ---
 
 ## 14. Prestige — "The Rehearsal"
 
-Player triggers Rehearsal at checkpoints (milestones 8, 11, or 13). Sacrifices progress for permanent Boons and bonuses.
+Player triggers Rehearsal at checkpoints (milestones 8, 10, or 11). Sacrifices progress for permanent Boons and bonuses.
 
 **What resets:** All resources, constructs, gateways, incomplete artifacts.
 
@@ -349,9 +356,9 @@ Player triggers Rehearsal at checkpoints (milestones 8, 11, or 13). Sacrifices p
 
 | Run | Target |
 |---|---|
-| 1 | ~12–15 hours |
-| 2 | ~5–6 hours |
-| 3 | ~2 hours |
+| 1 | ~10–12 hours |
+| 2 | ~4–5 hours |
+| 3 | ~1.5–2 hours |
 | 4+ | ~30–45 min |
 | Eventually | Layer 1 fully automated |
 
@@ -403,7 +410,7 @@ Closing the game: *"the cult is working, I'll check back later."* Not anxiety. T
 ### Copy directly
 | Item | Notes |
 |---|---|
-| Tech stack | React 18 + TypeScript + Vite + Zustand + Tailwind v4 |
+| Tech stack | React 19 + TypeScript 6 + Vite 8 + Zustand 5 + Tailwind CSS v4 |
 | `package.json` | Same deps — adjust name/version only |
 | `eslint.config.js`, `tsconfig*.json`, `vite.config.ts` | Copy verbatim |
 | Vitest config | Copy config, leave test files |
@@ -434,15 +441,21 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 
 | # | Question | Priority | Status |
 |---|---|---|---|
-| 1 | **Rehearsal checkpoint exact positions** — milestones 8/11/13 feel right but need playtesting | High | Open |
+| 1 | **Rehearsal checkpoint positions** — now milestones 8/10/11; needs playtesting | Medium | Proposed |
 | 2 | **Expedition success rate formula** — proposed formula in #25 | Medium | Proposed — needs playtesting |
 | 3 | **Cultist passive recruitment rate** — proposed 1 per 20 min base in #23 | Medium | Proposed — needs playtesting |
 | 4 | **Resource soft cap values** — proposed values in #24 | Low | Proposed — needs playtesting |
 | 5 | **Choice pool — complete the 25** — 10 seeded above, 15 more to write during implementation | Low (content) | Open |
 | 6 | **Artifact flavour text** — one line per artifact for reveal moment | Low (content) | Open |
-| ~~7~~ | ~~Discipline cooldown base rate~~ | ~~High~~ | Resolved — 3 min per-gateway, 5 min global (§7, #26) |
-| ~~8~~ | ~~Trifecta activation timing~~ | ~~High~~ | Resolved — phased at milestones 4/9/10 (§5) |
-| ~~9~~ | ~~Cultist minimum floor vs. devotion collapse~~ | ~~High~~ | Resolved — global floor of 3 (§6.4) |
+| 7 | **Artifact reward balance** — reward values need tuning to feel gamechanging without breaking progression | Medium | Proposed — needs playtesting |
+| 8 | **Harmony bonus values** — base multiplier and Trifecta threshold need calibration | Medium | Proposed — needs playtesting |
+| ~~9~~ | ~~Discipline cooldown base rate~~ | ~~High~~ | Resolved — 3 min per-gateway, 5 min global (§7, #26) |
+| ~~10~~ | ~~Trifecta activation timing~~ | ~~High~~ | Resolved — phased at milestones 4/7/8/9 (§5) |
+| ~~11~~ | ~~Cultist minimum floor vs. devotion collapse~~ | ~~High~~ | Resolved — global floor of 3 (§6.4) |
+| ~~12~~ | ~~Expedition devotion speed scaling~~ | ~~High~~ | Resolved — removed; devotion affects outcome odds only, not speed (§10.1) |
+| ~~13~~ | ~~Trifecta punishes imbalance~~ | ~~High~~ | Resolved — Harmony bonus rewards balance instead (§5) |
+| ~~14~~ | ~~Early pacing too slow~~ | ~~High~~ | Resolved — compressed milestones 1-5 into first 75 min (§13) |
+| ~~15~~ | ~~Artifacts are just costs~~ | ~~High~~ | Resolved — each artifact grants gamechanging reward (§11) |
 
 ---
 
