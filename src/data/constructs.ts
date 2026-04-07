@@ -12,3 +12,7 @@ export const OSSUARY_SACRIFICE_ANIMA_PER_MIN = 90
 
 // Cindermark (artifact) doubles sacrifice yields retroactively
 export const CINDERMARK_SACRIFICE_MULTIPLIER = 2
+
+// Scrying Pool build cost
+export const SCRYING_POOL_COST_ANIMA = 175
+export const SCRYING_POOL_COST_GNOSIS = 30

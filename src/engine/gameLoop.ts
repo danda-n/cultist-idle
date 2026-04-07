@@ -3,6 +3,9 @@ import { resourceSystem } from '../systems/resourceSystem'
 import { cultistSystem } from '../systems/cultistSystem'
 import { gatewaySystem } from '../systems/gatewaySystem'
 import { devotionSystem } from '../systems/devotionSystem'
+import { trifectaSystem } from '../systems/trifectaSystem'
+import { expeditionSystem } from '../systems/expeditionSystem'
+import { artifactSystem } from '../systems/artifactSystem'
 import { milestoneSystem } from '../systems/milestoneSystem'
 
 /**
@@ -13,7 +16,10 @@ const systems: SystemTick[] = [
   cultistSystem,
   gatewaySystem,
   devotionSystem,
-  milestoneSystem,
+  trifectaSystem,    // after all resource production
+  expeditionSystem,  // after resources (voltis drain)
+  artifactSystem,    // after expeditions (artifact discovery)
+  milestoneSystem,   // always last
 ]
 
 /**

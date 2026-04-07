@@ -1,4 +1,4 @@
-import type { GameState, ConstructType } from '../types'
+import type { GameState, ConstructType, ArtifactState } from '../types'
 import { getConjureCooldown } from '../utils/conjureHelpers'
 import {
   ALTAR_T1_COST_ANIMA,
@@ -13,9 +13,18 @@ import {
   GATEWAY_CAPACITY_T2_COST_GNOSIS,
   GATEWAY_CAPACITY_T3_COST_ANIMA,
   GATEWAY_CAPACITY_T3_COST_GNOSIS,
+  GATEWAY_PLANET_B_BUILD_COST_ANIMA,
+  GATEWAY_PLANET_B_BUILD_COST_GNOSIS,
 } from '../data/gateways'
 import { DISCIPLINE_COOLDOWN_MS } from '../data/devotion'
 import { RESEARCH_NODES } from '../data/research'
+import { ARTIFACT_CONFIGS } from '../data/artifacts'
+import {
+  EXPEDITION_TIMERS,
+  EXPEDITION_SLOTS_DEFAULT,
+  EXPEDITION_SLOTS_MAX,
+  CORRUPTION_CLEANSE_FULL_GNOSIS,
+} from '../data/expeditions'
 
 /**
  * Player clicks the conjure button.
@@ -342,6 +351,296 @@ export function upgradeGatewayCapacityAction(
     gateways: {
       ...state.gateways,
       [gatewayId]: { ...gw, capacity: tier },
+    },
+  }
+}
+
+/**
+ * Send an expedition to Planet A or B.
+ * - Requires appropriate milestone (M4 for A, M9 for B)
+ * - Requires idle cultists
+ * - Requires available expedition slots
+ * - Requires 1–3 cultists
+ */
+export function sendExpeditionAction(
+  state: GameState,
+  planet: 'A' | 'B',
+  cultistCount: number,
+  now: number
+): GameState {
+  // Milestone requirement
+  if (planet === 'A' && !state.milestones.reached.m4) return state
+  if (planet === 'B' && !state.milestones.reached.m9) return state
+
+  // Cultist count validation
+  const validCount = Math.max(1, Math.min(3, cultistCount)) as 1 | 2 | 3
+  if (validCount !== cultistCount) return state
+
+  // Available slots
+  const voidwreathObtained = state.artifacts.some(a => a.id === 'voidwreath' && a.obtained && !a.dormant)
+  const maxSlots = voidwreathObtained ? EXPEDITION_SLOTS_MAX : EXPEDITION_SLOTS_DEFAULT
+  const pendingCount = state.expeditions.filter(e => e.outcome === 'pending').length
+  if (pendingCount >= maxSlots) return state
+
+  // Idle cultist check
+  const idleCount = state.cultists.count - state.cultists.assignments.length
+  if (idleCount < cultistCount) return state
+
+  // Compute duration using pre-computed timer table
+  const duration = EXPEDITION_TIMERS[planet][validCount]
+
+  // Snapshot devotion: average of gateways on that planet (or 100 if none)
+  const planetGateways = Object.values(state.gateways).filter(g => g.planet === planet)
+  const devotionSnapshot = planetGateways.length > 0
+    ? planetGateways.reduce((sum, g) => sum + g.devotion, 0) / planetGateways.length
+    : 100
+
+  // Create expedition ID
+  const expeditionId = `exp_${now}_${state.meta.nextExpeditionId}`
+
+  // Assign idle cultists
+  const newAssignments = [...state.cultists.assignments]
+  let nextCultistId = state.meta.nextCultistId
+  for (let i = 0; i < cultistCount; i++) {
+    newAssignments.push({
+      cultistId: String(nextCultistId++),
+      role: 'expedition',
+      expeditionId,
+    })
+  }
+
+  return {
+    ...state,
+    meta: {
+      ...state.meta,
+      nextCultistId,
+      nextExpeditionId: state.meta.nextExpeditionId + 1,
+    },
+    cultists: {
+      ...state.cultists,
+      assignments: newAssignments,
+    },
+    expeditions: [
+      ...state.expeditions,
+      {
+        id: expeditionId,
+        planet,
+        cultistIds: newAssignments
+          .filter(a => a.expeditionId === expeditionId)
+          .map(a => a.cultistId),
+        devotionSnapshot,
+        completesAt: now + duration,
+        outcome: 'pending',
+      },
+    ],
+  }
+}
+
+/**
+ * Resolve a choice event for an expedition.
+ * Applies option effects and releases cultist assignments.
+ */
+export function resolveChoiceAction(
+  state: GameState,
+  expeditionId: string,
+  optionId: string,
+  now: number
+): GameState {
+  const expIdx = state.expeditions.findIndex(e => e.id === expeditionId)
+  if (expIdx === -1) return state
+
+  const exp = state.expeditions[expIdx]
+  if (exp.outcome !== 'choice') return state
+  if (!exp.choiceEvent) return state
+  if (exp.choiceEvent.resolvedOptionId) return state
+
+  let anima = state.resources.anima
+  let gnosis = state.resources.gnosis
+  let voltis = state.resources.voltis
+  let cultistCount = state.cultists.count
+
+  const choiceId = exp.choiceEvent.id
+
+  // Apply option effects
+  if (choiceId === 'c1' && optionId === 'take') {
+    anima += 60
+  }
+  if (choiceId === 'c2' && optionId === 'trade') {
+    gnosis += 30
+  }
+  if (choiceId === 'c3' && optionId === 'hold') {
+    anima += 80
+    gnosis += 40
+    voltis = Math.max(0, voltis - 30)
+  }
+  if (choiceId === 'c3' && optionId === 'recall') {
+    anima += 40
+  }
+  if (choiceId === 'c4' && optionId === 'trade') {
+    gnosis += 80
+    voltis = 0
+  }
+  if (choiceId === 'c5' && optionId === 'sacrifice') {
+    anima += 50
+  }
+  if (choiceId === 'c6' && optionId === 'absorb') {
+    gnosis += 150
+    // Lose one cultist (floor at CULTIST_FLOOR)
+    cultistCount = Math.max(CULTIST_FLOOR, cultistCount - 1)
+  }
+
+  // Release cultist assignments for this expedition
+  const assignments = state.cultists.assignments.filter(a => a.expeditionId !== expeditionId)
+
+  // Update expedition with resolved option
+  const updatedExp = {
+    ...exp,
+    choiceEvent: {
+      ...exp.choiceEvent,
+      resolvedOptionId: optionId,
+    },
+    outcome: 'safe' as const,
+  }
+
+  const expeditions = [
+    ...state.expeditions.slice(0, expIdx),
+    updatedExp,
+    ...state.expeditions.slice(expIdx + 1),
+  ]
+
+  void now // used for future timestamp tracking
+
+  return {
+    ...state,
+    resources: { ...state.resources, anima, gnosis, voltis },
+    cultists: { ...state.cultists, count: cultistCount, assignments },
+    expeditions,
+  }
+}
+
+/**
+ * Craft an artifact.
+ * - Validates milestone, resources, and that it's not already obtained
+ * - Deducts resources, sets artifact to obtained
+ */
+export function craftArtifactAction(
+  state: GameState,
+  artifactId: string,
+  now: number
+): GameState {
+  void now
+
+  const config = ARTIFACT_CONFIGS.find(a => a.id === artifactId)
+  if (!config) return state
+  if (config.source !== 'crafted') return state
+  if (!config.cost) return state
+
+  // Milestone unlock check
+  const unlockMilestone = config.discoveryUnlocksAtMilestone
+  if (unlockMilestone && !state.milestones.reached[unlockMilestone as keyof typeof state.milestones.reached]) {
+    return state
+  }
+
+  // Already obtained
+  if (state.artifacts.some(a => a.id === artifactId && a.obtained)) return state
+
+  // Resource check
+  const { anima: costAnima = 0, gnosis: costGnosis = 0, voltis: costVoltis = 0 } = config.cost
+  if (state.resources.anima < costAnima) return state
+  if (state.resources.gnosis < costGnosis) return state
+  if (state.resources.voltis < costVoltis) return state
+
+  // Deduct resources
+  const newResources = {
+    ...state.resources,
+    anima: state.resources.anima - costAnima,
+    gnosis: state.resources.gnosis - costGnosis,
+    voltis: state.resources.voltis - costVoltis,
+  }
+
+  // Update or create artifact state
+  const newArtifact: ArtifactState = {
+    id: config.id as ArtifactState['id'],
+    source: 'crafted',
+    progress: 1,
+    obtained: true,
+    dormant: false,
+  }
+
+  const existingIdx = state.artifacts.findIndex(a => a.id === artifactId)
+  const artifacts = existingIdx >= 0
+    ? [
+        ...state.artifacts.slice(0, existingIdx),
+        newArtifact,
+        ...state.artifacts.slice(existingIdx + 1),
+      ]
+    : [...state.artifacts, newArtifact]
+
+  return {
+    ...state,
+    resources: newResources,
+    artifacts,
+  }
+}
+
+/**
+ * Build a Planet B gateway.
+ * Requires M8 (Blood Compact active) and enough resources.
+ * Max 1 Planet B gateway.
+ */
+export function buildPlanetBGatewayAction(state: GameState, now: number): GameState {
+  // Require M8 (Blood Compact — gateway discovery trigger)
+  if (!state.milestones.reached.m8) return state
+
+  // Max 1 Planet B gateway
+  const planetBCount = Object.values(state.gateways).filter(g => g.planet === 'B').length
+  if (planetBCount >= 1) return state
+
+  if (state.resources.anima < GATEWAY_PLANET_B_BUILD_COST_ANIMA) return state
+  if (state.resources.gnosis < GATEWAY_PLANET_B_BUILD_COST_GNOSIS) return state
+
+  const id = 'gw_b_' + now
+
+  return {
+    ...state,
+    resources: {
+      ...state.resources,
+      anima: state.resources.anima - GATEWAY_PLANET_B_BUILD_COST_ANIMA,
+      gnosis: state.resources.gnosis - GATEWAY_PLANET_B_BUILD_COST_GNOSIS,
+    },
+    gateways: {
+      ...state.gateways,
+      [id]: {
+        id,
+        planet: 'B',
+        devotion: 100,
+        cultistsAssigned: 0,
+        capacity: 1,
+        channelActive: false,
+        disciplineCooldownUntil: 0,
+        stunUntil: 0,
+      },
+    },
+  }
+}
+
+/**
+ * Cleanse the active corruption.
+ * Requires: corruption.active !== null and enough Gnosis.
+ */
+export function cleanseCorruptionAction(state: GameState): GameState {
+  if (state.corruption.active === null) return state
+  if (state.resources.gnosis < CORRUPTION_CLEANSE_FULL_GNOSIS) return state
+
+  return {
+    ...state,
+    resources: {
+      ...state.resources,
+      gnosis: state.resources.gnosis - CORRUPTION_CLEANSE_FULL_GNOSIS,
+    },
+    corruption: {
+      active: null,
+      cleanseProgress: 0,
     },
   }
 }

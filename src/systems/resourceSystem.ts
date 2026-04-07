@@ -9,7 +9,9 @@ import {
 import {
   SACRIFICE_ANIMA_PER_MIN,
   OSSUARY_SACRIFICE_ANIMA_PER_MIN,
+  CINDERMARK_SACRIFICE_MULTIPLIER,
 } from '../data/constructs'
+import { HARMONY_BONUS_MULTIPLIER } from '../data/trifecta'
 import { getConjureCooldown } from '../utils/conjureHelpers'
 
 /**
@@ -72,7 +74,17 @@ export function resourceSystem(
       ? OSSUARY_SACRIFICE_ANIMA_PER_MIN
       : SACRIFICE_ANIMA_PER_MIN
     const ratePerMs = ratePerMin / 60_000
-    const rawGain = ratePerMs * _deltaMs * sacrificeCount
+    let rawGain = ratePerMs * _deltaMs * sacrificeCount
+
+    // Cindermark: doubles sacrifice yield (+100%)
+    const cindermarkObtained = state.artifacts.some(a => a.id === 'cindermark' && a.obtained && !a.dormant)
+    if (cindermarkObtained) {
+      rawGain *= CINDERMARK_SACRIFICE_MULTIPLIER
+    }
+
+    // Harmony bonus: +20% to all production including sacrifice
+    const harmonyMultiplier = 1 + (state.trifecta.harmonyActive ? HARMONY_BONUS_MULTIPLIER : 0)
+    rawGain *= harmonyMultiplier
 
     // Apply soft cap: production above SOFT_CAP_ANIMA runs at OVERFLOW_RATE_MULTIPLIER
     const gain = applySoftCap(anima, rawGain, SOFT_CAP_ANIMA, OVERFLOW_RATE_MULTIPLIER)

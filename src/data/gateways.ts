@@ -15,3 +15,7 @@ export const VOLTIS_PRODUCTION_PER_CULTIST_PER_MIN = 50
 // Expedition Voltis drain per minute per expedition
 export const EXPEDITION_VOLTIS_DRAIN_PLANET_A_PER_MIN = 5
 export const EXPEDITION_VOLTIS_DRAIN_PLANET_B_PER_MIN = 8
+
+// Planet B gateway build cost
+export const GATEWAY_PLANET_B_BUILD_COST_ANIMA = 200
+export const GATEWAY_PLANET_B_BUILD_COST_GNOSIS = 150

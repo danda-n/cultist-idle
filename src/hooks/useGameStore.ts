@@ -13,6 +13,11 @@ import {
   disciplineAction,
   purchaseResearchNodeAction,
   upgradeGatewayCapacityAction,
+  sendExpeditionAction,
+  resolveChoiceAction,
+  craftArtifactAction,
+  buildPlanetBGatewayAction,
+  cleanseCorruptionAction,
 } from '../engine/actions'
 import type { ConstructType } from '../types'
 
@@ -44,6 +49,16 @@ interface GameStore {
   purchaseResearch: (nodeId: string) => void
   /** Upgrade gateway capacity to tier 2 or 3 */
   upgradeGatewayCapacity: (gatewayId: string, tier: 2 | 3) => void
+  /** Send an expedition to a planet */
+  sendExpedition: (planet: 'A' | 'B', cultistCount: number) => void
+  /** Resolve a choice event for an expedition */
+  resolveChoice: (expeditionId: string, optionId: string) => void
+  /** Craft an artifact */
+  craftArtifact: (artifactId: string) => void
+  /** Build a Planet B gateway */
+  buildPlanetBGateway: () => void
+  /** Cleanse the active corruption */
+  cleanseCorruption: () => void
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -106,5 +121,29 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   upgradeGatewayCapacity: (gatewayId: string, tier: 2 | 3) => {
     set(store => ({ state: upgradeGatewayCapacityAction(store.state, gatewayId, tier) }))
+  },
+
+  sendExpedition: (planet: 'A' | 'B', cultistCount: number) => {
+    const now = Date.now()
+    set(store => ({ state: sendExpeditionAction(store.state, planet, cultistCount, now) }))
+  },
+
+  resolveChoice: (expeditionId: string, optionId: string) => {
+    const now = Date.now()
+    set(store => ({ state: resolveChoiceAction(store.state, expeditionId, optionId, now) }))
+  },
+
+  craftArtifact: (artifactId: string) => {
+    const now = Date.now()
+    set(store => ({ state: craftArtifactAction(store.state, artifactId, now) }))
+  },
+
+  buildPlanetBGateway: () => {
+    const now = Date.now()
+    set(store => ({ state: buildPlanetBGatewayAction(store.state, now) }))
+  },
+
+  cleanseCorruption: () => {
+    set(store => ({ state: cleanseCorruptionAction(store.state) }))
   },
 }))

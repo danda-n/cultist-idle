@@ -72,9 +72,11 @@ function GatewayCard({ gatewayId }: GatewayCardProps) {
   const canAffordT2 = resources.anima >= t2CostAnima && resources.gnosis >= t2CostGnosis
   const canAffordT3 = resources.anima >= t3CostAnima && resources.gnosis >= t3CostGnosis
 
+  const resourceLabel = gw.planet === 'B' ? 'Voltis' : 'Gnosis'
+
   return (
     <div className="panel">
-      <div className="panel-title">Planet A Gateway</div>
+      <div className="panel-title">Planet {gw.planet} Gateway</div>
 
       {/* Stun notice */}
       {isStunned && (
@@ -117,7 +119,7 @@ function GatewayCard({ gatewayId }: GatewayCardProps) {
 
       {/* Capacity */}
       <div style={{ marginBottom: '10px', fontSize: '1rem' }} className="text-muted">
-        Channeling: {channelingCount} / {gw.capacity}
+        Channeling: {channelingCount} / {gw.capacity} — produces {resourceLabel}
       </div>
 
       {/* Channel toggle */}

@@ -47,6 +47,7 @@ export function createInitialState(): GameState {
       conjureCompletesAt: 0,
       nextCultistId: 1,
       preciseTutorialSeen: false,
+      nextExpeditionId: 0,
     },
     constructs: {},
     trifecta: {

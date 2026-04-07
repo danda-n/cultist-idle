@@ -1,4 +1,4 @@
-export type ConstructType = 'altar' | 'gatewayFrame' | 'ossuary'
+export type ConstructType = 'altar' | 'gatewayFrame' | 'ossuary' | 'scryingPool'
 
 export type ConstructTier = 1 | 2
 

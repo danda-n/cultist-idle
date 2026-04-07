@@ -24,4 +24,6 @@ export interface MetaState {
   nextCultistId: number
   /** Whether the one-time Precise Rite tutorial has been dismissed */
   preciseTutorialSeen: boolean
+  /** Counter for generating expedition IDs */
+  nextExpeditionId: number
 }

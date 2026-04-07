@@ -48,6 +48,12 @@ export function devotionSystem(
       decayRate *= (1 - DREAD_FORTITUDE_DECAY_REDUCTION)
     }
 
+    // Voicecaller artifact: halve devotion decay permanently
+    const voicecallerObtained = state.artifacts.some(a => a.id === 'voicecaller' && a.obtained && !a.dormant)
+    if (voicecallerObtained) {
+      decayRate *= 0.5
+    }
+
     const decayAmount = decayRate * (deltaMs / 60_000)
     const newDevotion = Math.max(0, gw.devotion - decayAmount)
 
