@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cultist Idle — UI/UX Design Specification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Backgrounds */
+  --bg-void:        #080705;
+  --bg-base:        #0E0B08;
+  --bg-surface:     #17120D;
+  --bg-raised:      #211A13;
+  --bg-elevated:    #2C231A;
+
+  /* Borders */
+  --border-dim:     #2A2118;
+  --border-mid:     #3D3025;
+  --border-bright:  #5C4A35;
+
+  /* Text */
+  --text-primary:   #E2D4BC;
+  --text-secondary: #A8957D;
+  --text-dim:       #614E3A;
+  --text-ghost:     #3A2E22;
+
+  /* Anima — blood, sacrifice, life-force */
+  --anima-deep:     #4A0A0A;
+  --anima-mid:      #8B1A1A;
+  --anima-bright:   #C0392B;
+  --anima-glow:     #E85C4A;
+  --anima-text:     #E8957A;
+
+  /* Gnosis — amber, forbidden knowledge, candlelight */
+  --gnosis-deep:    #3A2500;
+  --gnosis-mid:     #6B4510;
+  --gnosis-bright:  #B87333;
+  --gnosis-glow:    #D4943A;
+  --gnosis-text:    #E8C07A;
+
+  /* Voltis — cold steel, void-energy */
+  --voltis-deep:    #0A1525;
+  --voltis-mid:     #1A3558;
+  --voltis-bright:  #2A5FA0;
+  --voltis-glow:    #4A8FD4;
+  --voltis-text:    #7AB8E8;
+
+  /* State colours */
+  --state-harmony:  #3D6B4F;
+  --state-warn:     #8B5E0A;
+  --state-danger:   #7A1010;
+  --state-green:    #4A7A5A;
+  --state-yellow:   #8B7020;
+  --state-red:      #8B1515;
+
+  /* Typography */
+  --font-display:   'Cinzel Decorative', 'Cinzel', serif;
+  --font-heading:   'Cinzel', serif;
+  --font-body:      'EB Garamond', Georgia, serif;
+  --font-mono:      'Courier Prime', 'Courier New', monospace;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+
+  /* Radii */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* Shadows */
+  --shadow-surface: 0 2px 12px rgba(0,0,0,0.6);
+  --shadow-glow-anima: 0 0 16px rgba(200,60,40,0.25);
+  --shadow-glow-gnosis: 0 0 16px rgba(180,120,50,0.25);
+  --shadow-glow-voltis: 0 0 16px rgba(70,140,210,0.25);
+  --shadow-glow-harmony: 0 0 24px rgba(60,110,75,0.35);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Subtle parchment grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ============================================================
+   SPEC DOC CHROME
+   ============================================================ */
+.spec-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.spec-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  color: var(--gnosis-text);
+  text-align: center;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-xs);
+  text-shadow: 0 0 30px rgba(180,120,50,0.3);
+}
+
+.spec-subtitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: var(--space-xl);
+  letter-spacing: 0.04em;
+}
+
+.spec-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+  margin: var(--space-xl) 0;
+}
+
+.section-heading {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gnosis-bright);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  letter-spacing: 0.05em;
+}
+
+.section-body {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-md);
+}
+
+.spec-note {
+  background: var(--bg-raised);
+  border-left: 2px solid var(--gnosis-mid);
+  padding: var(--space-sm) var(--space-md);
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: var(--space-md) 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  background: var(--bg-raised);
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  color: var(--voltis-text);
+}
+
+/* ============================================================
+   SECTION 1: COLOUR SYSTEM
+   ============================================================ */
+.colour-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.colour-group {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.colour-group-label {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--bg-raised);
+}
+
+.colour-swatch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-top: 1px solid var(--border-dim);
+}
+
+.swatch-block {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.swatch-info { flex: 1; min-width: 0; }
+
+.swatch-name {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swatch-hex {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   SECTION 2: TYPOGRAPHY
+   ============================================================ */
+.type-specimen {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.type-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: var(--space-sm);
+}
+
+.type-display {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  color: var(--gnosis-text);
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 40px rgba(180,120,50,0.2);
+}
+
+.type-heading-1 {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+}
+
+.type-heading-2 {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gnosis-bright);
+}
+
+.type-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.type-body-italic {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.type-mono {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--voltis-text);
+}
+
+.type-resource-anima {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--anima-text);
+  letter-spacing: -0.02em;
+}
+
+.type-resource-gnosis {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gnosis-text);
+  letter-spacing: -0.02em;
+}
+
+.type-resource-voltis {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--voltis-text);
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   SECTION 3: SCREEN LAYOUT
+   ============================================================ */
+.layout-demo {
+  background: var(--bg-base);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+  font-size: 0;
+}
+
+/* Compact game layout at 80% scale for doc */
+.game-shell {
+  display: grid;
+  grid-template-rows: 56px 1fr;
+  grid-template-columns: 1fr;
+  height: 560px;
+  background: var(--bg-base);
+  font-size: 12px;
+}
+
+/* ── HEADER BAR ── */
+.game-header {
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 12px;
+  background: var(--bg-void);
+  border-bottom: 1px solid var(--border-mid);
+}
+
+.resource-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 4px 10px;
+  border-right: 1px solid var(--border-dim);
+  min-width: 80px;
+}
+
+.resource-chip:first-of-type { border-left: 1px solid var(--border-dim); }
+
+.res-amount {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.res-rate {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  opacity: 0.55;
+  line-height: 1.3;
+}
+
+.res-label {
+  font-family: var(--font-heading);
+  font-size: 7px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  line-height: 1.3;
+}
+
+.anima-chip .res-amount { color: var(--anima-text); }
+.gnosis-chip .res-amount { color: var(--gnosis-text); }
+.voltis-chip .res-amount { color: var(--voltis-text); }
+.anima-chip .res-rate { color: var(--anima-text); }
+.gnosis-chip .res-rate { color: var(--gnosis-text); }
+.voltis-chip .res-rate { color: var(--voltis-text); }
+
+.header-trifecta {
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+.header-spacer { flex: 1; }
+
+.header-cultists {
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+
+/* ── MAIN CONTENT ── */
+.game-body {
+  grid-row: 2;
+  display: grid;
+  grid-template-columns: 220px 1fr 180px;
+  gap: 1px;
+  background: var(--border-dim);
+  overflow: hidden;
+}
+
+.game-col {
+  background: var(--bg-base);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-mid) transparent;
+}
+
+/* ── SYSTEM CARDS ── */
+.sys-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.sys-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.sys-card-title {
+  font-family: var(--font-heading);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.sys-card-body { padding: 8px; }
+
+/* ── RITUAL CIRCLE ── */
+.ritual-circle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+}
+
+.ritual-circle {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 10px;
+}
+
+.ritual-circle svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── TRIFECTA TRIANGLE ── */
+.trifecta-triangle {
+  width: 40px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+/* ── DEVOTION BAR ── */
+.devotion-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.devotion-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-heading);
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.devotion-bar-track {
+  height: 4px;
+  background: var(--bg-void);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid var(--border-dim);
+}
+
+.devotion-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 2s ease;
+}
+
+.devotion-fill-high { background: linear-gradient(90deg, #3D6B4F, #4A8B60); }
+.devotion-fill-mid { background: linear-gradient(90deg, #7A5A10, #A07820); }
+.devotion-fill-low { background: linear-gradient(90deg, #7A1010, #A01515); }
+
+/* ── ACTION BUTTONS ── */
+.action-btn {
+  display: block;
+  width: 100%;
+  padding: 5px 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn.anima-btn { border-color: var(--anima-deep); color: var(--anima-text); }
+.action-btn.gnosis-btn { border-color: var(--gnosis-deep); color: var(--gnosis-text); }
+.action-btn.dim-btn { opacity: 0.4; cursor: not-allowed; }
+
+.fill-bar {
+  position: absolute;
+  bottom: 0; left: 0; top: 0;
+  background: rgba(180,60,40,0.15);
+  width: 68%;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  animation: pulse-fill 8s linear infinite;
+}
+
+@keyframes pulse-fill {
+  0%   { width: 0%; opacity: 0.3; }
+  85%  { width: 100%; opacity: 0.2; }
+  90%  { width: 100%; opacity: 0.5; }
+  95%  { width: 100%; opacity: 0.2; }
+  100% { width: 0%; opacity: 0; }
+}
+
+.btn-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-cost {
+  font-size: 7px;
+  opacity: 0.6;
+  font-family: var(--font-mono);
+}
+
+/* ── ARTIFACT SLOTS ── */
+.artifact-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-top: 6px;
+}
+
+.artifact-slot {
+  aspect-ratio: 1;
+  background: var(--bg-void);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 6px;
+  font-family: var(--font-heading);
+  letter-spacing: 0.1em;
+  color: var(--text-ghost);
+  text-transform: uppercase;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.artifact-slot.filled {
+  border-color: var(--anima-mid);
+  background: var(--anima-deep);
+  color: var(--anima-text);
+}
+
+.artifact-slot.filling::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 35%;
+  background: linear-gradient(0deg, rgba(139,26,26,0.4), transparent);
+  animation: fill-rise 3s ease-in-out infinite alternate;
+}
+
+@keyframes fill-rise {
+  from { height: 25%; }
+  to   { height: 45%; }
+}
+
+.log-entry {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 8px;
+  color: var(--text-dim);
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border-dim);
+  line-height: 1.4;
+}
+
+.log-entry:last-child { border-bottom: none; }
+
+/* ============================================================
+   SECTION 4: COMPONENTS
+   ============================================================ */
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.component-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.component-card-label {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.component-card-body {
+  padding: var(--space-md);
+}
+
+/* ─ FULL-SIZE TRIFECTA DEMO ─ */
+.trifecta-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+}
+
+.trifecta-large { width: 120px; height: 108px; }
+
+.harmony-badge {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--state-green);
+  border: 1px solid var(--state-green);
+  padding: 2px 10px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  opacity: 0.9;
+  box-shadow: 0 0 12px rgba(60,110,75,0.2);
+}
+
+/* ─ EXPEDITION CULTIST PICKER ─ */
+.cultist-picker {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  margin: var(--space-md) 0;
+}
+
+.cultist-btn {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.cultist-btn.selected {
+  background: var(--bg-elevated);
+  border-color: var(--gnosis-bright);
+  box-shadow: 0 0 12px rgba(180,120,50,0.2);
+}
+
+.cultist-btn-num {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+.cultist-btn.selected .cultist-btn-num { color: var(--gnosis-text); }
+
+.cultist-btn-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.cultist-btn.selected .cultist-btn-label { color: var(--gnosis-bright); }
+
+.expedition-info {
+  flex: 1;
+  padding-left: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.expedition-timer {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--gnosis-text);
+}
+
+/* ─ CHOICE EVENT ─ */
+.choice-event-demo {
+  background: var(--bg-base);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+  position: relative;
+}
+
+.choice-backdrop {
+  background: rgba(8,7,5,0.5);
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--border-mid);
+}
+
+.choice-panel {
+  background: var(--bg-surface);
+  border-top: 2px solid var(--border-bright);
+  padding: var(--space-md);
+  position: relative;
+}
+
+.choice-panel::before {
+  content: '◈ THE CHOICE';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-surface);
+  padding: 0 8px;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--border-bright);
+}
+
+.choice-text {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+.choice-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.choice-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.choice-option:hover { border-color: var(--gnosis-mid); }
+
+.choice-option.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.choice-option-text {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.choice-option-cost {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.choice-option-locked {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--text-ghost);
+}
+
+/* ─ REHEARSAL SCREEN ─ */
+.rehearsal-demo {
+  background: var(--bg-void);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  padding: var(--space-xl) var(--space-lg);
+  position: relative;
+}
+
+.rehearsal-demo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(180,120,50,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.rehearsal-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  position: relative;
+}
+
+.rehearsal-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--gnosis-text);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 40px rgba(180,120,50,0.3);
+  margin-bottom: var(--space-xs);
+}
+
+.rehearsal-subtitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.rehearsal-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.rehearsal-col-header {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border-mid);
+  margin-bottom: var(--space-sm);
+}
+
+.rehearsal-col-header.persists { color: var(--state-green); }
+.rehearsal-col-header.resets   { color: var(--state-danger); }
+
+.rehearsal-item {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  padding: var(--space-xs) 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.rehearsal-item::before {
+  font-size: 0.5rem;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.rehearsal-item.persists::before { content: '◆'; color: var(--state-green); }
+.rehearsal-item.resets::before   { content: '◇'; color: var(--state-danger); }
+
+.boon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.boon-pip {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--gnosis-mid);
+  background: var(--gnosis-deep);
+  box-shadow: 0 0 10px rgba(180,120,50,0.15);
+  position: relative;
+}
+
+.boon-pip.earned { background: var(--gnosis-mid); box-shadow: 0 0 14px rgba(180,120,50,0.3); }
+
+.boon-label {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--gnosis-text);
+  text-transform: uppercase;
+  margin-left: var(--space-xs);
+}
+
+.rehearsal-commit-btn {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-lg);
+  background: transparent;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.rehearsal-commit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(180,120,50,0.06), transparent);
+}
+
+.rehearsal-commit-btn:hover {
+  border-color: var(--gnosis-bright);
+  box-shadow: 0 0 20px rgba(180,120,50,0.15);
+  color: var(--gnosis-text);
+}
+
+/* ─ RITUAL CIRCLE LARGE ─ */
+.ritual-circle-large {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+}
+
+/* ── GATEWAY PANEL ── */
+.gateway-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+}
+
+.gateway-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.gateway-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.devotion-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--state-green);
+  box-shadow: 0 0 6px var(--state-green);
+  flex-shrink: 0;
+}
+
+.devotion-indicator.warn { background: var(--gnosis-bright); box-shadow: 0 0 6px var(--gnosis-mid); }
+.devotion-indicator.danger { background: var(--anima-bright); box-shadow: 0 0 6px var(--anima-mid); }
+
+.gateway-body { padding: var(--space-md); }
+
+.devotion-section {
+  margin-bottom: var(--space-md);
+}
+
+.devotion-track {
+  height: 6px;
+  background: var(--bg-void);
+  border-radius: 3px;
+  border: 1px solid var(--border-dim);
+  overflow: hidden;
+  margin: var(--space-xs) 0;
+}
+
+.devotion-fill-bar {
+  height: 100%;
+  border-radius: 3px;
+  width: 78%;
+  background: linear-gradient(90deg, #3D5A45, #4A7A5A);
+}
+
+.gateway-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.gateway-action-btn {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.gateway-action-btn:hover { border-color: var(--border-bright); color: var(--text-primary); }
+.gateway-action-btn.channel { color: var(--gnosis-text); border-color: var(--gnosis-deep); }
+.gateway-action-btn.discipline { color: var(--anima-text); border-color: var(--anima-deep); }
+
+.cultist-slot-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: var(--space-sm);
+}
+
+.cultist-slot {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--text-dim);
+}
+
+.cultist-slot.occupied {
+  background: var(--bg-elevated);
+  border-color: var(--border-bright);
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   SECTION 5: ANIMATION SPECS
+   ============================================================ */
+.anim-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-bottom: var(--space-lg);
+}
+
+.anim-spec-table th {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-mid);
+  background: var(--bg-raised);
+}
+
+.anim-spec-table td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-dim);
+  color: var(--text-secondary);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.anim-spec-table tr:last-child td { border-bottom: none; }
+
+.anim-trigger { font-family: var(--font-mono); font-size: 0.8em; color: var(--voltis-text); }
+.anim-desc { font-family: var(--font-body); }
+.anim-dur { font-family: var(--font-mono); font-size: 0.8em; color: var(--gnosis-text); white-space: nowrap; }
+.anim-impl { font-family: var(--font-mono); font-size: 0.75em; color: var(--text-dim); }
+
+/* ── LIVE ANIMATION DEMOS ── */
+.anim-demos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.anim-demo-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.anim-demo-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Precise Rite pulse */
+.conjure-btn-demo {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--anima-deep);
+  border-radius: var(--radius-sm);
+  color: var(--anima-text);
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.conjure-fill {
+  position: absolute;
+  inset: 0;
+  background: rgba(200,60,40,0.12);
+  animation: conjure-cycle 8s linear infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes conjure-cycle {
+  0%   { clip-path: inset(0 100% 0 0); }
+  80%  { clip-path: inset(0 0% 0 0); }
+  82%  { clip-path: inset(0 0% 0 0); box-shadow: inset 0 0 20px rgba(220,80,60,0.4); }
+  90%  { clip-path: inset(0 0% 0 0); box-shadow: none; }
+  92%  { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 100% 0 0); }
+}
+
+.precise-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  animation: precise-glow 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes precise-glow {
+  0%, 79%  { box-shadow: none; }
+  80%      { box-shadow: 0 0 0 2px rgba(220,120,80,0.8), 0 0 12px rgba(220,80,60,0.5); }
+  84%      { box-shadow: 0 0 0 2px rgba(220,120,80,0.4), 0 0 6px rgba(220,80,60,0.2); }
+  90%, 100% { box-shadow: none; }
+}
+
+/* Harmony glow */
+.harmony-glow-demo {
+  width: 80px;
+  height: 72px;
+  animation: harmony-pulse 3s ease-in-out infinite;
+}
+
+@keyframes harmony-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(60,110,75,0.3)); }
+  50%       { filter: drop-shadow(0 0 12px rgba(60,110,75,0.6)); }
+}
+
+/* Milestone flash */
+.milestone-flash-demo {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gnosis-text);
+  text-align: center;
+  animation: milestone-appear 4s ease-in-out infinite;
+}
+
+@keyframes milestone-appear {
+  0%    { opacity: 0; transform: translateY(4px); border-color: var(--gnosis-mid); }
+  15%   { opacity: 1; transform: translateY(0); border-color: var(--gnosis-bright); box-shadow: 0 0 16px rgba(180,120,50,0.25); }
+  70%   { opacity: 1; border-color: var(--gnosis-mid); box-shadow: none; }
+  100%  { opacity: 0; }
+}
+
+/* Devotion decay */
+.devotion-decay-demo {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-void);
+  border-radius: 3px;
+  border: 1px solid var(--border-dim);
+  overflow: hidden;
+}
+
+.devotion-decay-fill {
+  height: 100%;
+  border-radius: 3px;
+  animation: devotion-drain 6s linear infinite;
+}
+
+@keyframes devotion-drain {
+  0%   { width: 85%; background: linear-gradient(90deg, #3D5A45, #4A8B60); }
+  40%  { width: 55%; background: linear-gradient(90deg, #7A5A10, #A07820); }
+  70%  { width: 25%; background: linear-gradient(90deg, #7A1010, #A01515); }
+  100% { width: 85%; background: linear-gradient(90deg, #3D5A45, #4A8B60); }
+}
+
+/* ============================================================
+   SECTION 6: SPEC TABLE
+   ============================================================ */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-bottom: var(--space-lg);
+}
+
+.spec-table th {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-mid);
+  background: var(--bg-raised);
+}
+
+.spec-table td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-dim);
+  color: var(--text-secondary);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.spec-table tr:last-child td { border-bottom: none; }
+
+/* ============================================================
+   SVG COMPONENTS
+   ============================================================ */
+
+/* Trifecta SVG helpers for inline styles */
+
+</style>
+</head>
+<body>
+
+<div class="spec-page">
+
+  <!-- TITLE -->
+  <h1 class="spec-title">Cultist Idle</h1>
+  <p class="spec-subtitle">UI/UX Design Specification — v0.18 · April 2026</p>
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       1. AESTHETIC DIRECTION
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">01 — Aesthetic Direction</p>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+    <div>
+      <h2 class="section-title">Forbidden Grimoire</h2>
+      <p class="section-body">
+        The UI reads like a ritual manuscript — aged stone, blood-inked ledgers, candlelight pressing back the dark. Everything is deliberate, nothing decorative. Numbers feel weighed, not displayed. Actions feel committed, not clicked.
+      </p>
+      <p class="section-body">
+        Tone reference: <em>Darkest Dungeon</em> × <em>Cultist Simulator</em> — grim folk ritual, not gothic camp. Candlelight. Chalk circles. Blood on stone.
+      </p>
+      <div class="spec-note">
+        Rule: if an element doesn't need to exist, it doesn't exist. Every pixel earns its place.
+      </div>
+    </div>
+    <div>
+      <h2 class="section-title">Design Principles</h2>
+      <p class="section-body" style="margin-bottom: 8px;">→ <strong style="color: var(--text-primary);">One screen.</strong> Everything the player needs is visible without navigating.</p>
+      <p class="section-body" style="margin-bottom: 8px;">→ <strong style="color: var(--text-primary);">Negative states use colour, not popups.</strong> Red means fix this. Green means fine.</p>
+      <p class="section-body" style="margin-bottom: 8px;">→ <strong style="color: var(--text-primary);">Progressive disclosure.</strong> Systems appear at their milestone, never before.</p>
+      <p class="section-body" style="margin-bottom: 8px;">→ <strong style="color: var(--text-primary);">Atmospheric feedback.</strong> Animations reinforce the ritual theme — slow burns, not digital flashes.</p>
+      <p class="section-body">→ <strong style="color: var(--text-primary);">Numbers are secondary.</strong> Direction (rising/falling) matters more than the exact value.</p>
+    </div>
+  </div>
+
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       2. COLOUR SYSTEM
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">02 — Colour System</p>
+
+  <div class="colour-grid">
+
+    <div class="colour-group">
+      <div class="colour-group-label">Backgrounds</div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#080705;border:1px solid #2A2118;"></div><div class="swatch-info"><div class="swatch-name">--bg-void</div><div class="swatch-hex">#080705</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#0E0B08;"></div><div class="swatch-info"><div class="swatch-name">--bg-base</div><div class="swatch-hex">#0E0B08</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#17120D;"></div><div class="swatch-info"><div class="swatch-name">--bg-surface</div><div class="swatch-hex">#17120D</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#211A13;"></div><div class="swatch-info"><div class="swatch-name">--bg-raised</div><div class="swatch-hex">#211A13</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#2C231A;"></div><div class="swatch-info"><div class="swatch-name">--bg-elevated</div><div class="swatch-hex">#2C231A</div></div></div>
+    </div>
+
+    <div class="colour-group">
+      <div class="colour-group-label">Anima — Blood</div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#4A0A0A;"></div><div class="swatch-info"><div class="swatch-name">--anima-deep</div><div class="swatch-hex">#4A0A0A</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#8B1A1A;"></div><div class="swatch-info"><div class="swatch-name">--anima-mid</div><div class="swatch-hex">#8B1A1A</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#C0392B;"></div><div class="swatch-info"><div class="swatch-name">--anima-bright</div><div class="swatch-hex">#C0392B</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#E8957A;"></div><div class="swatch-info"><div class="swatch-name">--anima-text</div><div class="swatch-hex">#E8957A</div></div></div>
+    </div>
+
+    <div class="colour-group">
+      <div class="colour-group-label">Gnosis — Candlelight</div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#3A2500;"></div><div class="swatch-info"><div class="swatch-name">--gnosis-deep</div><div class="swatch-hex">#3A2500</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#6B4510;"></div><div class="swatch-info"><div class="swatch-name">--gnosis-mid</div><div class="swatch-hex">#6B4510</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#B87333;"></div><div class="swatch-info"><div class="swatch-name">--gnosis-bright</div><div class="swatch-hex">#B87333</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#E8C07A;"></div><div class="swatch-info"><div class="swatch-name">--gnosis-text</div><div class="swatch-hex">#E8C07A</div></div></div>
+    </div>
+
+    <div class="colour-group">
+      <div class="colour-group-label">Voltis — Void Steel</div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#0A1525;"></div><div class="swatch-info"><div class="swatch-name">--voltis-deep</div><div class="swatch-hex">#0A1525</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#1A3558;"></div><div class="swatch-info"><div class="swatch-name">--voltis-mid</div><div class="swatch-hex">#1A3558</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#2A5FA0;"></div><div class="swatch-info"><div class="swatch-name">--voltis-bright</div><div class="swatch-hex">#2A5FA0</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#7AB8E8;"></div><div class="swatch-info"><div class="swatch-name">--voltis-text</div><div class="swatch-hex">#7AB8E8</div></div></div>
+    </div>
+
+    <div class="colour-group">
+      <div class="colour-group-label">Text</div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#E2D4BC;"></div><div class="swatch-info"><div class="swatch-name">--text-primary</div><div class="swatch-hex">#E2D4BC</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#A8957D;"></div><div class="swatch-info"><div class="swatch-name">--text-secondary</div><div class="swatch-hex">#A8957D</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#614E3A;"></div><div class="swatch-info"><div class="swatch-name">--text-dim</div><div class="swatch-hex">#614E3A</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#3A2E22;"></div><div class="swatch-info"><div class="swatch-name">--text-ghost</div><div class="swatch-hex">#3A2E22</div></div></div>
+    </div>
+
+    <div class="colour-group">
+      <div class="colour-group-label">State</div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#3D6B4F;"></div><div class="swatch-info"><div class="swatch-name">--state-harmony</div><div class="swatch-hex">#3D6B4F · GREEN</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#8B5E0A;"></div><div class="swatch-info"><div class="swatch-name">--state-warn</div><div class="swatch-hex">#8B5E0A · YELLOW</div></div></div>
+      <div class="colour-swatch"><div class="swatch-block" style="background:#7A1010;"></div><div class="swatch-info"><div class="swatch-name">--state-danger</div><div class="swatch-hex">#7A1010 · RED</div></div></div>
+    </div>
+
+  </div>
+
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       3. TYPOGRAPHY
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">03 — Typography</p>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+
+    <div class="type-specimen">
+      <div class="type-label">Display — Cinzel Decorative · Game title, milestone names</div>
+      <div class="type-display">The Summoning</div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="type-label">Heading — Cinzel · Panel headers, button labels, labels</div>
+      <div class="type-heading-1" style="margin-bottom:12px;">Gateway System</div>
+      <div class="type-heading-2">Devotion · Anima · Gnosis</div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="type-label">Body — EB Garamond · Flavour text, descriptions, choice events</div>
+      <div class="type-body">The cult feels the pull. Your cultists work without rest, driven by devotion to something vast and inhuman.</div>
+      <div class="type-body-italic" style="margin-top:8px;">"Something stirs beyond the veil. The ritual is working."</div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="type-label">Mono — Courier Prime · Resource counts, rates, timers, costs</div>
+      <div style="display:flex; gap:24px; margin-bottom:12px;">
+        <div class="type-resource-anima">347</div>
+        <div class="type-resource-gnosis">128</div>
+        <div class="type-resource-voltis">92</div>
+      </div>
+      <div class="type-mono">+6.0/min · −5.0/min · 15:32</div>
+    </div>
+
+  </div>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Usage</th><th>Font</th><th>Size</th><th>Weight</th><th>Transform</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Game title / Milestone names</td><td>Cinzel Decorative</td><td>clamp(1.6rem, 4vw, 2.8rem)</td><td>400</td><td>—</td></tr>
+      <tr><td>Panel section headers</td><td>Cinzel</td><td>0.65rem</td><td>400</td><td>UPPERCASE + 0.2em spacing</td></tr>
+      <tr><td>Button labels</td><td>Cinzel</td><td>0.7–0.8rem</td><td>400</td><td>UPPERCASE + 0.12em spacing</td></tr>
+      <tr><td>Flavour text / choices</td><td>EB Garamond</td><td>0.95–1rem</td><td>400</td><td>Italic for atmosphere</td></tr>
+      <tr><td>Resource amounts</td><td>Courier Prime</td><td>1.4–1.8rem</td><td>700</td><td>Tabular nums</td></tr>
+      <tr><td>Rates, timers, costs</td><td>Courier Prime</td><td>0.75–0.9rem</td><td>400</td><td>—</td></tr>
+      <tr><td>Tooltips / labels</td><td>EB Garamond</td><td>0.875rem</td><td>400</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       4. SCREEN LAYOUT
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">04 — Screen Layout</p>
+
+  <p class="section-body">
+    Three-column layout. The header bar is always visible. The left column holds systems that unlock progressively (Gateway, Expedition, Research, Constructs). The center column is the primary action area. The right column holds permanent progress context (Ritual Circle, Artifact slots, Activity log). No tabs required in normal play — all unlocked content is visible simultaneously via vertical scroll within each column.
+  </p>
+
+  <div class="spec-note">
+    Decision: Three columns rather than tabs. The player should see all active systems at a glance — a tab-based approach forces navigation for devotion monitoring. Columns allow passive awareness of everything unlocked.
+  </div>
+
+  <!-- LIVE LAYOUT DEMO -->
+  <div class="layout-demo">
+    <div class="game-shell">
+
+      <!-- HEADER -->
+      <header class="game-header">
+        <div class="resource-chip anima-chip">
+          <div class="res-label">Anima</div>
+          <div class="res-amount">347</div>
+          <div class="res-rate">+6.0/min</div>
+        </div>
+        <div class="resource-chip gnosis-chip">
+          <div class="res-label">Gnosis</div>
+          <div class="res-amount">128</div>
+          <div class="res-rate">+4.2/min</div>
+        </div>
+        <div class="resource-chip voltis-chip">
+          <div class="res-label">Voltis</div>
+          <div class="res-amount">—</div>
+          <div class="res-rate">locked</div>
+        </div>
+
+        <!-- Trifecta triangle (inline SVG) -->
+        <div class="header-trifecta">
+          <svg class="trifecta-triangle" viewBox="0 0 40 36">
+            <!-- Background triangle -->
+            <polygon points="20,2 38,34 2,34" fill="#17120D" stroke="#3D3025" stroke-width="1"/>
+            <!-- Anima segment (bottom-left) -->
+            <polygon points="20,18 2,34 20,34" fill="#8B1A1A" opacity="0.7"/>
+            <!-- Gnosis segment (top) -->
+            <polygon points="20,2 20,18 11,26" fill="#6B4510" opacity="0.5"/>
+            <!-- Voltis segment (bottom-right) — inactive -->
+            <polygon points="20,18 38,34 20,34" fill="#0A1525" opacity="0.4"/>
+            <!-- Center dot -->
+            <circle cx="20" cy="18" r="2" fill="#614E3A"/>
+          </svg>
+        </div>
+
+        <div class="header-spacer"></div>
+        <div class="header-cultists">6 Cultists · 2 Active</div>
+      </header>
+
+      <!-- BODY -->
+      <div class="game-body">
+
+        <!-- LEFT: Systems column -->
+        <div class="game-col">
+          <!-- Conjure card -->
+          <div class="sys-card">
+            <div class="sys-card-header">
+              <div class="sys-card-title">The Conjuring</div>
+            </div>
+            <div class="sys-card-body">
+              <button class="action-btn anima-btn">
+                <div class="fill-bar"></div>
+                <div class="precise-pulse"></div>
+                <div class="btn-inner">
+                  <span>Conjure</span>
+                  <span class="btn-cost">8 Anima</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Gateway card -->
+          <div class="sys-card">
+            <div class="sys-card-header">
+              <div class="sys-card-title">Planet A Gateway</div>
+              <div class="devotion-indicator"></div>
+            </div>
+            <div class="sys-card-body">
+              <div class="devotion-bar-wrap">
+                <div class="devotion-bar-label"><span>Devotion</span><span>78%</span></div>
+                <div class="devotion-bar-track">
+                  <div class="devotion-bar-fill devotion-fill-high" style="width:78%;"></div>
+                </div>
+              </div>
+              <div class="cultist-slot-row">
+                <div class="cultist-slot occupied">✦</div>
+                <div class="cultist-slot occupied">✦</div>
+                <div class="cultist-slot">—</div>
+              </div>
+              <button class="action-btn gnosis-btn">
+                <div class="btn-inner"><span>Channel</span><span class="btn-cost">−15 Anima</span></div>
+              </button>
+              <button class="action-btn anima-btn">
+                <div class="btn-inner"><span>Discipline</span><span class="btn-cost">3min CD</span></div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Research card -->
+          <div class="sys-card">
+            <div class="sys-card-header">
+              <div class="sys-card-title">Research</div>
+            </div>
+            <div class="sys-card-body">
+              <button class="action-btn gnosis-btn">
+                <div class="btn-inner"><span>Conjuring Rites</span><span class="btn-cost">30G</span></div>
+              </button>
+              <button class="action-btn dim-btn">
+                <div class="btn-inner"><span>The Opened Way</span><span class="btn-cost">40G</span></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER: Expedition / active focus -->
+        <div class="game-col" style="padding: 10px 12px;">
+          <div class="sys-card" style="margin-bottom:8px;">
+            <div class="sys-card-header">
+              <div class="sys-card-title">Expedition — Planet A</div>
+            </div>
+            <div class="sys-card-body">
+              <div style="display:flex; gap:6px; margin-bottom:6px; align-items:center;">
+                <button class="action-btn" style="width:auto; padding:4px 10px; font-size:7px;">1</button>
+                <button class="action-btn gnosis-btn" style="width:auto; padding:4px 10px; font-size:7px; border-width:2px;">2 ✓</button>
+                <button class="action-btn" style="width:auto; padding:4px 10px; font-size:7px;">3</button>
+                <span style="font-family:var(--font-mono);font-size:9px;color:var(--gnosis-text);margin-left:4px;">15:00 min</span>
+              </div>
+              <button class="action-btn gnosis-btn" style="font-size:9px;">
+                <div class="btn-inner"><span>Send Expedition</span><span class="btn-cost">2 cultists</span></div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active expedition -->
+          <div class="sys-card">
+            <div class="sys-card-header">
+              <div class="sys-card-title">In Transit · Planet A</div>
+            </div>
+            <div class="sys-card-body">
+              <div style="height:3px;background:var(--bg-void);border-radius:2px;border:1px solid var(--border-dim);overflow:hidden;margin-bottom:6px;">
+                <div style="width:42%;height:100%;background:linear-gradient(90deg,var(--gnosis-deep),var(--gnosis-mid));border-radius:2px;"></div>
+              </div>
+              <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);text-align:right;">8:43 remaining</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Ritual / progress -->
+        <div class="game-col" style="display:flex;flex-direction:column;align-items:center;padding:10px 8px;">
+          <!-- Ritual circle -->
+          <div class="ritual-circle">
+            <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer ring -->
+              <circle cx="70" cy="70" r="65" stroke="#2A2118" stroke-width="1"/>
+              <circle cx="70" cy="70" r="58" stroke="#2A2118" stroke-width="0.5" stroke-dasharray="3,5"/>
+
+              <!-- 6 artifact segments (hexagonal arrangement) -->
+              <!-- Segment 1 (top) — Cindermark, filled -->
+              <path d="M70,12 L88,25 L88,52 L70,62 L52,52 L52,25 Z" fill="#4A0A0A" stroke="#8B1A1A" stroke-width="1"/>
+              <text x="70" y="40" text-anchor="middle" font-family="Cinzel,serif" font-size="5" fill="#E8957A" letter-spacing="0.05em">CINDERMARK</text>
+              <circle cx="70" cy="26" r="3" fill="#C0392B" opacity="0.8"/>
+
+              <!-- Segment 2 (top-right) — Voidwreath, partial -->
+              <path d="M88,25 L110,30 L118,55 L96,65 L70,62 L88,52 Z" fill="#17120D" stroke="#3D3025" stroke-width="1" stroke-dasharray="3,2"/>
+              <text x="100" y="48" text-anchor="middle" font-family="Cinzel,serif" font-size="4.5" fill="#614E3A">VOID-</text>
+              <text x="100" y="55" text-anchor="middle" font-family="Cinzel,serif" font-size="4.5" fill="#614E3A">WREATH</text>
+
+              <!-- Segment 3 (bottom-right) — Whisperlock, empty -->
+              <path d="M118,55 L128,80 L110,100 L88,90 L88,65 L96,65 Z" fill="#0E0B08" stroke="#2A2118" stroke-width="1" stroke-dasharray="2,4"/>
+              <text x="110" y="80" text-anchor="middle" font-family="Cinzel,serif" font-size="4" fill="#3A2E22">WHISPER</text>
+
+              <!-- Segment 4 (bottom) — Hungering Lens, empty -->
+              <path d="M110,100 L88,115 L52,115 L30,100 L52,90 L88,90 Z" fill="#0E0B08" stroke="#2A2118" stroke-width="1" stroke-dasharray="2,4"/>
+              <text x="70" y="106" text-anchor="middle" font-family="Cinzel,serif" font-size="4" fill="#3A2E22">HUNGERING LENS</text>
+
+              <!-- Segment 5 (bottom-left) — Unbinding, empty -->
+              <path d="M30,100 L12,80 L22,55 L44,65 L52,90 L30,100 Z" fill="#0E0B08" stroke="#2A2118" stroke-width="1" stroke-dasharray="2,4"/>
+              <text x="30" y="80" text-anchor="middle" font-family="Cinzel,serif" font-size="4" fill="#3A2E22">UNBIND</text>
+
+              <!-- Segment 6 (top-left) — Voicecaller, empty -->
+              <path d="M22,55 L44,52 L52,52 L52,25 L44,38 L22,30 Z" fill="#0E0B08" stroke="#2A2118" stroke-width="1" stroke-dasharray="2,4"/>
+              <text x="34" y="44" text-anchor="middle" font-family="Cinzel,serif" font-size="4" fill="#3A2E22">VOICE</text>
+
+              <!-- Center portal -->
+              <circle cx="70" cy="70" r="14" fill="#080705" stroke="#3D3025" stroke-width="1"/>
+              <circle cx="70" cy="70" r="8" fill="none" stroke="#2A2118" stroke-width="0.5"/>
+              <text x="70" y="73" text-anchor="middle" font-family="Cinzel,serif" font-size="6" fill="#3A2E22" letter-spacing="0.1em">1/6</text>
+            </svg>
+          </div>
+
+          <!-- Artifact slots summary -->
+          <div class="artifact-slots" style="width:100%;max-width:160px;">
+            <div class="artifact-slot filled" style="font-size:5px;">Cinder<br>mark</div>
+            <div class="artifact-slot filling" style="font-size:5px;">Void<br>wreath</div>
+            <div class="artifact-slot" style="font-size:5px;">Whisper<br>lock</div>
+            <div class="artifact-slot" style="font-size:5px;">Hung.<br>Lens</div>
+            <div class="artifact-slot" style="font-size:5px;">Unbind<br>ing</div>
+            <div class="artifact-slot" style="font-size:5px;">Voice<br>caller</div>
+          </div>
+
+          <!-- Log -->
+          <div style="width:100%;margin-top:8px;">
+            <div class="log-entry">"The altar stone grows warm..."</div>
+            <div class="log-entry">Gateway opened. Planet A accessible.</div>
+            <div class="log-entry">Sacrifice performed. +6 Anima/min.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <table class="spec-table">
+    <thead><tr><th>Column</th><th>Content</th><th>Width</th><th>Scroll</th></tr></thead>
+    <tbody>
+      <tr><td>Header bar</td><td>Anima / Gnosis / Voltis + rates; Trifecta triangle; cultist count</td><td>100% · 56px tall</td><td>Fixed</td></tr>
+      <tr><td>Left column</td><td>System cards (Conjure → Gateway A → Gateway B → Research → Constructs). Cards appear at their unlock milestone and persist below newer ones.</td><td>220–260px</td><td>Vertical scroll</td></tr>
+      <tr><td>Center column</td><td>Expedition launcher + active expedition tracker. Expands to show Choice event when triggered. Becomes Rehearsal screen when player initiates prestige.</td><td>Flex 1 (remaining space)</td><td>Vertical scroll</td></tr>
+      <tr><td>Right column</td><td>Ritual circle (always visible, M1+); artifact slot grid; activity log (last 5 events).</td><td>180–220px</td><td>Fixed (no scroll)</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       5. KEY COMPONENTS
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">05 — Key Components</p>
+
+  <!-- 5a. TRIFECTA GAUGE -->
+  <h2 class="section-title" style="margin-bottom:8px;">A — Trifecta Triangle Gauge</h2>
+  <p class="section-body">Equilateral triangle split into three segments — one per resource. Segment colour reflects threshold state. Harmony bonus indicator overlays the center when all three are above threshold simultaneously for 60+ seconds.</p>
+
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:24px;">
+
+    <div class="trifecta-demo">
+      <div class="anim-demo-label">All above threshold — Harmony active</div>
+      <svg class="trifecta-large" viewBox="0 0 120 108">
+        <defs>
+          <filter id="harmony-glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <polygon points="60,4 116,102 4,102" fill="#17120D" stroke="#3D6B4F" stroke-width="1.5" filter="url(#harmony-glow)"/>
+        <!-- Anima seg -->
+        <polygon points="60,54 4,102 60,102" fill="#3D6B4F" opacity="0.8"/>
+        <!-- Gnosis seg -->
+        <polygon points="60,4 60,54 36,78" fill="#3D6B4F" opacity="0.7"/>
+        <!-- Voltis seg -->
+        <polygon points="60,54 116,102 60,102" fill="#3D6B4F" opacity="0.7"/>
+        <circle cx="60" cy="54" r="5" fill="#3D6B4F" opacity="0.9"/>
+        <text x="60" y="88" text-anchor="middle" font-family="Courier Prime,monospace" font-size="7" fill="#4A8B60">+20%</text>
+      </svg>
+      <div class="harmony-badge">Harmony</div>
+    </div>
+
+    <div class="trifecta-demo">
+      <div class="anim-demo-label">Voltis low — no Harmony</div>
+      <svg class="trifecta-large" viewBox="0 0 120 108">
+        <polygon points="60,4 116,102 4,102" fill="#17120D" stroke="#3D3025" stroke-width="1"/>
+        <polygon points="60,54 4,102 60,102" fill="#3D6B4F" opacity="0.7"/>
+        <polygon points="60,4 60,54 36,78" fill="#6B4510" opacity="0.6"/>
+        <!-- Voltis red — low -->
+        <polygon points="60,54 116,102 60,102" fill="#7A1010" opacity="0.8"/>
+        <circle cx="60" cy="54" r="4" fill="#3D3025"/>
+      </svg>
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--anima-text);">Voltis starved</div>
+    </div>
+
+    <div class="trifecta-demo">
+      <div class="anim-demo-label">Early game — Voltis locked</div>
+      <svg class="trifecta-large" viewBox="0 0 120 108">
+        <polygon points="60,4 116,102 4,102" fill="#17120D" stroke="#3D3025" stroke-width="1"/>
+        <polygon points="60,54 4,102 60,102" fill="#8B1A1A" opacity="0.6"/>
+        <polygon points="60,4 60,54 36,78" fill="#6B4510" opacity="0.4"/>
+        <!-- Voltis locked — ghost -->
+        <polygon points="60,54 116,102 60,102" fill="#17120D" opacity="1"/>
+        <text x="88" y="90" text-anchor="middle" font-family="Cinzel,serif" font-size="6" fill="#3A2E22">locked</text>
+        <circle cx="60" cy="54" r="4" fill="#2A2118"/>
+      </svg>
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-dim);">M9 unlocks Voltis</div>
+    </div>
+
+  </div>
+
+  <table class="spec-table" style="margin-bottom:32px;">
+    <thead><tr><th>State</th><th>Segment colour</th><th>Trigger</th></tr></thead>
+    <tbody>
+      <tr><td>Above threshold</td><td><code>--state-green</code> #3D6B4F</td><td>Resource ≥ 30% of soft cap</td></tr>
+      <tr><td>Approaching threshold</td><td><code>--state-warn</code> #8B5E0A</td><td>Resource 15–30% of soft cap</td></tr>
+      <tr><td>Below threshold</td><td><code>--state-danger</code> #7A1010</td><td>Resource &lt; 15% of soft cap</td></tr>
+      <tr><td>Locked (Voltis, pre-M9)</td><td><code>--bg-surface</code> ghost</td><td>Resource not yet unlocked</td></tr>
+      <tr><td>Harmony active</td><td>All green + outer glow ring, +20% badge</td><td>All three above threshold 60s+</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5b. EXPEDITION CULTIST PICKER -->
+  <h2 class="section-title" style="margin-bottom:8px;">B — Expedition Cultist Picker</h2>
+  <p class="section-body">Three discrete stone-button options (1 / 2 / 3 cultists). Not a slider — discrete buttons match the design's deliberate, weighty tone. Selected state glows with Gnosis amber. Timer preview updates instantly on selection.</p>
+
+  <div class="component-card" style="max-width:480px; margin-bottom:32px;">
+    <div class="component-card-label">Expedition — Planet A</div>
+    <div class="component-card-body">
+      <p style="font-family:var(--font-body);font-style:italic;font-size:0.85rem;color:var(--text-dim);margin-bottom:16px;">Choose how many cultists to commit. More cultists return faster. Devotion risk is the same regardless of count.</p>
+
+      <div class="cultist-picker">
+        <button class="cultist-btn">
+          <div class="cultist-btn-num">1</div>
+          <div class="cultist-btn-label">20 min</div>
+        </button>
+        <button class="cultist-btn selected">
+          <div class="cultist-btn-num">2</div>
+          <div class="cultist-btn-label">15 min</div>
+        </button>
+        <button class="cultist-btn">
+          <div class="cultist-btn-num">3</div>
+          <div class="cultist-btn-label">12 min</div>
+        </button>
+        <div class="expedition-info">
+          <div class="expedition-timer">15:00</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">2 cultists via priority</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);">No Voltis cost yet</div>
+        </div>
+      </div>
+
+      <button style="width:100%;padding:10px 16px;background:var(--bg-elevated);border:1px solid var(--border-bright);border-radius:2px;color:var(--text-primary);font-family:var(--font-heading);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;margin-top:8px;">
+        Send Expedition
+      </button>
+    </div>
+  </div>
+
+  <!-- 5c. CHOICE EVENT -->
+  <h2 class="section-title" style="margin-bottom:8px;">C — Choice Event Presentation</h2>
+  <p class="section-body">
+    Appears inline in the center column — not a modal overlay. The game world remains visible behind it. A horizontal banner slides in from the top of the center column with a brief animation. The player cannot send new expeditions while a Choice is pending but can still see all other systems.
+  </p>
+  <div class="spec-note">
+    Decision: Inline, not modal. The design principle "no popups" holds here. The Choice is part of the game world — it appears in the place the player normally monitors expeditions. Blocking the whole screen would feel punishing; inline keeps it contextual.
+  </div>
+
+  <div class="choice-event-demo" style="max-width:560px; margin-bottom:32px;">
+    <div class="choice-backdrop">
+      <div style="font-family:var(--font-heading);font-size:0.6rem;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:4px;">Expedition returned — Planet A</div>
+    </div>
+    <div class="choice-panel">
+      <p class="choice-text">"One cultist pocketed a shard of something not-quite-stone. It hums faintly against their ribs."</p>
+      <div class="choice-options">
+        <div class="choice-option">
+          <div>
+            <div class="choice-option-text">Punish them. Make an example.</div>
+            <div class="choice-option-cost">Lose 1 Discipline charge · Devotion −5%</div>
+          </div>
+        </div>
+        <div class="choice-option">
+          <div>
+            <div class="choice-option-text">Let them keep it. The cult is richer for curiosity.</div>
+            <div class="choice-option-cost">Gain +35 Gnosis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="choice-event-demo" style="max-width:560px; margin-bottom:32px;">
+    <div class="choice-backdrop">
+      <div style="font-family:var(--font-heading);font-size:0.6rem;letter-spacing:0.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:4px;">Rare choice — The Void Speaks</div>
+    </div>
+    <div class="choice-panel">
+      <p class="choice-text">"Your cultists stumbled into a ritual already in progress. The air smells of something older than language."</p>
+      <div class="choice-options">
+        <div class="choice-option">
+          <div>
+            <div class="choice-option-text">Disrupt it. Scatter the rite and take what falls.</div>
+            <div class="choice-option-cost">+180 Gnosis · next expedition timer ×2</div>
+          </div>
+        </div>
+        <div class="choice-option">
+          <div>
+            <div class="choice-option-text">Withdraw silently. There are things best left undisturbed.</div>
+            <div class="choice-option-cost">Safe return · no loot</div>
+          </div>
+        </div>
+        <div class="choice-option disabled">
+          <div>
+            <div class="choice-option-text">Send one cultist to join them. Permanently.</div>
+            <div class="choice-option-locked">Your cult cannot spare anyone</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5d. REHEARSAL SCREEN -->
+  <h2 class="section-title" style="margin-bottom:8px;">D — Rehearsal Screen</h2>
+  <p class="section-body">
+    The center column transforms entirely when the player initiates Rehearsal. The expedition UI slides away; the Rehearsal screen fades in. It occupies the same space — the left column (gateway, systems) and right column (ritual circle) remain visible, showing what persists. The player confirms, the screen fades to black, the new run begins.
+  </p>
+  <div class="spec-note">
+    Decision: Center column takeover, not a fullscreen modal. Keeping the ritual circle and artifact slots visible during Rehearsal reinforces what's being kept. The player can see their trophies while they commit to the reset.
+  </div>
+
+  <div class="rehearsal-demo" style="margin-bottom:32px;">
+    <div class="rehearsal-header">
+      <div class="rehearsal-title">The Rehearsal</div>
+      <div class="rehearsal-subtitle">The cult remembers. The ritual begins again.</div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:var(--font-heading);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Dark Boons Earned</div>
+      <div class="boon-row">
+        <div class="boon-pip earned"></div>
+        <div class="boon-pip earned"></div>
+        <div class="boon-pip"></div>
+        <div class="boon-pip"></div>
+        <div class="boon-pip"></div>
+        <span class="boon-label">2 of 2 available to spend</span>
+      </div>
+    </div>
+
+    <div class="rehearsal-columns">
+      <div>
+        <div class="rehearsal-col-header persists">✦ Carries Forward</div>
+        <div class="rehearsal-item persists">Completed artifacts (1 of 6)</div>
+        <div class="rehearsal-item persists">2 Dark Boons earned</div>
+        <div class="rehearsal-item persists">+15% production — permanently</div>
+        <div class="rehearsal-item persists">Phase 1 research auto-completes</div>
+        <div class="rehearsal-item persists">Construct costs −40%</div>
+        <div class="rehearsal-item persists">Planet A location memory</div>
+      </div>
+      <div>
+        <div class="rehearsal-col-header resets">◇ Lost to the Void</div>
+        <div class="rehearsal-item resets">All resources</div>
+        <div class="rehearsal-item resets">All constructs</div>
+        <div class="rehearsal-item resets">Gateway construction</div>
+        <div class="rehearsal-item resets">Incomplete artifacts</div>
+        <div class="rehearsal-item resets">Phase 2 research branch</div>
+        <div class="rehearsal-item resets">Cultists (pool rebuilds)</div>
+      </div>
+    </div>
+
+    <button class="rehearsal-commit-btn">
+      Commit to the Rehearsal
+    </button>
+  </div>
+
+  <!-- 5e. DEVOTION GAUGE (GATEWAY PANEL) -->
+  <h2 class="section-title" style="margin-bottom:8px;">E — Gateway Panel & Devotion Gauge</h2>
+  <p class="section-body">Devotion is shown as a horizontal fill bar within the gateway card — not a separate widget. The fill bar decays visibly in real-time. Colour transitions through green → amber → red. The dot indicator in the card header gives at-a-glance status from anywhere on screen.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;">
+
+    <div class="gateway-panel">
+      <div class="gateway-header">
+        <div class="gateway-title">Planet A Gateway</div>
+        <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--text-dim);margin-right:4px;">2 cultists</div>
+        <div class="devotion-indicator"></div>
+      </div>
+      <div class="gateway-body">
+        <div class="devotion-section">
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">
+            <span>Devotion</span><span style="color:var(--state-green);">78%</span>
+          </div>
+          <div class="devotion-track">
+            <div class="devotion-fill-bar" style="width:78%;"></div>
+          </div>
+          <div style="font-family:var(--font-body);font-style:italic;font-size:0.75rem;color:var(--text-dim);margin-top:4px;">~60 min until discipline needed</div>
+        </div>
+        <div class="cultist-slot-row">
+          <div class="cultist-slot occupied">✦</div>
+          <div class="cultist-slot occupied">✦</div>
+          <div class="cultist-slot">—</div>
+        </div>
+        <div class="gateway-actions">
+          <button class="gateway-action-btn channel">Channel<br><span style="font-size:0.6rem;opacity:0.6;">−15 Anima · 60s CD</span></button>
+          <button class="gateway-action-btn discipline">Discipline<br><span style="font-size:0.6rem;opacity:0.6;">→ 100% · 3min CD</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gateway-panel">
+      <div class="gateway-header">
+        <div class="gateway-title">Planet A Gateway</div>
+        <div style="font-family:var(--font-heading);font-size:0.6rem;color:var(--text-dim);margin-right:4px;">1 cultist</div>
+        <div class="devotion-indicator danger"></div>
+      </div>
+      <div class="gateway-body">
+        <div class="devotion-section">
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">
+            <span>Devotion</span><span style="color:var(--anima-bright);">22%</span>
+          </div>
+          <div class="devotion-track">
+            <div class="devotion-fill-bar" style="width:22%;background:linear-gradient(90deg,#7A1010,#A01515);"></div>
+          </div>
+          <div style="font-family:var(--font-body);font-style:italic;font-size:0.75rem;color:var(--anima-text);margin-top:4px;">Collapse imminent — discipline now</div>
+        </div>
+        <div class="cultist-slot-row">
+          <div class="cultist-slot occupied" style="border-color:var(--anima-mid);">✦</div>
+          <div class="cultist-slot">—</div>
+          <div class="cultist-slot">—</div>
+        </div>
+        <div class="gateway-actions">
+          <button class="gateway-action-btn channel" style="opacity:0.4;cursor:not-allowed;">Channel</button>
+          <button class="gateway-action-btn discipline" style="border-color:var(--anima-mid);color:var(--anima-glow);box-shadow:0 0 10px rgba(200,60,40,0.2);">Discipline !</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       6. ANIMATIONS
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">06 — Animation Specifications</p>
+
+  <div class="anim-demos">
+
+    <div class="anim-demo-card">
+      <div class="anim-demo-label">Conjure fill + Precise Rite pulse</div>
+      <button class="conjure-btn-demo" style="position:relative;overflow:hidden;text-align:left;">
+        <div class="conjure-fill"></div>
+        <div class="precise-pulse"></div>
+        <span style="position:relative;z-index:1;font-size:0.75rem;letter-spacing:0.12em;">Conjure ✦ 8s</span>
+      </button>
+      <div style="font-family:var(--font-body);font-style:italic;font-size:0.75rem;color:var(--text-dim);text-align:center;">Glow fires at 100% fill.<br>Click within 1.5s → +3 Anima</div>
+    </div>
+
+    <div class="anim-demo-card">
+      <div class="anim-demo-label">Harmony glow (pulse)</div>
+      <svg class="harmony-glow-demo" viewBox="0 0 80 72">
+        <polygon points="40,4 76,68 4,68" fill="#17120D" stroke="#3D6B4F" stroke-width="1.5"/>
+        <polygon points="40,36 4,68 40,68" fill="#3D6B4F" opacity="0.75"/>
+        <polygon points="40,4 40,36 24,52" fill="#3D6B4F" opacity="0.65"/>
+        <polygon points="40,36 76,68 40,68" fill="#3D6B4F" opacity="0.65"/>
+        <circle cx="40" cy="36" r="3.5" fill="#4A8B60"/>
+      </svg>
+      <div style="font-family:var(--font-body);font-style:italic;font-size:0.75rem;color:var(--text-dim);text-align:center;">3s pulse cycle.<br>Stops when Harmony breaks.</div>
+    </div>
+
+    <div class="anim-demo-card">
+      <div class="anim-demo-label">Milestone arrival flash</div>
+      <div class="milestone-flash-demo">The Gateway Opens</div>
+      <div style="font-family:var(--font-body);font-style:italic;font-size:0.75rem;color:var(--text-dim);text-align:center;">Fade up from bottom, 400ms.<br>Glow fades over 2s.</div>
+    </div>
+
+    <div class="anim-demo-card">
+      <div class="anim-demo-label">Devotion decay (real-time)</div>
+      <div class="devotion-decay-demo">
+        <div class="devotion-decay-fill"></div>
+      </div>
+      <div style="font-family:var(--font-body);font-style:italic;font-size:0.75rem;color:var(--text-dim);text-align:center;margin-top:8px;">Colour transitions green<br>→ amber → red as it drains.</div>
+    </div>
+
+  </div>
+
+  <table class="anim-spec-table">
+    <thead>
+      <tr><th>Trigger</th><th>Animation</th><th>Duration</th><th>Implementation</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="anim-trigger">Conjure fill reaches 100%</td>
+        <td class="anim-desc">Button outer glow pulses amber — signals Precise Rite window open. Glow fades after 1.5s if not clicked.</td>
+        <td class="anim-dur">1.5s window, 300ms fade out</td>
+        <td class="anim-impl">CSS box-shadow transition on <code>.conjure-btn.ready</code> class</td>
+      </tr>
+      <tr>
+        <td class="anim-trigger">Precise Rite success</td>
+        <td class="anim-desc">Brief warm flash on button. +3 floats up from the button in Anima colour and fades.</td>
+        <td class="anim-dur">400ms flash, 800ms float</td>
+        <td class="anim-impl">Transient <code>&lt;span&gt;</code> injected with CSS keyframe <code>float-up</code></td>
+      </tr>
+      <tr>
+        <td class="anim-trigger">Milestone reached</td>
+        <td class="anim-desc">Milestone name fades up from below in the activity log. System card for the new unlock slides in from left.</td>
+        <td class="anim-dur">400ms slide-in + 200ms fade</td>
+        <td class="anim-impl">CSS <code>@keyframes slide-from-left</code> on card mount. React Framer Motion <code>AnimatePresence</code>.</td>
+      </tr>
+      <tr>
+        <td class="anim-trigger">Harmony bonus activates</td>
+        <td class="anim-desc">Trifecta triangle outer edge glows green. Badge "+20%" fades in beside triangle in header.</td>
+        <td class="anim-dur">600ms glow build, remains until broken</td>
+        <td class="anim-impl">SVG <code>filter: drop-shadow</code> transition. Badge mounts with <code>AnimatePresence</code>.</td>
+      </tr>
+      <tr>
+        <td class="anim-trigger">Devotion below 30% (return from offline)</td>
+        <td class="anim-desc">Devotion indicator dot pulses red. Gateway card border dims to danger colour.</td>
+        <td class="anim-dur">Continuous 2s pulse while below 30%</td>
+        <td class="anim-impl">CSS <code>animation: pulse 2s ease-in-out infinite</code> on danger class.</td>
+      </tr>
+      <tr>
+        <td class="anim-trigger">Artifact slot completes</td>
+        <td class="anim-desc">Slot flashes bright, scales up 1.1× briefly, then settles. Ritual circle segment seals with a ripple.</td>
+        <td class="anim-dur">800ms total sequence</td>
+        <td class="anim-impl">Framer Motion <code>scale</code> spring. SVG path stroke-dashoffset animation for seal ripple.</td>
+      </tr>
+      <tr>
+        <td class="anim-trigger">Choice event arrives</td>
+        <td class="anim-desc">Choice panel slides down from top of center column. Backdrop dims slightly behind it.</td>
+        <td class="anim-dur">300ms ease-out slide</td>
+        <td class="anim-impl">Framer Motion <code>y: -20 → 0</code> + <code>opacity: 0 → 1</code>.</td>
+      </tr>
+      <tr>
+        <td class="anim-trigger">Rehearsal commit</td>
+        <td class="anim-desc">Screen fades to black over 1.5s. Silence. New run fades in from black over 1s. "The cult remembers" summary appears first.</td>
+        <td class="anim-dur">3.5s total transition</td>
+        <td class="anim-impl">Full-screen overlay div. Opacity keyframe sequence. New state loaded during fade-black phase.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       7. PROGRESSIVE DISCLOSURE MAP
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">07 — Progressive Disclosure Map</p>
+  <p class="section-body">Every UI element that appears mid-run. Nothing shown before its milestone.</p>
+
+  <table class="spec-table">
+    <thead><tr><th>Milestone</th><th>UI element that appears</th><th>Location</th><th>First-time tooltip</th></tr></thead>
+    <tbody>
+      <tr><td>M1 — Start</td><td>Conjure action card; resource bar (Anima only); ritual circle (empty); cultist count</td><td>Left col; Header; Right col</td><td>"Your cult begins. Conjure Anima to build toward the Summoning."</td></tr>
+      <tr><td>M2 — ~0:10</td><td>Build/Constructs panel; Altar T1 upgrade highlighted</td><td>Left col</td><td>"The stone remembers how to be shaped. Build to strengthen the ritual."</td></tr>
+      <tr><td>M3 — ~0:25</td><td>Sacrifice button in cultist panel; Cindermark artifact slot activates (right col); Ossuary construct available</td><td>Left col; Right col</td><td>"A willing sacrifice feeds the ritual permanently."</td></tr>
+      <tr><td>M4 — ~0:45</td><td>Gateway A card; expedition launcher (center col); Gnosis added to header; devotion indicator on gateway card; Warding Stones construct</td><td>Header; Left col; Center col</td><td>"The gateway breathes. Send your cult beyond the veil."</td></tr>
+      <tr><td>M5 — ~1:15</td><td>Research panel (left col); Gnosis resource bar fills in; Scrying Pool construct; gateway capacity upgrade button (gateway panel)</td><td>Left col; Header</td><td>"Forbidden knowledge accumulates. Spend it wisely."</td></tr>
+      <tr><td>M6 — ~2:00</td><td>Phase 2 branch selector appears in research panel; Whisperlock artifact slot activates; Binding Circle construct</td><td>Left col; Right col</td><td>"The path branches. Choose your cult's character."</td></tr>
+      <tr><td>M7 — ~3:00</td><td>Discipline button highlighted with warning state if unused; devotion bar turns amber</td><td>Left col (gateway)</td><td>"The void presses harder. Devotion must be maintained."</td></tr>
+      <tr><td>M8 — ~4:00</td><td>Rehearsal option appears (center col footer); Hungering Lens expedition available; Altar T2 construct</td><td>Center col; Left col</td><td>"The cult can pause the ritual and remember. Or press on."</td></tr>
+      <tr><td>M9 — ~5:00</td><td>Gateway B card; Voltis added to header; Trifecta triangle fills third segment; Unbinding artifact slot activates</td><td>Header; Left col; Right col</td><td>"A second gateway. Voltis flows. The triangle is complete."</td></tr>
+      <tr><td>M11 — ~7:30</td><td>Voicecaller expedition available in expedition panel</td><td>Center col</td><td>—</td></tr>
+      <tr><td>M14 — Summoning</td><td>Center column becomes the Summoning ritual display; resources visibly draining; 5-minute timer</td><td>Center col</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="spec-divider">
+
+  <!-- ═══════════════════════════════════════════════════════
+       8. IMPLEMENTATION NOTES
+  ═══════════════════════════════════════════════════════ -->
+  <p class="section-heading">08 — Implementation Notes for Developers</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+    <div>
+      <h2 class="section-title" style="font-size:1rem;margin-bottom:8px;">Stack decisions</h2>
+      <p class="section-body" style="font-size:0.875rem;">React 19 + Zustand 5 + Tailwind CSS v4. Use CSS custom properties (this file's token system) as the design system foundation — Tailwind for layout utilities, custom props for colours and fonts.</p>
+      <p class="section-body" style="font-size:0.875rem;">Framer Motion for milestone card entrances and the Rehearsal fade transition. CSS-only animations everywhere else (fill bars, pulse effects, decay bars).</p>
+    </div>
+    <div>
+      <h2 class="section-title" style="font-size:1rem;margin-bottom:8px;">Responsive scope</h2>
+      <p class="section-body" style="font-size:0.875rem;">Desktop-first. Minimum supported width: 900px. Below 900px, the layout collapses to single column with bottom tab bar (Left / Center / Right). The game is not intended for mobile portrait — tablets in landscape are the lower bound.</p>
+      <div class="spec-note" style="font-size:0.8rem;">Mobile portrait is explicitly out of scope for Layer 1. Do not optimise for it.</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;">
+    <div style="background:var(--bg-surface);border:1px solid var(--border-dim);border-radius:4px;padding:16px;">
+      <div style="font-family:var(--font-heading);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gnosis-bright);margin-bottom:8px;">Trifecta Triangle</div>
+      <p style="font-family:var(--font-body);font-size:0.8rem;color:var(--text-secondary);line-height:1.5;">Implement as inline SVG. Three <code>&lt;polygon&gt;</code> elements driven by resource state. <code>fill</code> is a CSS variable that transitions on threshold crossing. No canvas required.</p>
+    </div>
+    <div style="background:var(--bg-surface);border:1px solid var(--border-dim);border-radius:4px;padding:16px;">
+      <div style="font-family:var(--font-heading);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gnosis-bright);margin-bottom:8px;">Ritual Circle</div>
+      <p style="font-family:var(--font-body);font-size:0.8rem;color:var(--text-secondary);line-height:1.5;">SVG with 6 path segments. Crafted artifacts: <code>stroke-dashoffset</code> animates from full to 0 as resource % increases. Discovered: segment opacity transitions when expedition is active.</p>
+    </div>
+    <div style="background:var(--bg-surface);border:1px solid var(--border-dim);border-radius:4px;padding:16px;">
+      <div style="font-family:var(--font-heading);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gnosis-bright);margin-bottom:8px;">Fonts</div>
+      <p style="font-family:var(--font-body);font-size:0.8rem;color:var(--text-secondary);line-height:1.5;">Load via Google Fonts. Subset to Latin. Preconnect link in <code>&lt;head&gt;</code>. Fallback chain: <code>'Cinzel', serif</code> — system serif is acceptable during font load.</p>
+    </div>
+  </div>
+
+  <hr class="spec-divider">
+
+  <p style="font-family:var(--font-body);font-style:italic;font-size:0.875rem;color:var(--text-dim);text-align:center;padding-bottom:40px;">
+    Cultist Idle UI/UX Specification — v0.18 · All CSS tokens in this document are the canonical design system.
+    Copy <code>:root</code> block into <code>src/styles/tokens.css</code> as the implementation source of truth.
+  </p>
+
+</div>
+
+</body>
+</html>
