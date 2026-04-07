@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.11 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.12 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -191,7 +191,7 @@ The player should discipline when the gauge hits ~70% — roughly every 60 min a
 - Devotion collapse (cultist loss) requires sustained neglect, not a brief lapse
 - Trifecta imbalance and devotion decay must not both demand attention simultaneously unless player has neglected both for extended time
 - The Discipline action is infrequent and atmospheric — a ritual, not a chore
-- **Offline devotion floor:** During offline time, devotion cannot decay below 15%. This prevents permanent cultist loss while the player cannot intervene. On return, devotion at 15% is a clear "fix this" signal without permanent punishment. Online play has no floor — sustained active neglect still risks collapse.
+- **Offline devotion floor:** During offline time, devotion cannot decay below 15% per gateway. This prevents permanent cultist loss while the player cannot intervene. On return, a gateway at 15% devotion is a clear "fix this" signal without permanent punishment. Online: the devotion meter has no floor — it can reach 0% and trigger collapse. Collapse is still subject to the cultist count floor (§6.4): at 3 cultists, the cultist is stunned, not lost. These are two different floors: the 15% offline floor protects the devotion *meter*; the floor-of-3 protects the cultist *count*.
 
 **Prestige interaction:** Each run unlocks permanent Devotion Upgrades — higher starting devotion, slower decay. By run 3–4 it's background noise. Never fully disappears in Layer 1.
 
@@ -215,7 +215,7 @@ Spend Gnosis to unlock a slow passive trickle from the gateway. Before Planet B:
 Cultists maintain the channel. Their devotion level directly affects trickle rate. Neglected gateway = devotion decay = slower trickle. Discipline restores it. This is why active engagement never fully disappears — it's tending, not clicking.
 
 ### 8.4 Gateway progression
-- **Planet A gateway** — becomes buildable after M3 (once sacrifice automation begins and Anima income is stable). Costs **250 Anima** to construct. M4 fires when construction completes.
+- **Planet A gateway** — becomes buildable after M3 (once sacrifice automation begins and Anima income is stable). Costs **250 Anima** to construct. M4 fires when construction completes. Purchasing "The Opened Way" (Phase 1 node 2) reduces all future gateway constructions to 200 Anima — non-retroactive (gateways already built are unaffected). In run 2+, Phase 1 auto-completes before the player can build, so the discount applies by default.
 - **Planet B gateway** — discovered via Gnosis threshold (milestone 9). Produces Voltis. Enables automation.
 - Further gateways possible (Layer 1 scope: 2 gateways only).
 
@@ -439,7 +439,7 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 
 **Discovered artifacts:** Send cultists on an expedition. They return with the artifact, a Choice event, or partial loot. Expedition for a discovered artifact has higher stakes than a standard resource run. Higher risk, but the reward justifies the gamble.
 
-**Hungering Lens — dormancy note:** This artifact is found via Planet A expedition (available M8) but its bonuses require Voltis, which doesn't exist until M9. On completion, the artifact screen shows the reward with a marker: *"Awaiting activation — requires Planet B gateway."* Bonuses activate automatically when Planet B is first opened at M9. Counts toward M11 (first artifact completed) immediately on expedition return, regardless of activation state. When carried into a Rehearsal run, the "awaiting activation" state lasts ~1 hour until Planet B reopens — this is intentional.
+**Hungering Lens — dormancy note:** This artifact is found via Planet A expedition (available M8) but its bonuses require Voltis, which doesn't exist until M9. On completion, the artifact screen shows the reward with a marker: *"Awaiting activation — requires Planet B gateway."* Bonuses activate automatically when Planet B is first opened at M9. On expedition return, the ritual circle segment fills immediately — the Lens is "placed" for all purposes, including the M14 six-artifact check. The segment displays the "awaiting activation" marker until M9. Counts toward M11 (first artifact completed) immediately on expedition return, regardless of activation state. When carried into a Rehearsal run, the "awaiting activation" state lasts ~1 hour until Planet B reopens — this is intentional.
 
 **Artifact rewards persist through Rehearsal.** Completed artifacts (and their bonuses) survive prestige. This means each run accumulates permanent power — artifacts are the tangible trophies that make Rehearsal feel worthwhile.
 
@@ -498,7 +498,7 @@ Each is a moment — flavour, visual beat, arrival feeling. Early milestones are
 | 3 | **The Sacrifice** | First sacrifice performed; passive Anima production begins (+6/min base); Cindermark craftable; Ossuary buildable; gateway becomes buildable (250 Anima) | ~0:25 |
 | 4 | **The Gateway Opens** | Gateway construction complete; Planet A accessible; expedition system unlocks; first Trifecta link (Gnosis costs Anima); devotion decay begins (slow); Warding Stones buildable | ~0:45 |
 | 5 | **First Gnosis** | Research system unlocks; Scrying Pool buildable | ~1:15 |
-| 6 | **The First Research** | Research Phase 2 branches; Whisperlock craftable; Binding Circle buildable | ~2:00 |
+| 6 | **The Branching Path** | Phase 1 complete; Phase 2 branches unlock; Whisperlock craftable; Binding Circle buildable | ~2:00 |
 | 7 | **Devotion Crisis** | Devotion decay accelerates to normal rate; Discipline action introduced (if not used yet) | ~3:00 |
 | 8 | **The Idle Moment** | Anima + Gnosis self-sustain; Hungering Lens expedition available; second Trifecta link; Rehearsal available; Altar Tier 2 buildable | ~4:00 |
 | 9 | **The Discovery** | Planet B found; Voltis production begins; third + fourth Trifecta links; Harmony bonus available; Unbinding craftable | ~5:00 |
@@ -531,7 +531,7 @@ Every milestone needs an explicit programmatic trigger. Time estimates are appro
 
 > **Milestone 2 note:** The Altar exists from game start as a passive structure (the site of the First Conjuring). At M2, the Build System becomes interactive — the Altar upgrade is the tutorial action that teaches the construct panel. M2 fires on a small Anima threshold (~50 Anima), not a player action.
 
-> **Milestone 5 note:** Previously the milestone table listed "Voidwreath expedition available" at M5. This was removed — expeditions unlock at M4 when Planet A gateway opens. Any Planet A expedition can yield Voidwreath once the player is in the right progression window; it is not a separately unlockable expedition type.
+> **Milestone 5 note:** Voidwreath enters the Planet A loot pool at M5 (when the research system unlocks). This is a pool-level gate — there is no separate "Voidwreath expedition" type to unlock. Any Planet A expedition can return Voidwreath once M5 is reached. Before M5, Planet A expeditions yield resource caches only.
 
 > **Milestone 7 note:** Devotion decay has been happening slowly since M4 — the Crisis is not a new mechanic appearing but an existing one accelerating. The player has seen the gauge moving for ~2 hours. M7 makes it urgent.
 
