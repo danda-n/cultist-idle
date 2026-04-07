@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  /* Design tokens from ui-design.html */
+  --bg-base:      #0A0806;
+  --bg-surface:   #110E0A;
+  --bg-elevated:  #1A1410;
+  --bg-panel:     #1F1812;
+
+  --text-primary:   #E8D9C4;
+  --text-secondary: #B8A48A;
+  --text-muted:     #7A6B58;
+  --text-ghost:     #4A3D30;
+
+  --accent-primary: #8B1A1A;
+  --accent-hover:   #A82020;
+  --accent-dim:     #5C1212;
+
+  --gold-primary: #C8943A;
+  --gold-dim:     #8B6228;
+
+  /* State color tokens — WCAG AA compliant text colors */
+  --state-green-text:  #72C492;
+  --state-warn-text:   #D4A050;
+  --state-danger-text: #E07070;
+
+  /* Indicator fills/borders only (not text) */
+  --indicator-green:  #3D6B4F;
+  --indicator-warn:   #8B5E0A;
+  --indicator-danger: #7A1010;
+
+  --border-subtle: #2A2018;
+  --border-dim:    #3A2E20;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'EB Garamond', Georgia, serif;
+  min-width: 900px;
+}
