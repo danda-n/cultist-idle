@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.10 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.11 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -338,6 +338,20 @@ Each additional cultist reduces timer by ~25%. With 2 parallel slots and 2-culti
   - Running 2 parallel expeditions simultaneously doubles the drain — creates real tension against automation Voltis costs
 - Runs fully in background — no required interaction while active
 
+**Expedition destinations:**
+
+Planet A is a single destination with one loot pool. What the pool can yield is milestone-gated:
+
+| After | Planet A can yield |
+|---|---|
+| M4 | Resource caches only |
+| M5 | Resource caches + Voidwreath eligible |
+| M8 | Resource caches + Voidwreath + Hungering Lens eligible |
+
+Two simultaneous expeditions to Planet A roll independently — separate parties, separate loot. If both return eligible for the same artifact and the slot is already filled, the duplicate rolls a resource cache instead.
+
+After M9: player chooses destination per expedition — **Planet A** (Gnosis/resource focus) or **Planet B** (Voltis/rarer loot). Both slots can target different planets simultaneously.
+
 ### 11.2 Return Outcomes
 
 **Probability model:** The Choice rate is fixed at 40% regardless of devotion. Lost probability is devotion-gated — impossible above 50% devotion, scaling linearly to 30% at 0% devotion. Clean find takes the remainder.
@@ -415,7 +429,7 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 | 1 | **Cindermark** | Crafted | Anima-heavy | Passive Anima production +30%, cultist sacrifice yields doubled | Milestone 3 |
 | 2 | **Voidwreath** | Discovered | Planet A expedition | Gnosis channel efficiency +40%, unlocks a third expedition slot temporarily | Milestone 5 |
 | 3 | **Whisperlock** | Crafted | Gnosis + Anima | Research speed +50%, Phase 1 nodes auto-complete on Rehearsal | Milestone 6 |
-| 4 | **Hungering Lens** | Discovered | Planet B expedition | Voltis soft cap doubled, automation costs -25% | Milestone 8 |
+| 4 | **Hungering Lens** | Discovered | Planet A expedition (M8) | Voltis soft cap doubled, automation costs -25% | Milestone 8 |
 | 5 | **Unbinding** | Crafted | All three trifecta resources | Harmony bonus doubled (e.g. +30-50%), Trifecta threshold lowered | Milestone 9 |
 | 6 | **Voicecaller** | Discovered | Full trifecta expedition at high threshold | All production rates +20%, Devotion decay halved permanently | Milestone 11 |
 
@@ -424,6 +438,8 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 **Cost progress bar:** All crafted artifacts display a progress bar showing current resource % toward completion cost (e.g., "12% of Anima required"). This sets expectations without editorializing — seeing progress motivates resource allocation without requiring explanation. Always visible on the artifact panel.
 
 **Discovered artifacts:** Send cultists on an expedition. They return with the artifact, a Choice event, or partial loot. Expedition for a discovered artifact has higher stakes than a standard resource run. Higher risk, but the reward justifies the gamble.
+
+**Hungering Lens — dormancy note:** This artifact is found via Planet A expedition (available M8) but its bonuses require Voltis, which doesn't exist until M9. On completion, the artifact screen shows the reward with a marker: *"Awaiting activation — requires Planet B gateway."* Bonuses activate automatically when Planet B is first opened at M9. Counts toward M11 (first artifact completed) immediately on expedition return, regardless of activation state. When carried into a Rehearsal run, the "awaiting activation" state lasts ~1 hour until Planet B reopens — this is intentional.
 
 **Artifact rewards persist through Rehearsal.** Completed artifacts (and their bonuses) survive prestige. This means each run accumulates permanent power — artifacts are the tangible trophies that make Rehearsal feel worthwhile.
 
@@ -490,7 +506,7 @@ Each is a moment — flavour, visual beat, arrival feeling. Early milestones are
 | 11 | **The First Artifact** | First artifact completed (any of the 6); ritual circle stirs; Voicecaller expedition available; Rehearsal available | ~7:30 |
 | 12 | **The Hunt** | All remaining artifact unlock conditions now reachable; final pursuit phase begins | ~8:30 |
 | 13 | **The Gathering** | 4+ artifacts completed; final push | ~9:30 |
-| 14 | **THE SUMMONING** | Layer 1 complete | ~10–12h |
+| 14 | **THE SUMMONING** | 6th artifact placed → 5-minute ritual phase begins → demon lord arrives | ~10–12h |
 
 ### 14.1 Milestone Trigger Conditions
 
@@ -520,6 +536,16 @@ Every milestone needs an explicit programmatic trigger. Time estimates are appro
 > **Milestone 7 note:** Devotion decay has been happening slowly since M4 — the Crisis is not a new mechanic appearing but an existing one accelerating. The player has seen the gauge moving for ~2 hours. M7 makes it urgent.
 
 > **Milestone 11 note:** This triggers on the *first completed artifact*, regardless of which one. While Cindermark is craftable from milestone 3, its resource cost is tuned so that completion realistically occurs around this timing window. If a player manages to complete one earlier through aggressive play, the milestone fires early — that's a reward, not a bug.
+
+> **Milestone 14 — The Summoning ritual:**
+> Placing the 6th artifact auto-triggers the ritual — no separate button. A 5-minute phase begins:
+> - All three resources drain visibly into the portal (the systems the player built are consuming themselves for the final act)
+> - Devotion must stay above 0% on active gateways. Gateway collapse slows the ritual by 50% until disciplined — cannot fail, only be delayed
+> - Active Harmony bonus reduces the timer to ~3 minutes
+> - M14 fires on ritual *completion*, not artifact placement
+> - Narrative moment on completion: demon lord arrives, Layer 1 complete
+>
+> The ritual cannot be cancelled or failed permanently. The final minutes should feel like the game cheering the player across the finish line.
 
 > **Milestone 12 note:** "All 6 artifacts visible" was previous language — corrected. The artifact screen shows silhouettes for all 6 slots from the start (§12). M12 fires when all 5 remaining artifacts become pursuable (their unlock milestone conditions are met), signalling to the player that nothing is gated anymore — only time and resources stand between them and the Summoning.
 
@@ -565,7 +591,7 @@ Player triggers Rehearsal at checkpoints (milestones 8, 10, or 11). Sacrifices p
 - Trifecta health gauge (three bars — red = needs attention)
 - Cultist count + assignment summary
 - Devotion status per active gateway (small colour indicators)
-- Summoning progress — ritual circle, always filling
+- Summoning progress — **ritual circle**: 6 segments, one per artifact. Each crafted artifact's segment fills continuously as resources accumulate toward its cost (mirrors the cost progress bar). Each discovered artifact's segment fills when its expedition is active, completing on return. The circle is always moving whenever any crafted artifact is being funded. No separate mechanic — it IS the artifact system visualised.
 - Artifact slots — X of 6 complete
 
 **Progressive disclosure:**
@@ -672,6 +698,10 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 | 6 | **Artifact flavour text** — one line per artifact for reveal moment | Low (content) | Open |
 | 7 | **Artifact reward balance** — reward values need tuning to feel gamechanging without breaking progression | Medium | Proposed — needs playtesting |
 | 8 | **Harmony bonus values** — base multiplier and Trifecta threshold need calibration | Medium | Proposed — needs playtesting |
+| ~~D1~~ | ~~The Summoning has no spec~~ | ~~High~~ | Resolved — 6th artifact auto-triggers 5-min ritual; devotion-slowed but cannot fail; Harmony shortens to ~3 min; spec in §14 M14 note |
+| ~~D2~~ | ~~Ritual circle fill undefined~~ | ~~High~~ | Resolved — 6 segments, one per artifact; crafted = fills with cost progress; discovered = fills on active expedition; spec in §16 |
+| ~~D3~~ | ~~Hungering Lens dormancy~~ | ~~Medium~~ | Resolved — intentional; "awaiting Planet B" shown in UI; activates at M9; counts toward M11 immediately; spec in §12 |
+| ~~D6~~ | ~~Planet A expedition destinations~~ | ~~Medium~~ | Resolved — single destination, milestone-gated artifact eligibility; two simultaneous expeditions fine; Planet B available from M9; spec in §11.1 |
 | ~~G1~~ | ~~Devotion normal rate missing~~ | ~~High~~ | Resolved — 0.5%/min after M7; decay table in §7 |
 | ~~G2~~ | ~~Expedition outcome probabilities undefined~~ | ~~High~~ | Resolved — lost% = max(0, (50−devotion)×0.6); Choice always 40%; table in §11.2 |
 | ~~G3~~ | ~~Expedition Voltis sustain cost missing~~ | ~~High~~ | Resolved — Planet A: 5 Voltis/min, Planet B: 8 Voltis/min; spec in §11.1 |
