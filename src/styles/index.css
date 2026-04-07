@@ -51,3 +51,229 @@ body {
   font-family: 'EB Garamond', Georgia, serif;
   min-width: 900px;
 }
+
+/* Typography helpers */
+.font-display {
+  font-family: 'Cinzel Decorative', serif;
+}
+.font-heading {
+  font-family: 'Cinzel', serif;
+}
+.font-body {
+  font-family: 'EB Garamond', Georgia, serif;
+}
+.font-number {
+  font-family: 'Courier Prime', monospace;
+}
+
+/* Game layout */
+.game-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 260px;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-md);
+  min-height: 100vh;
+  padding: var(--space-md);
+}
+
+.game-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-dim);
+  padding-bottom: var(--space-sm);
+}
+
+.game-col-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.game-col-center {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.game-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Panel */
+.panel {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  padding: var(--space-md);
+}
+
+.panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+/* Resource bar */
+.resource-bar-track {
+  position: relative;
+  height: 8px;
+  background-color: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: visible;
+  margin-top: var(--space-xs);
+}
+
+.resource-bar-fill {
+  height: 100%;
+  background-color: var(--gold-primary);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.resource-bar-softcap-marker {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 16px;
+  background-color: var(--state-warn-text);
+  border-radius: 1px;
+  opacity: 0.8;
+}
+
+/* Conjure panel */
+.conjure-btn {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--accent-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-dim);
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+.conjure-btn:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.conjure-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.conjure-btn-precise {
+  animation: conjure-precise-pulse 0.8s ease-in-out infinite alternate;
+  box-shadow: 0 0 12px 2px rgba(200, 148, 58, 0.4);
+}
+
+@keyframes conjure-precise-pulse {
+  from {
+    box-shadow: 0 0 8px 2px rgba(200, 148, 58, 0.3);
+    border-color: var(--gold-dim);
+  }
+  to {
+    box-shadow: 0 0 18px 4px rgba(200, 148, 58, 0.6);
+    border-color: var(--gold-primary);
+  }
+}
+
+.conjure-progress-track {
+  height: 10px;
+  background-color: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: var(--space-xs);
+}
+
+.conjure-progress-fill {
+  height: 100%;
+  background-color: var(--gold-primary);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+/* Narrative messages */
+.narrative-message {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  border-left: 2px solid var(--accent-dim);
+  padding-left: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+/* Cultist controls */
+.assign-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.btn-small {
+  padding: 2px 10px;
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-dim);
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.btn-small:hover:not(:disabled) {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-dim);
+}
+
+.btn-small:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Construct cards */
+.construct-card {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.construct-card-built {
+  border-color: var(--indicator-green);
+}
+
+.construct-cost {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.construct-cost-affordable {
+  color: var(--state-green-text);
+}
+
+.construct-cost-unaffordable {
+  color: var(--state-danger-text);
+}
+
+/* Utility */
+.text-muted { color: var(--text-muted); }
+.text-secondary { color: var(--text-secondary); }
+.text-warn { color: var(--state-warn-text); }
+.text-green { color: var(--state-green-text); }
+.text-gold { color: var(--gold-primary); }
+.text-number { font-family: 'Courier Prime', monospace; }

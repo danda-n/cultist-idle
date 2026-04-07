@@ -1,27 +1,28 @@
 import type { GameState, SystemTick } from '../types'
+import { resourceSystem } from '../systems/resourceSystem'
+import { cultistSystem } from '../systems/cultistSystem'
+import { milestoneSystem } from '../systems/milestoneSystem'
 
 /**
  * Registered system ticks, executed in dependency order on every frame.
- * Systems are added here as they are implemented in Phase 1+.
  */
 const systems: SystemTick[] = [
-  // Phase 1: resourceSystem, cultistSystem, sacrificeSystem
-  // Phase 2: gatewaySystem, devotionSystem, researchSystem
-  // Phase 3: expeditionSystem, artifactSystem, trifectaSystem
-  // Phase 4: milestoneSystem, prestigeSystem
+  resourceSystem,
+  cultistSystem,
+  milestoneSystem,
 ]
 
 /**
- * Pure tick function: given current state and elapsed ms, returns next state.
+ * Pure tick function: given current state, elapsed ms and current timestamp, returns next state.
  * Identical behaviour online and offline — no side effects.
  */
-export function tick(state: GameState, deltaMs: number): GameState {
+export function tick(state: GameState, deltaMs: number, now: number = Date.now()): GameState {
   if (deltaMs <= 0) return state
 
   let next = { ...state }
 
   for (const system of systems) {
-    const patch = system(next, deltaMs)
+    const patch = system(next, deltaMs, now)
     next = { ...next, ...patch }
   }
 
@@ -38,9 +39,11 @@ export function tick(state: GameState, deltaMs: number): GameState {
 export function offlineProcessor(state: GameState, deltaMs: number): GameState {
   const MAX_OFFLINE_MS = 8 * 60 * 60 * 1000 // cap at 8 hours
   const clampedDelta = Math.min(deltaMs, MAX_OFFLINE_MS)
+  // Offline now = last saved time + clamped delta
+  const offlineNow = state.meta.lastSaved + clampedDelta
 
   // Tick the world forward
-  let next = tick(state, clampedDelta)
+  let next = tick(state, clampedDelta, offlineNow)
 
   // Apply offline devotion floor (15%) to every gateway
   const gateways = { ...next.gateways }

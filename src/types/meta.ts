@@ -20,4 +20,6 @@ export interface MetaState {
   conjureActive: boolean
   /** Absolute timestamp when current conjure bar will complete; 0 = idle */
   conjureCompletesAt: number
+  /** Counter for generating deterministic cultist IDs */
+  nextCultistId: number
 }

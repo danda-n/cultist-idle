@@ -45,6 +45,7 @@ export function createInitialState(): GameState {
       lastConjureCompletedAt: 0,
       conjureActive: false,
       conjureCompletesAt: 0,
+      nextCultistId: 1,
     },
     constructs: {},
     trifecta: {

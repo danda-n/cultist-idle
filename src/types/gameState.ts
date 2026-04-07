@@ -31,4 +31,4 @@ export interface GameState {
  * Every system tick function receives current state + elapsed ms,
  * and returns the subset of state it modifies.
  */
-export type SystemTick = (state: GameState, deltaMs: number) => Partial<GameState>
+export type SystemTick = (state: GameState, deltaMs: number, now: number) => Partial<GameState>

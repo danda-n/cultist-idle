@@ -5,19 +5,19 @@ import { createInitialState } from './initialState'
 describe('tick', () => {
   it('returns state unchanged when deltaMs is 0', () => {
     const state = createInitialState()
-    expect(tick(state, 0)).toBe(state)
+    expect(tick(state, 0, Date.now())).toBe(state)
   })
 
   it('returns state unchanged when deltaMs is negative', () => {
     const state = createInitialState()
-    expect(tick(state, -100)).toBe(state)
+    expect(tick(state, -100, Date.now())).toBe(state)
   })
 
   it('returns a new state object when deltaMs > 0', () => {
     const state = createInitialState()
-    const next = tick(state, 1000)
-    // Currently no systems registered, so state content is identical
-    // but the contract of returning a (potentially new) state must hold
+    const now = Date.now()
+    const next = tick(state, 1000, now)
+    // Systems are registered; state content may change (cultist recruit timer, etc.)
     expect(next).toBeDefined()
   })
 })
