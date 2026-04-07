@@ -1,5 +1,7 @@
 # CULTIST IDLE — Concept Document
-> Version 0.18 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.19 | April 2026 | **Status: DESIGN COMPLETE — Layer 1** | All issues tracked in GitHub
+>
+> v0.19 change: Fixed §7 decay table — "Heretical Wards" renamed to "Dread Fortitude" (node was renamed in v0.18; table missed the update). No design changes.
 
 ---
 
@@ -192,7 +194,7 @@ Each gateway has a **Devotion meter** (0–100%) that slowly decays over time. D
 | M4–M7 (slow) | 0.15%/min | ~3.3h | ~11h |
 | M7+ (normal) | 0.5%/min | ~60 min | ~3.3h |
 | + Warding Stones (−20%) | 0.4%/min | ~75 min | ~4.2h |
-| + Heretical Wards (−15%) | 0.425%/min | ~71 min | ~3.9h |
+| + Dread Fortitude (−15%) | 0.425%/min | ~71 min | ~3.9h |
 | + Both combined | 0.34%/min | ~88 min | ~4.9h |
 
 The player should discipline when the gauge hits ~70% — roughly every 60 min at the base normal rate. All decay modifiers are tunable starting values.

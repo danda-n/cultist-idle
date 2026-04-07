@@ -277,7 +277,7 @@ Phase 1 nodes (in order, from `src/data/research.ts`):
 | Conjuring Rites | 30G | Altar T2 cooldown reduction |
 | The Opened Way | 40G | Gateway construction cost -20% (future runs only) |
 | Blood Compact | 50G | Automates conjuring (fires at 8 Anima, no Precise Rite) |
-| Dread Fortitude | 60G | Cultist devotion stun duration -50% |
+| Dread Fortitude | 60G | Devotion decay −15% on all gateways |
 
 **Gotcha:** "The Opened Way" -20% is non-retroactive. Apply to the gateway
 construction cost check, not to already-built gateways.

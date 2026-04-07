@@ -1,6 +1,7 @@
 # Issue Dependency Map
 
-> Last updated: April 2026 | Covers issues #1–#29. Closed (design resolved): #18, #19, #21, #22, #25, #26. Open: 23.
+> Last updated: April 2026 | **Status: CURRENT** | Covers issues #1–#29. Closed (design resolved): #18, #19, #21, #22, #25, #26. Open: 23.
+> Issues files: [v0.8-issues-resolved.md](v0.8-issues-resolved.md) · [v0.11-issues-resolved.md](v0.11-issues-resolved.md)
 
 ---
 
