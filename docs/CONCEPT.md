@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.12 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.13 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -75,6 +75,10 @@ Each resource works independently. Cross-dependencies create *costs* (Anima to c
 **Soft cap — Slow Overflow:**
 Above the resource cap, production slows dramatically but never fully stops. Creates a natural rhythm of spending to keep flowing. Never bricks a run. Overflow rate: ~10% of normal production above cap. Overnight idle accumulates meaningful progress without skipping 10 steps — soft cap ensures the player returns to a nudge forward, not a leap.
 
+**Soft cap values (tunable):** Anima 500, Gnosis 250, Voltis 300. Designed to be reachable in ~2–3h of active play per resource. All values live in `src/data/` and will be adjusted during playtesting.
+
+**Harmony bonus threshold (tunable):** Base threshold = 30% of each resource's soft cap (Anima 150, Gnosis 75, Voltis 90). All three resources must remain simultaneously above their threshold for 60+ seconds to trigger the Harmony bonus. Talent "Harmony bonus threshold lowered by 20%" reduces the multiplier to 24% of soft cap (Anima 120, Gnosis 60, Voltis 72) — a 20% relative reduction, making the bonus easier to maintain.
+
 **Trifecta UI:** Permanent three-bar or triangular gauge always on screen. Harmony bonus status shown prominently (active/inactive + current multiplier). When one resource falls behind, the gauge shows which one — one obvious action to restore the bonus. No math, no diagnosis puzzle.
 
 ### 5.1 Anima — The Conjuring Action
@@ -106,9 +110,8 @@ Anima is the foundation resource. Before automation, the player manually conjure
 - Cultists are a headcount, not named individuals. No deep management.
 
 ### 6.2 Growth
-- **Passive recruitment:** One new cultist joins every X minutes (slow background drip)
-- **Milestone bonuses:** 2–3 cultists join at key progression moments (Gateway opens, Trifecta achieved, etc.)
-- Recruitment rate can be improved via the research tree
+- **Passive recruitment:** One new cultist joins every **20 minutes** (tunable). Active from game start. Slow background drip — never the primary growth source.
+- **Milestone bonuses:** 2–3 cultists join at key progression moments (Gateway opens, Trifecta achieved, etc.). These are the interesting recruitment moments, not the passive rate.
 
 ### 6.3 Assignment — Priority-Based Auto-Distribution
 Cultists distribute themselves automatically based on **player-set priorities**. Player never manually moves cultists.
@@ -183,7 +186,7 @@ The player should discipline when the gauge hits ~70% — roughly every 60 min a
 - Resets devotion to 100%
 - **Base cooldown: 3 minutes per gateway.** In a 5-min session, always available at least once. With 4-6h decay rate, needed roughly every 60-90 minutes — infrequent by design.
 - Early game: per-gateway action
-- Mid-game research unlock (**Overseer's Rite**): single global action disciplines all gateways at once. **5 minute cooldown** (slightly longer than per-gateway to maintain strategic tension).
+- Mid-game research unlock (**Overseer's Rite**): single global action disciplines all gateways at once. **5 minute cooldown** (slightly longer than per-gateway to maintain strategic tension). Using the global action resets all per-gateway cooldowns simultaneously — one action replaces N. Per-gateway Discipline does not reset the global timer.
 - Talent modifier: "50% faster recharge" → per-gateway 1.5 min, global 2.5 min
 
 **Design guardrails:**
@@ -379,6 +382,8 @@ Cultist count does not affect outcome odds — speed only. Both planets use the 
 Choices are drawn from a weighted pool. Minor choices appear often, major occasionally, rare choices are memorable surprises. Players will not see the same choice repeatedly enough to anticipate it.
 
 **Floor interaction:** Choices that would cause cultist loss are greyed out (unselectable) when the cult is at the floor of 3, consistent with the sacrifice button behavior (§6.4). The choice is presented with the floor-breaking option visible but disabled, with a one-line explanation ("Your cult cannot spare anyone").
+
+**Draw weights (tunable):** Minor 60%, Major 30%, Rare 10%. Target frequency: ~1 rare choice per 10 expedition returns on average.
 
 **Minor choices (~12 in pool) — small tradeoffs, quick decisions:**
 - *"Your cultists found a shortcut. Rush back now (50% faster, lose 10% loot) or take the full route."*
