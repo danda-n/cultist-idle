@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.17 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.18 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -131,6 +131,7 @@ These break the pre-M3 window into 5 smaller moments rather than 2, giving the c
 ### 6.2 Growth
 - **Passive recruitment:** One new cultist joins every **20 minutes** (tunable). Active from game start. Slow background drip — never the primary growth source.
 - **Milestone bonuses:** 2–3 cultists join at key progression moments (Gateway opens, Trifecta achieved, etc.). These are the interesting recruitment moments, not the passive rate.
+- Both sources are independent and additive — if a milestone bonus fires during a passive recruitment window, both apply. No queuing or suppression between them.
 
 ### 6.3 Assignment — Priority-Based Auto-Distribution
 Cultists distribute themselves automatically based on **player-set priorities**. Player never manually moves cultists.
@@ -300,13 +301,13 @@ All costs are tunable starting values. They belong in `src/data/` and will be ad
 | 1 | **Conjuring Rites** | Anima conjure speed +20% | 30 Gnosis |
 | 2 | **The Opened Way** | Sustained Channel unlocked; gateway construction cost -20% | 40 Gnosis |
 | 3 | **Blood Compact** | Conjuring automated — fires on cooldown without clicking | 50 Gnosis |
-| 4 | **Heretical Wards** | Devotion decay -15% on all gateways | 60 Gnosis |
+| 4 | **Dread Fortitude** | Devotion decay -15% on all gateways | 60 Gnosis |
 
 Phase 1 total: **180 Gnosis**
 
 ### Phase 2 — Two branches (player chooses one per run)
 
-Unlocked when Phase 1 is fully purchased. Resource-constrained — a run earns ~500 Gnosis total, leaving ~20 Gnosis surplus after Phase 1 + one branch.
+Unlocked when Phase 1 is fully purchased (M6). Resource-constrained — a run earns ~500 Gnosis total, leaving ~20 Gnosis surplus after Phase 1 + one branch. Phase 1 costs are exactly 30/40/50/60 Gnosis per node — any text referencing "30–75 each" is legacy phrasing; the table above is binding.
 
 | # | Automation Path | Cost | Acceleration Path | Cost |
 |---|---|---|---|---|
@@ -358,8 +359,9 @@ Each additional cultist reduces timer by ~25%. With 2 parallel slots and 2-culti
 - Devotion does NOT affect expedition speed — devotion is a gateway mechanic, not an expedition mechanic. Expedition risk is determined by devotion at the *departure gateway* (snapshot at send time), affecting outcome odds only (see §11.2), not timer.
 - Multiple expeditions run in parallel (base cap: 2, upgradeable to 3 via talent keystone). **Run 1 cap is always 2** — the 3rd slot requires the Expedition keystone talent (2 Boons), first available after M8 Rehearsal. This is intentional: run 1 introduces the expedition system without full parallel complexity.
 - Early expeditions (before Voltis) are free. Once Voltis exists, each active expedition costs Voltis per minute to sustain the open gateway:
-  - Planet A: **5 Voltis/min**
-  - Planet B: **8 Voltis/min**
+  - Planet A: **5 Voltis/min** per active expedition
+  - Planet B: **8 Voltis/min** per active expedition
+  - Each expedition drains independently — two simultaneous Planet A expeditions = 10 Voltis/min total
   - Example cost: a 15-min Planet A run = 75 Voltis; a 26-min Planet B run = ~208 Voltis
   - Running 2 parallel expeditions simultaneously doubles the drain — creates real tension against automation Voltis costs
 - Runs fully in background — no required interaction while active
@@ -456,12 +458,14 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 
 | # | Name | Type | Cost | Reward on completion | Unlocks after |
 |---|---|---|---|---|---|
-| 1 | **Cindermark** | Crafted | Anima-heavy | Passive Anima production +30%; all active sacrifice yields doubled retroactively | Milestone 3 |
+| 1 | **Cindermark** | Crafted | **200 Anima** | Passive Anima production +30%; all active sacrifice yields doubled retroactively | Milestone 3 |
 | 2 | **Voidwreath** | Discovered | Planet A expedition | Gnosis channel efficiency +40%; unlocks a third expedition slot for the remainder of the current run (resets on Rehearsal — permanent 3rd slot requires talent keystone) | Milestone 5 |
-| 3 | **Whisperlock** | Crafted | Gnosis + Anima | Research speed +50%; Phase 2 research costs -20% Gnosis | Milestone 6 |
+| 3 | **Whisperlock** | Crafted | **150 Anima + 100 Gnosis** | Research speed +50%; Phase 2 research costs -20% Gnosis | Milestone 6 |
 | 4 | **Hungering Lens** | Discovered | Planet A expedition (M8) | Voltis soft cap doubled, automation costs -25% | Milestone 8 |
-| 5 | **Unbinding** | Crafted | All three trifecta resources | Harmony bonus doubled (+40% base, +60% with Trifecta Resonance talent); Harmony threshold reduced to 0% of soft cap — Harmony is always active while any resources are present | Milestone 9 |
+| 5 | **Unbinding** | Crafted | **300 Anima + 150 Gnosis + 100 Voltis** | Harmony bonus doubled (+40% base, +60% with Trifecta Resonance talent); Harmony threshold reduced to 0% of soft cap — Harmony is always active while any resources are present | Milestone 9 |
 | 6 | **Voicecaller** | Discovered | Planet A or B expedition (M11+) | All production rates +20%, Devotion decay halved permanently | Milestone 11 |
+
+All crafted artifact costs are tunable starting values — live in `src/data/`. Timed so completion requires ~2–3h of focused resource allocation after unlock.
 
 **Crafted artifacts:** Spend resources in defined ratios. Cost requires planning — player may need to temporarily redirect production. This is a designed spike of active engagement. The reward makes the sacrifice worth it.
 
@@ -551,7 +555,7 @@ Every milestone needs an explicit programmatic trigger. Time estimates are appro
 | 5 | First 25 Gnosis gathered (any source) |
 | 6 | Phase 1 research tree fully purchased (all 4 nodes bought) |
 | 7 | Any gateway devotion drops below 60% for the first time |
-| 8 | Blood Compact research purchased (conjuring automated) AND sustained channel active AND net Anima rate (sacrifice passive − sustained channel Anima cost) > 0 |
+| 8 | Blood Compact research purchased (conjuring automated) AND Planet A gateway sustained channel is currently running AND net Anima rate > 0 (where net = sacrifice passive income − sustained channel Anima cost; at M8, Voltis does not exist yet so sustained channel costs Anima only) |
 | 9 | Gnosis crosses the Planet B discovery threshold (specific Gnosis total, defined in `src/data/`) |
 | 10 | All three resources simultaneously above Harmony threshold for 60+ seconds |
 | 11 | First artifact completed (any of the 6) |
@@ -664,7 +668,7 @@ Closing the game: *"the cult is working, I'll check back later."* Not anxiety. T
 
 Edge cases are handled by a separate **offline post-processor** that wraps the tick for catch-up:
 - **Devotion floor (15%):** Applied after all ticks resolve, not inside tick. Online play has no floor — active neglect still risks collapse.
-- **Choice events queued:** Expedition completing offline cannot present an interactive Choice. The offline processor queues these for display when the player returns. **Max 5 queued events** — displayed one at a time on return. If the queue would exceed 5, overflow events auto-resolve as "Return" (safe, no loot, no choice presented). Player receives a single notification: "X expedition outcomes were resolved automatically while you were away."
+- **Choice events queued:** Expedition completing offline cannot present an interactive Choice. The offline processor queues these for display when the player returns. **Max 10 queued events** — displayed one at a time on return. If the queue would exceed 10, overflow events auto-resolve as "Return" (safe, no loot, no choice presented). Player receives a single notification: "X expedition outcomes were resolved automatically while you were away." (With 2 slots at 15 min over 8h = ~32 returns × 40% choice rate ≈ 13 events — cap of 10 handles most overnight sessions.)
 - **Soft cap math:** Handled *inside* `tick()` via time-to-cap calculation and overflow rate for the remainder — no offline branching needed.
 
 Architecture:
