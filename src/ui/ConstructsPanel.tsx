@@ -55,7 +55,7 @@ export function ConstructsPanel() {
     {
       key: 'ossuary',
       label: 'Ossuary',
-      description: 'Increases sacrifice yield from 6 to 9 Anima/min per cultist',
+      description: 'Sacrifice yield: 6 → 9 Anima/min per cultist offered',
       cost: OSSUARY_COST_ANIMA,
       tier: 1,
       isAvailable: true,
@@ -64,7 +64,7 @@ export function ConstructsPanel() {
     {
       key: 'gatewayFrame',
       label: 'Gateway Frame',
-      description: 'The foundation for opening a rift between worlds',
+      description: 'Raises the Frame for a dimensional rift. Unlocks the Gateway rite — the path to Gnosis and deeper power.',
       cost: GATEWAY_FRAME_COST_ANIMA,
       tier: 1,
       isAvailable: true,
@@ -77,10 +77,6 @@ export function ConstructsPanel() {
       <div className="panel-title">Forbidden Works</div>
 
       {entries.map((entry, i) => {
-        if (entry.isBuilt && entry.tier === 1 && entry.key === 'altar' && altarT2Built) {
-          // Altar T1 superseded by T2, still show as built
-        }
-
         const canAfford = anima >= entry.cost
         const costClass = canAfford ? 'construct-cost-affordable' : 'construct-cost-unaffordable'
 
@@ -90,39 +86,32 @@ export function ConstructsPanel() {
             className={`construct-card${entry.isBuilt ? ' construct-card-built' : ''}`}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+              <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.95rem', color: 'var(--text-primary)' }}>
                 {entry.label}
               </span>
               {entry.isBuilt ? (
-                <span style={{ fontSize: '0.7rem' }} className="text-green">Built</span>
+                <span style={{ fontSize: '0.85rem' }} className="text-green">Built</span>
               ) : (
                 <span className={`construct-cost ${costClass}`}>
                   {formatNumber(entry.cost)} Anima
                 </span>
               )}
             </div>
-            <div style={{ fontSize: '0.78rem', marginTop: '2px' }} className="text-muted">
+            <div style={{ fontSize: '0.9rem', marginTop: '3px' }} className="text-muted">
               {entry.description}
             </div>
             {!entry.isBuilt && (
               <>
                 {entry.prerequisiteLabel && !entry.isAvailable && (
-                  <div style={{ fontSize: '0.72rem', marginTop: '4px', color: 'var(--text-ghost)' }}>
+                  <div style={{ fontSize: '0.8rem', marginTop: '4px', color: 'var(--text-ghost)' }}>
                     {entry.prerequisiteLabel}
                   </div>
                 )}
                 <button
                   className="btn-small"
-                  style={{ marginTop: '6px', width: '100%' }}
+                  style={{ marginTop: '8px', width: '100%' }}
                   disabled={!entry.isAvailable || !canAfford}
                   onClick={() => buildConstruct(entry.key as 'altar' | 'ossuary' | 'gatewayFrame', entry.tier)}
-                  title={
-                    !entry.isAvailable
-                      ? entry.prerequisiteLabel ?? 'Locked'
-                      : !canAfford
-                      ? `Need ${formatNumber(entry.cost)} Anima`
-                      : `Build ${entry.label}`
-                  }
                 >
                   {!entry.isAvailable ? 'Locked' : `Construct (${formatNumber(entry.cost)} A)`}
                 </button>
