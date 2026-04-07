@@ -6,8 +6,9 @@ export const OSSUARY_COST_ANIMA = 200
 export const GATEWAY_FRAME_COST_ANIMA = 100
 
 // Sacrifice yields (Anima per minute per sacrificed cultist)
-export const SACRIFICE_ANIMA_PER_MIN = 6
-export const OSSUARY_SACRIFICE_ANIMA_PER_MIN = 9
+// TODO: TESTING ONLY — 10x inflated. Revert before release. (base=6, ossuary=9)
+export const SACRIFICE_ANIMA_PER_MIN = 60
+export const OSSUARY_SACRIFICE_ANIMA_PER_MIN = 90
 
 // Cindermark (artifact) doubles sacrifice yields retroactively
 export const CINDERMARK_SACRIFICE_MULTIPLIER = 2

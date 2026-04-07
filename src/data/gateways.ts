@@ -8,8 +8,9 @@ export const GATEWAY_CAPACITY_T3_COST_ANIMA = 300
 export const GATEWAY_CAPACITY_T3_COST_GNOSIS = 200
 
 // Production rates per assigned cultist (per millisecond; display as per-minute)
-export const GNOSIS_PRODUCTION_PER_CULTIST_PER_MIN = 4
-export const VOLTIS_PRODUCTION_PER_CULTIST_PER_MIN = 5
+// TODO: TESTING ONLY — 10x inflated. Revert before release. (gnosis=4, voltis=5)
+export const GNOSIS_PRODUCTION_PER_CULTIST_PER_MIN = 40
+export const VOLTIS_PRODUCTION_PER_CULTIST_PER_MIN = 50
 
 // Expedition Voltis drain per minute per expedition
 export const EXPEDITION_VOLTIS_DRAIN_PLANET_A_PER_MIN = 5
