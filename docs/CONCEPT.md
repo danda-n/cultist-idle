@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.16 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.17 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -86,19 +86,38 @@ Above the resource cap, production slows dramatically but never fully stops. Cre
 Anima is the foundation resource. Before automation, the player manually conjures it via a ritual action.
 
 **Conjure mechanics:**
-- Yield: **8 Anima** per conjure
+- Yield: **8 Anima** per conjure (base), **11 Anima** on a Precise Rite (see below)
 - Cooldown: **8 seconds** — a fill bar charges visually; clicking before full does nothing
 - The fill bar is the ritual preparation. The click is the execution.
 
+**Precise Rite — timing bonus:**
+When the fill bar reaches 100%, the conjure button pulses. Clicking within **1.5 seconds** of completion performs a Precise Rite: yields **11 Anima** instead of 8. Waiting beyond the window (or not clicking) gives the normal 8 on the next natural click. No penalty for missing — idle players still receive full yield.
+
+The pulse is the only signal. No UI label, no counter. The reward is immediate feedback: the ritual responded to attention.
+
+Once Blood Compact automates conjuring, automation always fires at 8 Anima — it cannot perform a Precise Rite. This is a subtle, unremarked incentive to remain engaged before the idle transition arrives.
+
 **Altar upgrades affect conjure speed (= cooldown reduction):**
 
-| State | Cooldown | Anima/min |
-|---|---|---|
-| Base | 8s | ~60/min |
-| Altar Tier 1 (+25% speed) | 6s | ~80/min |
-| Altar Tier 2 (+25% stacked) | ~4.8s | ~100/min |
+| State | Cooldown | Anima/min (base) | Anima/min (all Precise) |
+|---|---|---|---|
+| Base | 8s | ~60/min | ~82/min |
+| Altar Tier 1 (+25% speed) | 6s | ~80/min | ~110/min |
+| Altar Tier 2 (+25% stacked) | ~4.8s | ~100/min | ~137/min |
 
 **Automation — Blood Compact (Phase 1 research node 3):** Conjuring fires automatically on cooldown. The player no longer needs to click. This is the first true idle transition, occurring mid Phase 1 research (~M5–M6 window), well before the full idle moment at M8.
+
+**Narrative threshold events (pre-M3):**
+Four short atmospheric lines fire at Anima thresholds before M3. No mechanics — just the game acknowledging the ritual is working. Appear as brief log entries at the edge of the screen, same system as milestone flavour text.
+
+| Threshold | Text |
+|---|---|
+| 10 Anima | *"The air grows thick. Something beyond the veil takes notice."* |
+| 25 Anima | *"Your cultists feel it. The ritual is working."* |
+| 50 Anima (→ M2) | *"The altar stone is warm to the touch. The gateway is within reach."* |
+| M3 (sacrifice) | *"The first sacrifice is made. Anima flows without end."* |
+
+These break the pre-M3 window into 5 smaller moments rather than 2, giving the conjure loop a sense of building momentum before systems unlock.
 
 ---
 
@@ -696,7 +715,7 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 
 | # | Risk | Notes |
 |---|---|---|
-| D1 | **Pre-M3 early game thinness** — 25 min with conjuring as primary action. Two notable moments (M2 Altar, M3 sacrifice) but thin connective tissue. Only a problem if conjuring feedback is weak. Needs strong animation/sound/fill response to feel atmospheric rather than tedious. | Implementation risk, not design fix |
+| ~~D1~~ | ~~Pre-M3 early game thinness~~ | ~~Implementation risk~~ | ✅ Resolved v0.17 — Precise Rite timing bonus (+3 Anima on 1.5s window) adds click meaning; 4 narrative threshold events (10/25/50 Anima + M3) break the window into 5 moments. See §5.1. |
 | D2 | **Research branch payoff asymmetry** — Acceleration path pays off immediately (faster expeditions, higher Voltis yield from M5/M9 onward). Automation path pays off later (Overseer's Rite, Harmony boost only meaningful once full Trifecta is active at M9+). In run 1, Acceleration may be the obvious choice. Intentional if Automation is the "comfort" choice for runs 2–4 when Harmony is consistently maintained. Verify the Automation path is genuinely compelling from run 2 onward, not just theoretically equal. | Verify during balance pass |
 
 **Unresolved (need playtesting to confirm):**
