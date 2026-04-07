@@ -10,4 +10,6 @@ export interface GatewayState {
   channelActive: boolean
   /** Absolute timestamp; 0 = no cooldown active */
   disciplineCooldownUntil: number
+  /** Absolute timestamp until which channeling is stunned after devotion collapse; 0 = no stun */
+  stunUntil: number
 }

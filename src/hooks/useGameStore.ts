@@ -8,6 +8,11 @@ import {
   assignSacrificeAction,
   unassignSacrificeAction,
   buildConstructAction,
+  buildGatewayAction,
+  toggleChannelAction,
+  disciplineAction,
+  purchaseResearchNodeAction,
+  upgradeGatewayCapacityAction,
 } from '../engine/actions'
 import type { ConstructType } from '../types'
 
@@ -29,6 +34,16 @@ interface GameStore {
   unassignSacrifice: () => void
   /** Build (or upgrade) a construct */
   buildConstruct: (type: ConstructType, tier?: 1 | 2) => void
+  /** Build a Planet A gateway */
+  buildGateway: () => void
+  /** Toggle the Channel rite on a gateway */
+  toggleChannel: (gatewayId: string) => void
+  /** Invoke Discipline on a gateway */
+  discipline: (gatewayId: string) => void
+  /** Purchase a research node */
+  purchaseResearch: (nodeId: string) => void
+  /** Upgrade gateway capacity to tier 2 or 3 */
+  upgradeGatewayCapacity: (gatewayId: string, tier: 2 | 3) => void
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -68,5 +83,28 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   buildConstruct: (type: ConstructType, tier?: 1 | 2) => {
     set(store => ({ state: buildConstructAction(store.state, type, tier) }))
+  },
+
+  buildGateway: () => {
+    const now = Date.now()
+    set(store => ({ state: buildGatewayAction(store.state, now) }))
+  },
+
+  toggleChannel: (gatewayId: string) => {
+    const now = Date.now()
+    set(store => ({ state: toggleChannelAction(store.state, gatewayId, now) }))
+  },
+
+  discipline: (gatewayId: string) => {
+    const now = Date.now()
+    set(store => ({ state: disciplineAction(store.state, gatewayId, now) }))
+  },
+
+  purchaseResearch: (nodeId: string) => {
+    set(store => ({ state: purchaseResearchNodeAction(store.state, nodeId) }))
+  },
+
+  upgradeGatewayCapacity: (gatewayId: string, tier: 2 | 3) => {
+    set(store => ({ state: upgradeGatewayCapacityAction(store.state, gatewayId, tier) }))
   },
 }))

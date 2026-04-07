@@ -43,6 +43,7 @@ describe('offlineProcessor', () => {
           capacity: 1,
           channelActive: true,
           disciplineCooldownUntil: 0,
+          stunUntil: 0,
         },
       },
     }

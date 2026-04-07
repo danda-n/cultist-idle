@@ -10,3 +10,6 @@ export const OVERSEERS_RITE_COOLDOWN_MS = 5 * 60 * 1000   // 5 min global
 
 // Research modifier: Dread Fortitude reduces decay by 15%
 export const DREAD_FORTITUDE_DECAY_REDUCTION = 0.15
+
+// Stun duration after devotion collapse
+export const DEVOTION_COLLAPSE_STUN_MS = 2 * 60 * 1000  // 2 min stun on collapse

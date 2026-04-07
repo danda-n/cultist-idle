@@ -1,6 +1,8 @@
 import type { GameState, SystemTick } from '../types'
 import { resourceSystem } from '../systems/resourceSystem'
 import { cultistSystem } from '../systems/cultistSystem'
+import { gatewaySystem } from '../systems/gatewaySystem'
+import { devotionSystem } from '../systems/devotionSystem'
 import { milestoneSystem } from '../systems/milestoneSystem'
 
 /**
@@ -9,6 +11,8 @@ import { milestoneSystem } from '../systems/milestoneSystem'
 const systems: SystemTick[] = [
   resourceSystem,
   cultistSystem,
+  gatewaySystem,
+  devotionSystem,
   milestoneSystem,
 ]
 
