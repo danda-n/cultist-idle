@@ -1,4 +1,4 @@
-export const ALTAR_T1_COST_ANIMA = 50
+export const ALTAR_T1_COST_ANIMA = 30
 export const ALTAR_T2_COST_ANIMA = 120
 
 export const OSSUARY_COST_ANIMA = 200

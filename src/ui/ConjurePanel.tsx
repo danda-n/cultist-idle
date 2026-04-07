@@ -33,9 +33,8 @@ export function ConjurePanel() {
     meta.lastConjureCompletedAt > 0 &&
     (now - meta.lastConjureCompletedAt) < CONJURE_PRECISE_WINDOW_MS
 
-  // Show Precise Rite tutorial once: fires after first conjure bar ever completes
-  const hasCompletedOnce = meta.lastConjureCompletedAt > 0
-  const showTutorial = hasCompletedOnce && !meta.preciseTutorialSeen
+  // Show Precise Rite tutorial proactively until player dismisses it
+  const showTutorial = !meta.preciseTutorialSeen
 
   function dismissTutorial() {
     applyPatch({ meta: { ...meta, preciseTutorialSeen: true } })

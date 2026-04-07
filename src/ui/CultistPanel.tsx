@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useGameStore } from '../hooks/useGameStore'
 import { formatDuration } from '../utils/format'
+import { SACRIFICE_ANIMA_PER_MIN, OSSUARY_SACRIFICE_ANIMA_PER_MIN } from '../data/constructs'
 
 export function CultistPanel() {
   const cultists = useGameStore(s => s.state.cultists)
@@ -16,6 +17,8 @@ export function CultistPanel() {
   }, [])
 
   const altarBuilt = constructs['altar']?.built === true
+  const ossuaryBuilt = constructs['ossuary']?.built === true
+  const sacrificeRate = ossuaryBuilt ? OSSUARY_SACRIFICE_ANIMA_PER_MIN : SACRIFICE_ANIMA_PER_MIN
 
   const sacrificeCount = cultists.assignments.filter(a => a.role === 'sacrifice').length
   const idleCount = cultists.count - cultists.assignments.length
@@ -62,7 +65,7 @@ export function CultistPanel() {
             Sacrifice rites
           </div>
           <div style={{ fontSize: '0.95rem', marginBottom: '6px', fontStyle: 'italic' }} className="text-muted">
-            Offered cultists generate <span style={{ color: 'var(--gold-primary)' }}>6 Anima/min</span> passively.
+            Offered cultists generate <span style={{ color: 'var(--gold-primary)' }}>{sacrificeRate} Anima/min</span> passively.
           </div>
           <div className="assign-row">
             <span style={{ fontSize: '1.1rem' }} className="text-secondary">

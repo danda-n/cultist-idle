@@ -103,7 +103,7 @@ export function ConstructsPanel() {
             {!entry.isBuilt && (
               <>
                 {entry.prerequisiteLabel && !entry.isAvailable && (
-                  <div style={{ fontSize: '0.9rem', marginTop: '5px', color: 'var(--text-ghost)' }}>
+                  <div style={{ fontSize: '0.95rem', marginTop: '5px', color: 'var(--text-warn)', fontWeight: 500 }}>
                     {entry.prerequisiteLabel}
                   </div>
                 )}
