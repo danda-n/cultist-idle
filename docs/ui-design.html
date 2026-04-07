@@ -225,7 +225,7 @@ code {
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   padding: var(--space-xs) var(--space-sm);
   background: var(--bg-raised);
 }
@@ -259,7 +259,7 @@ code {
 .swatch-hex {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  color: var(--text-dim);
+  color: var(--text-secondary);
 }
 
 /* ============================================================
@@ -533,7 +533,7 @@ code {
   font-size: 7px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-secondary);
 }
 
 .devotion-bar-track {
@@ -659,7 +659,7 @@ code {
   font-family: var(--font-body);
   font-style: italic;
   font-size: 8px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   padding: 3px 0;
   border-bottom: 1px solid var(--border-dim);
   line-height: 1.4;
@@ -872,16 +872,19 @@ code {
 .choice-option-cost {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   white-space: nowrap;
   margin-top: 2px;
 }
 
+/* This sits inside .choice-option.disabled which applies opacity:0.35 to the
+   whole element — inactive component exception applies (WCAG 1.4.3). Using
+   --text-secondary ensures it remains legible before the parent dims it. */
 .choice-option-locked {
   font-family: var(--font-body);
   font-style: italic;
   font-size: 0.75rem;
-  color: var(--text-ghost);
+  color: var(--text-secondary);
 }
 
 /* ─ REHEARSAL SCREEN ─ */
@@ -919,7 +922,7 @@ code {
 .rehearsal-subtitle {
   font-family: var(--font-body);
   font-style: italic;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -1136,7 +1139,7 @@ code {
   align-items: center;
   justify-content: center;
   font-size: 8px;
-  color: var(--text-dim);
+  color: var(--text-secondary);
 }
 
 .cultist-slot.occupied {
@@ -1801,7 +1804,7 @@ code {
         <text x="88" y="90" text-anchor="middle" font-family="Cinzel,serif" font-size="6" fill="#3A2E22">locked</text>
         <circle cx="60" cy="54" r="4" fill="#2A2118"/>
       </svg>
-      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-dim);">M9 unlocks Voltis</div>
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-secondary);">M9 unlocks Voltis</div>
     </div>
 
   </div>
