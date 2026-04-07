@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 1.0 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.10 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
