@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.8 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.9 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -77,6 +77,25 @@ Above the resource cap, production slows dramatically but never fully stops. Cre
 
 **Trifecta UI:** Permanent three-bar or triangular gauge always on screen. Harmony bonus status shown prominently (active/inactive + current multiplier). When one resource falls behind, the gauge shows which one — one obvious action to restore the bonus. No math, no diagnosis puzzle.
 
+### 5.1 Anima — The Conjuring Action
+
+Anima is the foundation resource. Before automation, the player manually conjures it via a ritual action.
+
+**Conjure mechanics:**
+- Yield: **8 Anima** per conjure
+- Cooldown: **8 seconds** — a fill bar charges visually; clicking before full does nothing
+- The fill bar is the ritual preparation. The click is the execution.
+
+**Altar upgrades affect conjure speed (= cooldown reduction):**
+
+| State | Cooldown | Anima/min |
+|---|---|---|
+| Base | 8s | ~60/min |
+| Altar Tier 1 (+25% speed) | 6s | ~80/min |
+| Altar Tier 2 (+25% stacked) | ~4.8s | ~100/min |
+
+**Automation — Blood Compact (Phase 1 research node 3):** Conjuring fires automatically on cooldown. The player no longer needs to click. This is the first true idle transition, occurring mid Phase 1 research (~M5–M6 window), well before the full idle moment at M8.
+
 ---
 
 ## 6. Cultist System
@@ -125,7 +144,9 @@ The Devotion keystone talent ("collapse impossible — stun eliminated") still h
 Two types — intentional and preventable (subject to floor above):
 
 **Intentional:**
-- **Sacrifice** — player manually sacrifices a cultist for a permanent passive Anima boost. Significant early-game decision.
+- **Sacrifice** — player manually sacrifices a cultist for permanent passive Anima production. Each sacrifice adds **+6 Anima/min** (base). Stackable — multiple sacrifices across a run are explicitly intended. M3 is the tutorial sacrifice; later ones are strategic decisions. With 5–8 starting cultists and a floor of 3, up to 5 sacrifices are possible across a run.
+  - **Ossuary construct** increases per-sacrifice rate to **+9 Anima/min**
+  - **Cindermark artifact** doubles total sacrifice production **retroactively** (all active sacrifices, not just future ones)
 - **Expedition loss** — cultists sent on low-devotion expeditions risk not returning. 50% Anima refunded.
 
 **Preventable:**
@@ -182,9 +203,24 @@ Spend Gnosis to unlock a slow passive trickle from the gateway. Before Planet B:
 Cultists maintain the channel. Their devotion level directly affects trickle rate. Neglected gateway = devotion decay = slower trickle. Discipline restores it. This is why active engagement never fully disappears — it's tending, not clicking.
 
 ### 8.4 Gateway progression
-- **Planet A gateway** — unlocked at milestone 4. Produces Gnosis. Devotion-sensitive.
+- **Planet A gateway** — becomes buildable after M3 (once sacrifice automation begins and Anima income is stable). Costs **250 Anima** to construct. M4 fires when construction completes.
 - **Planet B gateway** — discovered via Gnosis threshold (milestone 9). Produces Voltis. Enables automation.
 - Further gateways possible (Layer 1 scope: 2 gateways only).
+
+### 8.5 Gateway Expansion
+
+Each gateway starts at capacity 1 cultist slot. Expansion is purchased directly on the gateway panel — same UI as Channel and Discipline. Paid in Anima + Gnosis. Not a construct and not a research node; it is a per-gateway investment that appears contextually in the gateway UI once the cost becomes reachable.
+
+All costs are tunable starting values in `src/data/`.
+
+| Upgrade | Cost | Available |
+|---|---|---|
+| Planet A: capacity 1 → 2 | 300 Anima + 200 Gnosis | M5 |
+| Planet A: capacity 2 → 3 | 600 Anima + 400 Gnosis | M8 |
+| Planet B: capacity 1 → 2 | 400 Anima + 300 Gnosis | M9+ |
+| Planet B: capacity 2 → 3 | 800 Anima + 600 Gnosis | M10+ |
+
+**Prestige:** Gateway expansion resets on Rehearsal. Gateway memory reduces expansion costs by 40% (same as constructs), capping at 70% after 3 runs.
 
 ---
 
@@ -218,29 +254,46 @@ All costs are tunable starting values. They belong in `src/data/` and will be ad
 
 ## 10. Research Tree
 
-**Shape:** Linear opening, branches earned at a Gnosis threshold (~40% of first-run total).
+**Shape:** Linear Phase 1 (auto-completes on Rehearsal), then two branches. Phase 2 **resets each run** — the player re-chooses a path with fresh Gnosis, which is the run identity mechanic.
 
-### Phase 1 — Linear (early game)
-No real choices. Just unlocks the next system:
-- Conjuring speed
-- Gateway construction cost reduction
-- Cultist automation unlock
-- Devotion decay reduction (tier 1)
+### Phase 1 — Linear (4 nodes, all auto-complete on Rehearsal)
 
-### Phase 2 — Two paths (mid-game branch)
-Player chooses a run identity. Resource-constrained — can't fully pursue both at once.
+| # | Name | Effect | Cost |
+|---|---|---|---|
+| 1 | **Conjuring Rites** | Anima conjure speed +20% | 30 Gnosis |
+| 2 | **The Opened Way** | Sustained Channel unlocked; gateway construction cost -20% | 40 Gnosis |
+| 3 | **Blood Compact** | Conjuring automated — fires on cooldown without clicking | 50 Gnosis |
+| 4 | **Heretical Wards** | Devotion decay -15% on all gateways | 60 Gnosis |
+
+Phase 1 total: **180 Gnosis**
+
+### Phase 2 — Two branches (player chooses one per run)
+
+Unlocked when Phase 1 is fully purchased. Resource-constrained — a run earns ~500 Gnosis total, leaving ~20 Gnosis surplus after Phase 1 + one branch.
+
+| # | Automation Path | Cost | Acceleration Path | Cost |
+|---|---|---|---|---|
+| 1 | **Overseer's Rite** — Global Discipline action unlocked (5 min cooldown, all gateways at once) | 80 Gnosis | **Blood Accelerant** — Expedition timers -20% | 80 Gnosis |
+| 2 | **Trifecta Resonance** — Harmony bonus multiplier +10% additional | 100 Gnosis | **The Hungry Gate** — Channel burst output +30%; Voltis yield per channel +30% | 100 Gnosis |
+| 3 | **Eternal Compact** — Automation costs (Voltis) -20%; automated conjure rate +25% | 120 Gnosis | **The Final Veil** — All production rates +15% | 120 Gnosis |
+
+Phase 2 branch total: **300 Gnosis each**
+
+**Gnosis budget (verified):**
+- Phase 1: 180 + Phase 2 branch: 300 = **480 Gnosis needed**
+- Earnable before M8: ~500 Gnosis → ~20 surplus ✓ confirms "little to spare"
+
+**Cost model:** Gnosis only. Instant when affordable — no queue, no timers. Nodes unlock in order; Phase 2 requires Phase 1 complete.
+
+**Path trade-offs:**
 
 | | **Automation Path** | **Acceleration Path** |
 |---|---|---|
-| Focus | Reduce manual intervention; global Discipline unlock; Harmony bonus boost | Boost production rates; faster expeditions; higher Voltis yield |
-| Trade-off | Slower raw output, cleaner idle | Higher ceiling, more active attention needed |
+| Focus | Reduce manual intervention; global Discipline; Harmony boost | Raw throughput; faster expeditions; Voltis yield |
+| Payoff timing | Run 2+ (Harmony consistent, Overseer's Rite saves active time) | Run 1 (immediate benefit from M5 onward) |
 | Prestige synergy | Compounds well across runs | Faster individual run speed |
 
-Both paths reach the same endgame capability. Playstyle choice, not power level.
-
-**Cost model:** Research nodes cost Gnosis only. Research is **instant when affordable** — no queue, no timers. Phase 1 linear nodes: 30–75 Gnosis each. Phase 2 branch nodes: 100–150 Gnosis each. Total cost to complete one Phase 2 branch: ~400 Gnosis. A first run before M8 Rehearsal earns ~450–550 Gnosis — enough to complete Phase 1 and finish one Phase 2 branch, with little to spare. The two-path choice is an economic constraint, not an artificial lock.
-
-**Harmony boost (Automation path unlock):** Increases the Harmony bonus multiplier by an additional +10%. Combined with the base bonus, this makes maintaining Trifecta balance more rewarding for idle-focused players without punishing those who don't.
+Both paths reach the same endgame capability. Playstyle choice, not power level. See D2 in §20 for the known payoff asymmetry risk.
 
 ---
 
@@ -252,7 +305,18 @@ Both paths reach the same endgame capability. Playstyle choice, not power level.
 
 **Cultist commitment model:** Expeditions are launched actively by the player (tap "Send Expedition"). The player chooses how many cultists to commit (1–3) at launch time. The **priority system determines where those cultists are drawn from** — if the priority order is Expeditions > Gateway B, cultists are pulled from Gateway B's slot first to staff the expedition. On return, cultists re-fill slots according to the current priority order. The player controls the launch and the headcount; the priority system handles sourcing and recovery.
 
-- Base expedition timer depends on destination and cultist count (more cultists = faster)
+**Base expedition timers:**
+
+| Destination | 1 cultist | 2 cultists | 3 cultists |
+|---|---|---|---|
+| Planet A | 20 min | 15 min | 12 min |
+| Planet B | 35 min | 26 min | 20 min |
+
+Each additional cultist reduces timer by ~25%. With 2 parallel slots and 2-cultist sends, Planet A returns every 15 min (~4 returns/hour, ~1–2 Choice events/hour). Planet B is slower with higher stakes.
+
+"Expeditions return 25% faster" talent: Planet A → 11/8/9 min; Planet B → 26/20/15 min.
+
+- Base expedition timer depends on destination and cultist count (more cultists = faster, per table above)
 - Devotion does NOT affect expedition speed — devotion is a gateway mechanic, not an expedition mechanic. Expedition risk is determined by devotion at the *departure gateway* (snapshot at send time), affecting outcome odds only (see §11.2), not timer.
 - Multiple expeditions run in parallel (base cap: 2, upgradeable to 3 via talent keystone)
 - Early expeditions (before Voltis) are free. Once Voltis exists, each active expedition costs Voltis to sustain the open gateway.
@@ -373,8 +437,8 @@ Each is a moment — flavour, visual beat, arrival feeling. Early milestones are
 |---|---|---|---|
 | 1 | **The First Conjuring** | Core loop begins | ~0:02 |
 | 2 | **The First Construct** | Build system revealed; first Altar upgrade available | ~0:10 |
-| 3 | **The Sacrifice** | First automation (passive Anima); Cindermark craftable; Ossuary buildable | ~0:25 |
-| 4 | **The Gateway Opens** | Planet A accessible; expedition system unlocks; first Trifecta link (Gnosis costs Anima); devotion decay begins (slow); Warding Stones buildable | ~0:45 |
+| 3 | **The Sacrifice** | First sacrifice performed; passive Anima production begins (+6/min base); Cindermark craftable; Ossuary buildable; gateway becomes buildable (250 Anima) | ~0:25 |
+| 4 | **The Gateway Opens** | Gateway construction complete; Planet A accessible; expedition system unlocks; first Trifecta link (Gnosis costs Anima); devotion decay begins (slow); Warding Stones buildable | ~0:45 |
 | 5 | **First Gnosis** | Research system unlocks; Scrying Pool buildable | ~1:15 |
 | 6 | **The First Research** | Research Phase 2 branches; Whisperlock craftable; Binding Circle buildable | ~2:00 |
 | 7 | **Devotion Crisis** | Devotion decay accelerates to normal rate; Discipline action introduced (if not used yet) | ~3:00 |
@@ -395,11 +459,11 @@ Every milestone needs an explicit programmatic trigger. Time estimates are appro
 | 1 | Game start |
 | 2 | ~50 Anima accumulated |
 | 3 | Player performs first sacrifice |
-| 4 | Gateway construction complete (Anima cost paid + build confirmed) |
+| 4 | Gateway construction complete — player pays 250 Anima and confirms build (gateway is visible/buildable from M3 onward) |
 | 5 | First 25 Gnosis gathered (any source) |
-| 6 | Phase 1 research tree fully purchased |
+| 6 | Phase 1 research tree fully purchased (all 4 nodes bought) |
 | 7 | Any gateway devotion drops below 60% for the first time |
-| 8 | Gnosis sustained channel active AND passive Anima production rate exceeds Anima consumption rate |
+| 8 | Blood Compact research purchased (conjuring automated) AND sustained channel active AND net Anima rate (sacrifice passive − sustained channel Anima cost) > 0 |
 | 9 | Gnosis crosses the Planet B discovery threshold (specific Gnosis total, defined in `src/data/`) |
 | 10 | All three resources simultaneously above Harmony threshold for 60+ seconds |
 | 11 | First artifact completed (any of the 6) |
@@ -567,6 +631,13 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 | 6 | **Artifact flavour text** — one line per artifact for reveal moment | Low (content) | Open |
 | 7 | **Artifact reward balance** — reward values need tuning to feel gamechanging without breaking progression | Medium | Proposed — needs playtesting |
 | 8 | **Harmony bonus values** — base multiplier and Trifecta threshold need calibration | Medium | Proposed — needs playtesting |
+| ~~B1~~ | ~~Conjuring mechanic undefined~~ | ~~High~~ | Resolved — 8 Anima/8s cooldown; speed = cooldown reduction; Blood Compact automates it; spec in §5.1 |
+| ~~B2~~ | ~~Sacrifice mechanics undefined~~ | ~~High~~ | Resolved — +6 Anima/min per sacrifice, stackable, multiple intended; Ossuary → +9/min; Cindermark doubles retroactively; spec in §6.5 |
+| ~~B3~~ | ~~Gateway construction cost missing~~ | ~~High~~ | Resolved — 250 Anima; buildable from M3; research node 2 gives -20%; spec in §8.4 |
+| ~~B4~~ | ~~Expedition timers undefined~~ | ~~High~~ | Resolved — Planet A: 20/15/12 min; Planet B: 35/26/20 min; spec in §11.1 |
+| ~~B5~~ | ~~Research tree structure incomplete~~ | ~~High~~ | Resolved — 4 Phase 1 nodes + 3 nodes per Phase 2 branch; all named with costs; Sustained Channel in node 2, Overseer's Rite in Automation branch node 1; spec in §10 |
+| ~~B6~~ | ~~Gateway capacity upgrade has no home~~ | ~~High~~ | Resolved — per-gateway direct purchase in gateway panel (not construct/research); costs in §8.5 |
+| ~~M1~~ | ~~Research Gnosis budget broken~~ | ~~High~~ | Resolved — Phase 1 (180) + branch (300) = 480, earnable ~500; verified in §10 |
 | ~~Q3~~ | ~~Construct system vs milestone 2 trigger~~ | ~~High~~ | Resolved — Altar exists at start; M2 reveals build UI; first action is Altar Tier 1 upgrade (§9, §14) |
 | ~~Q5~~ | ~~Choice events vs floor of 3~~ | ~~High~~ | Resolved — floor-breaking options greyed out with explanation, consistent with sacrifice button (§11.3) |
 | ~~Q6~~ | ~~Channel action values undefined~~ | ~~High~~ | Resolved — 15 Anima cost, 25 output, 60s cooldown, devotion affects sustained only (§8.1) |
