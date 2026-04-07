@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.14 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.15 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -63,7 +63,7 @@ Browser-based idle/incremental game. Minimal UI noise. Meaningful decisions. Dar
 - Gnosis channelling costs Anima to sustain
 
 **Trifecta philosophy — reward balance, don't punish imbalance:**
-Each resource works independently. Cross-dependencies create *costs* (Anima to channel, Voltis to automate), not *penalties*. When all three resources are above a threshold simultaneously, the player earns a **Harmony bonus** — a global production multiplier (e.g. +15-25%). Losing Harmony isn't a punishment — it's losing a bonus. The player can choose to focus on one resource and sacrifice efficiency, or maintain balance for the boost. Upgrading one resource never *breaks* anything — it just means the other two haven't caught up yet for the bonus.
+Each resource works independently. Cross-dependencies create *costs* (Anima to channel, Voltis to automate), not *penalties*. When all three resources are above a threshold simultaneously, the player earns a **Harmony bonus** — a global production multiplier of **+20%** to all resources (tunable). Trifecta Resonance talent adds +10pp (= +30% total). Unbinding artifact doubles the active Harmony bonus (+40% base, +60% with talent). Losing Harmony isn't a punishment — it's losing a bonus. The player can choose to focus on one resource and sacrifice efficiency, or maintain balance for the boost. Upgrading one resource never *breaks* anything — it just means the other two haven't caught up yet for the bonus.
 
 **Phased introduction:**
 1. **Milestone 4 (~0:45h):** First link — Gnosis channel costs Anima. Player learns "one resource feeds another." One-directional: Anima → Gnosis.
@@ -79,7 +79,7 @@ Above the resource cap, production slows dramatically but never fully stops. Cre
 
 **Harmony bonus threshold (tunable):** Base threshold = 30% of each resource's soft cap (Anima 150, Gnosis 75, Voltis 90). All three resources must remain simultaneously above their threshold for 60+ seconds to trigger the Harmony bonus. Talent "Harmony bonus threshold lowered by 20%" reduces the multiplier to 24% of soft cap (Anima 120, Gnosis 60, Voltis 72) — a 20% relative reduction, making the bonus easier to maintain.
 
-**Trifecta UI:** Permanent three-bar or triangular gauge always on screen. Harmony bonus status shown prominently (active/inactive + current multiplier). When one resource falls behind, the gauge shows which one — one obvious action to restore the bonus. No math, no diagnosis puzzle.
+**Trifecta UI:** Permanent **triangular gauge** always on screen — three segments, one per resource. Each segment is GREEN (above threshold), YELLOW (approaching threshold), or RED (below threshold). Harmony bonus status shown prominently (active/inactive + current multiplier, e.g. "+20%"). When one resource falls behind, that segment turns red — one obvious action to restore the bonus. No math, no diagnosis puzzle.
 
 ### 5.1 Anima — The Conjuring Action
 
@@ -149,7 +149,7 @@ Two types — intentional and preventable (subject to floor above):
 **Intentional:**
 - **Sacrifice** — player manually sacrifices a cultist for permanent passive Anima production. Each sacrifice adds **+6 Anima/min** (base). Stackable — multiple sacrifices across a run are explicitly intended. M3 is the tutorial sacrifice; later ones are strategic decisions. With 5–8 starting cultists and a floor of 3, up to 5 sacrifices are possible across a run.
   - **Ossuary construct** increases per-sacrifice rate to **+9 Anima/min**
-  - **Cindermark artifact** doubles total sacrifice production **retroactively** (all active sacrifices, not just future ones)
+  - **Cindermark artifact** doubles all active sacrifice Anima/min **retroactively** — applies to every existing sacrifice, not just future ones (e.g. 3 active sacrifices at +6/min each → +36/min total after Cindermark)
 - **Expedition loss** — cultists sent on low-devotion expeditions risk not returning. 50% Anima refunded.
 
 **Preventable:**
@@ -176,6 +176,8 @@ Each gateway has a **Devotion meter** (0–100%) that slowly decays over time. D
 | + Both combined | 0.34%/min | ~88 min | ~4.9h |
 
 The player should discipline when the gauge hits ~70% — roughly every 60 min at the base normal rate. All decay modifiers are tunable starting values.
+
+**Per-tick conversion:** All rates are stored as %/min for readability. Tick application: `devotion -= rate × (deltaMs / 60000)`. Example: 0.5%/min normal rate → `devotion -= 0.5 × (deltaMs / 60000)` per tick. Modifiers apply multiplicatively to the per-minute rate before conversion.
 
 **Decay timing (phased):**
 - **Milestone 4 (~0:45h):** Devotion decay begins at the slow rate (0.15%/min). The gauge visibly moves over time — the player can observe the system starting to matter.
@@ -290,7 +292,7 @@ Unlocked when Phase 1 is fully purchased. Resource-constrained — a run earns ~
 | # | Automation Path | Cost | Acceleration Path | Cost |
 |---|---|---|---|---|
 | 1 | **Overseer's Rite** — Global Discipline action unlocked (5 min cooldown, all gateways at once) | 80 Gnosis | **Blood Accelerant** — Expedition timers -20% | 80 Gnosis |
-| 2 | **Trifecta Resonance** — Harmony bonus multiplier +10% additional | 100 Gnosis | **The Hungry Gate** — Channel burst output +30%; Voltis yield per channel +30% | 100 Gnosis |
+| 2 | **Trifecta Resonance** — Harmony bonus multiplier +10% additional | 100 Gnosis | **The Hungry Gate** — Channel burst output +30%; Voltis yield per channel +30% (Voltis-only) | 100 Gnosis |
 | 3 | **Eternal Compact** — Automation costs (Voltis) -20%; automated conjure rate +25% | 120 Gnosis | **The Final Veil** — All production rates +15% | 120 Gnosis |
 
 Phase 2 branch total: **300 Gnosis each**
@@ -298,6 +300,7 @@ Phase 2 branch total: **300 Gnosis each**
 **Gnosis budget (verified):**
 - Phase 1: 180 + Phase 2 branch: 300 = **480 Gnosis needed**
 - Earnable before M8: ~500 Gnosis → ~20 surplus ✓ confirms "little to spare"
+- *Derivation (to re-verify against final `src/data/` values):* Planet A sustained channel ~8 Gnosis/min from M4 onward (~3h active = ~1440 Gnosis potential, but soft-capped spending). Realistic figure assumes player spends Gnosis on research as it accumulates rather than hoarding — ~500 Gnosis available as a flowing budget before M8. Flag for balance pass when channel rates are finalised.
 
 **Cost model:** Gnosis only. Instant when affordable — no queue, no timers. Nodes unlock in order; Phase 2 requires Phase 1 complete.
 
@@ -432,7 +435,7 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 
 | # | Name | Type | Cost | Reward on completion | Unlocks after |
 |---|---|---|---|---|---|
-| 1 | **Cindermark** | Crafted | Anima-heavy | Passive Anima production +30%, cultist sacrifice yields doubled | Milestone 3 |
+| 1 | **Cindermark** | Crafted | Anima-heavy | Passive Anima production +30%; all active sacrifice yields doubled retroactively | Milestone 3 |
 | 2 | **Voidwreath** | Discovered | Planet A expedition | Gnosis channel efficiency +40%, unlocks a third expedition slot temporarily | Milestone 5 |
 | 3 | **Whisperlock** | Crafted | Gnosis + Anima | Research speed +50%, Phase 1 nodes auto-complete on Rehearsal | Milestone 6 |
 | 4 | **Hungering Lens** | Discovered | Planet A expedition (M8) | Voltis soft cap doubled, automation costs -25% | Milestone 8 |
@@ -441,7 +444,7 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 
 **Crafted artifacts:** Spend resources in defined ratios. Cost requires planning — player may need to temporarily redirect production. This is a designed spike of active engagement. The reward makes the sacrifice worth it.
 
-**Cost progress bar:** All crafted artifacts display a progress bar showing current resource % toward completion cost (e.g., "12% of Anima required"). This sets expectations without editorializing — seeing progress motivates resource allocation without requiring explanation. Always visible on the artifact panel.
+**Cost progress bar:** All crafted artifacts display a progress bar showing current resource % toward completion cost. For single-resource artifacts the bar is straightforward. For multi-resource artifacts (e.g. Unbinding: Anima + Gnosis + Voltis), the bar shows the **bottleneck resource** — whichever is furthest from its requirement. Tooltip breaks down all three individually. Example: "Unbinding — 80% Anima, 45% Gnosis, 20% Voltis → bar shows 20%." Always visible on the artifact panel.
 
 **Discovered artifacts:** Send cultists on an expedition. They return with the artifact, a Choice event, or partial loot. Expedition for a discovered artifact has higher stakes than a standard resource run. Higher risk, but the reward justifies the gamble.
 
