@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.9 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 1.0 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -162,9 +162,21 @@ Each Rehearsal run preserves recruitment speed improvements. Cultists don't carr
 
 Each gateway has a **Devotion meter** (0–100%) that slowly decays over time. Devotion is strictly per-gateway — not per-cultist. As devotion falls, cultist throughput at that gateway drops proportionally.
 
+**Decay rates:**
+
+| Phase | Rate | 100% → 70% (discipline trigger) | 100% → 0% (collapse) |
+|---|---|---|---|
+| M4–M7 (slow) | 0.15%/min | ~3.3h | ~11h |
+| M7+ (normal) | 0.5%/min | ~60 min | ~3.3h |
+| + Warding Stones (−20%) | 0.4%/min | ~75 min | ~4.2h |
+| + Heretical Wards (−15%) | 0.425%/min | ~71 min | ~3.9h |
+| + Both combined | 0.34%/min | ~88 min | ~4.9h |
+
+The player should discipline when the gauge hits ~70% — roughly every 60 min at the base normal rate. All decay modifiers are tunable starting values.
+
 **Decay timing (phased):**
-- **Milestone 4 (~0:45h):** Devotion decay begins, but at a slow rate (~1.5% per 10 minutes). The gauge visibly moves over time — the player can observe the system starting to matter.
-- **Milestone 7 (~3:00h) — "Devotion Crisis":** A milestone EVENT accelerates decay to its normal rate. The player has watched devotion creep down for ~2 hours; the Crisis makes it suddenly urgent. This makes M7 feel earned, not arbitrary — the problem was always there, it just got worse.
+- **Milestone 4 (~0:45h):** Devotion decay begins at the slow rate (0.15%/min). The gauge visibly moves over time — the player can observe the system starting to matter.
+- **Milestone 7 (~3:00h) — "Devotion Crisis":** Decay accelerates to the normal rate (0.5%/min). The player has watched devotion creep down for ~2 hours; the Crisis makes it suddenly urgent. This makes M7 feel earned, not arbitrary — the problem was always there, it just got worse.
 
 **The Discipline action:**
 - Player taps a gateway to **Discipline** its cultists — curse them, punish them, re-consecrate the site
@@ -319,16 +331,34 @@ Each additional cultist reduces timer by ~25%. With 2 parallel slots and 2-culti
 - Base expedition timer depends on destination and cultist count (more cultists = faster, per table above)
 - Devotion does NOT affect expedition speed — devotion is a gateway mechanic, not an expedition mechanic. Expedition risk is determined by devotion at the *departure gateway* (snapshot at send time), affecting outcome odds only (see §11.2), not timer.
 - Multiple expeditions run in parallel (base cap: 2, upgradeable to 3 via talent keystone)
-- Early expeditions (before Voltis) are free. Once Voltis exists, each active expedition costs Voltis to sustain the open gateway.
+- Early expeditions (before Voltis) are free. Once Voltis exists, each active expedition costs Voltis per minute to sustain the open gateway:
+  - Planet A: **5 Voltis/min**
+  - Planet B: **8 Voltis/min**
+  - Example cost: a 15-min Planet A run = 75 Voltis; a 26-min Planet B run = ~208 Voltis
+  - Running 2 parallel expeditions simultaneously doubles the drain — creates real tension against automation Voltis costs
 - Runs fully in background — no required interaction while active
 
 ### 11.2 Return Outcomes
 
+**Probability model:** The Choice rate is fixed at 40% regardless of devotion. Lost probability is devotion-gated — impossible above 50% devotion, scaling linearly to 30% at 0% devotion. Clean find takes the remainder.
+
+Formula: `lost% = max(0, (50 − devotion%) × 0.6)`
+
+| Devotion at snapshot | Lost % | Choice % | Clean % |
+|---|---|---|---|
+| 100%–50% | 0% | 40% | 60% |
+| 40% | 6% | 40% | 54% |
+| 25% | 15% | 40% | 45% |
+| 10% | 24% | 40% | 36% |
+| 0% | 30% | 40% | 30% |
+
+Cultist count does not affect outcome odds — speed only. Both planets use the same formula; Planet B's risk comes from longer timers and higher stakes loot, not a different probability curve. All values are tunable starting points.
+
 | Outcome | Trigger | Result |
 |---|---|---|
-| **Clean find** | High devotion + good odds | Artifact or resource cache, no complications |
-| **The Choice** | ~40% of returns | Player presented with a decision (see §11.3) |
-| **Lost** | Low devotion run | Cultists don't return. 50% Anima refund. |
+| **Clean find** | Devotion ≥ 50% (or luck above) | Artifact or resource cache, no complications |
+| **The Choice** | ~40% of returns (devotion-independent) | Player presented with a decision (see §11.3) |
+| **Lost** | Devotion < 50%; probability scales to 30% at 0% | Cultists don't return. 50% Anima refund. |
 
 ### 11.3 The Choice — Tiered Pool (~25 total)
 
@@ -355,12 +385,24 @@ Choices are drawn from a weighted pool. Minor choices appear often, major occasi
 - *"The dimension is collapsing. All cultists can make it back but the gateway burns out permanently — or one cultist stays to hold it, lost forever, gateway survives."* [sacrifice option greyed out at floor of 3]
 
 ### 11.4 Corruption Mechanic
-- Corrupted artifact applies one debuff from a defined list (e.g. -15% on one production rate, +20% Discipline cooldown)
-- Debuff always visible, always fixable — cleansing cost shown upfront at all times
-- Maximum **one corrupted artifact active** at a time
-- Second corruption auto-cleanses the first at half cost
+
+Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff from the list below is applied at random. Max one active corruption at a time.
+
+**Debuff pool (one drawn randomly on corrupt):**
+
+| Name | Effect |
+|---|---|
+| **The Gnawing** | Gnosis production −15% |
+| **Ash-Taint** | Anima production −10% |
+| **The Shuddering Rite** | Discipline cooldown +25% |
+| **Veil Sickness** | Expedition timers +20% |
+| **Voltis Drain** | Voltis production −15% |
+
+**Cleansing cost: 200 Gnosis** (flat, any debuff). Always visible on the artifact panel with cost shown upfront.
+
+- Second corruption auto-cleanses the first at half cost (100 Gnosis), then applies the new debuff
 - No corruption can reduce a resource below its natural production floor
-- Scales with later layers — parked for Layer 1 scope
+- The Voidwreath major choice ("Cleanse now (costs 200 Gnosis)") uses the standard cleansing cost
 
 ---
 
@@ -492,8 +534,7 @@ Player triggers Rehearsal at checkpoints (milestones 8, 10, or 11). Sacrifices p
 **What persists:**
 - **Completed artifacts** — survive Rehearsal and count toward the Summoning permanently
 - Dark Boon points (accumulated, spent at Rehearsal screen)
-- Talent unlocks (permanent)
-- Devotion upgrade tier
+- Talent unlocks (permanent — including all Devotion talent nodes)
 - **All Phase 1 research nodes auto-complete** on the next run
 - **Production multiplier: +15% to all resource production per completed Rehearsal** (permanent, cumulative — e.g. after 3 Rehearsals, +45% to all production)
 - Gateway memory — Planet A/B locations known, construct rebuild costs reduced by 40% (permanent after first Rehearsal, caps at 70% after 3 runs)
@@ -631,6 +672,12 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 | 6 | **Artifact flavour text** — one line per artifact for reveal moment | Low (content) | Open |
 | 7 | **Artifact reward balance** — reward values need tuning to feel gamechanging without breaking progression | Medium | Proposed — needs playtesting |
 | 8 | **Harmony bonus values** — base multiplier and Trifecta threshold need calibration | Medium | Proposed — needs playtesting |
+| ~~G1~~ | ~~Devotion normal rate missing~~ | ~~High~~ | Resolved — 0.5%/min after M7; decay table in §7 |
+| ~~G2~~ | ~~Expedition outcome probabilities undefined~~ | ~~High~~ | Resolved — lost% = max(0, (50−devotion)×0.6); Choice always 40%; table in §11.2 |
+| ~~G3~~ | ~~Expedition Voltis sustain cost missing~~ | ~~High~~ | Resolved — Planet A: 5 Voltis/min, Planet B: 8 Voltis/min; spec in §11.1 |
+| ~~G4~~ | ~~Corruption scope contradictory~~ | ~~High~~ | Resolved — corruption is in Layer 1; 5-debuff pool, 200 Gnosis cleanse; spec in §11.4 |
+| ~~G5~~ | ~~"Cultist automation" node effect unclear~~ | ~~High~~ | Resolved — it's Blood Compact (Phase 1 node 3, automates conjuring); spec in §10 |
+| ~~G6~~ | ~~"Devotion upgrade tier" duplicates talents~~ | ~~Medium~~ | Resolved — removed from §15 persistence list; covered by "Talent unlocks (permanent)" |
 | ~~B1~~ | ~~Conjuring mechanic undefined~~ | ~~High~~ | Resolved — 8 Anima/8s cooldown; speed = cooldown reduction; Blood Compact automates it; spec in §5.1 |
 | ~~B2~~ | ~~Sacrifice mechanics undefined~~ | ~~High~~ | Resolved — +6 Anima/min per sacrifice, stackable, multiple intended; Ossuary → +9/min; Cindermark doubles retroactively; spec in §6.5 |
 | ~~B3~~ | ~~Gateway construction cost missing~~ | ~~High~~ | Resolved — 250 Anima; buildable from M3; research node 2 gives -20%; spec in §8.4 |
