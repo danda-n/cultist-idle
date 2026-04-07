@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import type { GameState } from '../types'
 import { createInitialState } from '../engine/initialState'
-import { tick } from '../engine/gameLoop'
 import { saveGame, loadGame } from '../utils/storage'
 import {
   clickConjureAction,
@@ -21,6 +20,7 @@ import {
   buildPlanetBGatewayAction,
   cleanseCorruptionAction,
 } from '../engine/actions'
+import { tick } from '../engine/gameLoop'
 import type { ConstructType } from '../types'
 
 interface GameStore {
@@ -65,6 +65,8 @@ interface GameStore {
   buildPlanetBGateway: () => void
   /** Cleanse the active corruption */
   cleanseCorruption: () => void
+  /** TODO: TESTING ONLY — advance game state by N minutes instantly */
+  debugFastForward: (minutes: number) => void
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -160,5 +162,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   cleanseCorruption: () => {
     set(store => ({ state: cleanseCorruptionAction(store.state) }))
+  },
+
+  // TODO: TESTING ONLY — remove before release
+  debugFastForward: (minutes: number) => {
+    const deltaMs = minutes * 60_000
+    const now = Date.now() + deltaMs
+    set(store => ({ state: tick(store.state, deltaMs, now) }))
   },
 }))

@@ -15,6 +15,34 @@ import { ExpeditionPanel } from './ui/ExpeditionPanel'
 import { ArtifactPanel } from './ui/ArtifactPanel'
 import { TrifectaPanel } from './ui/TrifectaPanel'
 
+// TODO: TESTING ONLY — remove before release
+function DebugBar() {
+  const debugFastForward = useGameStore(s => s.debugFastForward)
+  return (
+    <div style={{
+      position: 'fixed', top: 0, right: 0, zIndex: 9999,
+      display: 'flex', gap: '4px', padding: '4px',
+      background: 'rgba(180,0,0,0.85)', borderBottomLeftRadius: '6px',
+    }}>
+      <span style={{ fontSize: '0.75rem', color: '#fff', alignSelf: 'center', marginRight: '4px', fontFamily: 'monospace' }}>
+        ⚠ TEST
+      </span>
+      {[1, 5, 10, 30, 60].map(m => (
+        <button
+          key={m}
+          onClick={() => debugFastForward(m)}
+          style={{
+            fontSize: '0.75rem', padding: '2px 6px', cursor: 'pointer',
+            background: '#222', color: '#fff', border: '1px solid #555', borderRadius: '3px',
+          }}
+        >
+          +{m}m
+        </button>
+      ))}
+    </div>
+  )
+}
+
 function App() {
   const initGame = useGameStore(s => s.initGame)
   const milestones = useGameStore(s => s.state.milestones)
@@ -40,6 +68,8 @@ function App() {
 
   return (
     <div className="game-layout">
+      {/* TODO: TESTING ONLY — remove before release */}
+      <DebugBar />
       {/* Summoning overlay */}
       {summoningStarted && (
         <div style={{
