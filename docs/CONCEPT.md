@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.15 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.16 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -63,7 +63,7 @@ Browser-based idle/incremental game. Minimal UI noise. Meaningful decisions. Dar
 - Gnosis channelling costs Anima to sustain
 
 **Trifecta philosophy — reward balance, don't punish imbalance:**
-Each resource works independently. Cross-dependencies create *costs* (Anima to channel, Voltis to automate), not *penalties*. When all three resources are above a threshold simultaneously, the player earns a **Harmony bonus** — a global production multiplier of **+20%** to all resources (tunable). Trifecta Resonance talent adds +10pp (= +30% total). Unbinding artifact doubles the active Harmony bonus (+40% base, +60% with talent). Losing Harmony isn't a punishment — it's losing a bonus. The player can choose to focus on one resource and sacrifice efficiency, or maintain balance for the boost. Upgrading one resource never *breaks* anything — it just means the other two haven't caught up yet for the bonus.
+Each resource works independently. Cross-dependencies create *costs* (Anima to channel, Voltis to automate), not *penalties*. When all three resources are above a threshold simultaneously, the player earns a **Harmony bonus** — a global production multiplier of **+20%** to all resources (tunable). Trifecta Resonance talent adds +10pp (= +30% total). Unbinding artifact doubles the *active* Harmony bonus: +20% base → +40%; +30% with Trifecta Resonance talent → +60%. Losing Harmony isn't a punishment — it's losing a bonus. The player can choose to focus on one resource and sacrifice efficiency, or maintain balance for the boost. Upgrading one resource never *breaks* anything — it just means the other two haven't caught up yet for the bonus.
 
 **Phased introduction:**
 1. **Milestone 4 (~0:45h):** First link — Gnosis channel costs Anima. Player learns "one resource feeds another." One-directional: Anima → Gnosis.
@@ -385,6 +385,8 @@ Cultist count does not affect outcome odds — speed only. Both planets use the 
 
 Choices are drawn from a weighted pool. Minor choices appear often, major occasionally, rare choices are memorable surprises. Players will not see the same choice repeatedly enough to anticipate it.
 
+> **Implementation note:** The examples below seed the tone and weighting. The full pool of ~25 is to be completed during the implementation content pass — not all choices are written yet.
+
 **Floor interaction:** Choices that would cause cultist loss are greyed out (unselectable) when the cult is at the floor of 3, consistent with the sacrifice button behavior (§6.4). The choice is presented with the floor-breaking option visible but disabled, with a one-line explanation ("Your cult cannot spare anyone").
 
 **Draw weights (tunable):** Minor 60%, Major 30%, Rare 10%. Target frequency: ~1 rare choice per 10 expedition returns on average.
@@ -436,11 +438,11 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 | # | Name | Type | Cost | Reward on completion | Unlocks after |
 |---|---|---|---|---|---|
 | 1 | **Cindermark** | Crafted | Anima-heavy | Passive Anima production +30%; all active sacrifice yields doubled retroactively | Milestone 3 |
-| 2 | **Voidwreath** | Discovered | Planet A expedition | Gnosis channel efficiency +40%, unlocks a third expedition slot temporarily | Milestone 5 |
-| 3 | **Whisperlock** | Crafted | Gnosis + Anima | Research speed +50%, Phase 1 nodes auto-complete on Rehearsal | Milestone 6 |
+| 2 | **Voidwreath** | Discovered | Planet A expedition | Gnosis channel efficiency +40%; unlocks a third expedition slot for the remainder of the current run (resets on Rehearsal — permanent 3rd slot requires talent keystone) | Milestone 5 |
+| 3 | **Whisperlock** | Crafted | Gnosis + Anima | Research speed +50%; Phase 2 research costs -20% Gnosis | Milestone 6 |
 | 4 | **Hungering Lens** | Discovered | Planet A expedition (M8) | Voltis soft cap doubled, automation costs -25% | Milestone 8 |
-| 5 | **Unbinding** | Crafted | All three trifecta resources | Harmony bonus doubled (e.g. +30-50%), Trifecta threshold lowered | Milestone 9 |
-| 6 | **Voicecaller** | Discovered | Full trifecta expedition at high threshold | All production rates +20%, Devotion decay halved permanently | Milestone 11 |
+| 5 | **Unbinding** | Crafted | All three trifecta resources | Harmony bonus doubled (+40% base, +60% with Trifecta Resonance talent); Harmony threshold reduced to 0% of soft cap — Harmony is always active while any resources are present | Milestone 9 |
+| 6 | **Voicecaller** | Discovered | Planet A or B expedition (M11+) | All production rates +20%, Devotion decay halved permanently | Milestone 11 |
 
 **Crafted artifacts:** Spend resources in defined ratios. Cost requires planning — player may need to temporarily redirect production. This is a designed spike of active engagement. The reward makes the sacrifice worth it.
 
@@ -702,9 +704,9 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 | # | Question | Priority | Status |
 |---|---|---|---|
 | 1 | **Rehearsal checkpoint positions** — now milestones 8/10/11; needs playtesting | Medium | Proposed |
-| 2 | **Expedition success rate formula** — proposed formula in #25 | Medium | Proposed — needs playtesting |
-| 3 | **Cultist passive recruitment rate** — proposed 1 per 20 min base in #23 | Medium | Proposed — needs playtesting |
-| 4 | **Resource soft cap values** — proposed values in #24 | Low | Proposed — needs playtesting |
+| 2 | **Expedition success rate formula** — specced in §11.2; needs playtesting to verify feel | Medium | Specced — needs playtesting |
+| 3 | **Cultist passive recruitment rate** — specced as 1/20 min in §6.2; needs playtesting | Medium | Specced — needs playtesting |
+| 4 | **Resource soft cap values** — specced as Anima 500/Gnosis 250/Voltis 300 in §5; needs playtesting | Low | Specced — needs playtesting |
 | 5 | **Choice pool — complete the 25** — 10 seeded above, 15 more to write during implementation | Low (content) | Open |
 | 6 | **Artifact flavour text** — one line per artifact for reveal moment | Low (content) | Open |
 | 7 | **Artifact reward balance** — reward values need tuning to feel gamechanging without breaking progression | Medium | Proposed — needs playtesting |
