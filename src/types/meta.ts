@@ -22,4 +22,6 @@ export interface MetaState {
   conjureCompletesAt: number
   /** Counter for generating deterministic cultist IDs */
   nextCultistId: number
+  /** Whether the one-time Precise Rite tutorial has been dismissed */
+  preciseTutorialSeen: boolean
 }

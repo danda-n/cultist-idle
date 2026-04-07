@@ -48,7 +48,7 @@ export function ConstructsPanel() {
       description: 'Further reduces conjure cooldown to 4.8s',
       cost: ALTAR_T2_COST_ANIMA,
       tier: 2,
-      prerequisiteLabel: 'Requires: Altar T1 + Conjuring Rites research',
+      prerequisiteLabel: 'Requires: Altar T1 + Conjuring Rites (Phase 2 research, unlocked via Gnosis)',
       isAvailable: altarT1Built && conjuringRitesPurchased,
       isBuilt: altarT2Built,
     },
@@ -86,24 +86,24 @@ export function ConstructsPanel() {
             className={`construct-card${entry.isBuilt ? ' construct-card-built' : ''}`}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <span style={{ fontFamily: 'Cinzel, serif', fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+              <span style={{ fontFamily: 'Cinzel, serif', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
                 {entry.label}
               </span>
               {entry.isBuilt ? (
-                <span style={{ fontSize: '0.85rem' }} className="text-green">Built</span>
+                <span style={{ fontSize: '1rem' }} className="text-green">Built</span>
               ) : (
                 <span className={`construct-cost ${costClass}`}>
                   {formatNumber(entry.cost)} Anima
                 </span>
               )}
             </div>
-            <div style={{ fontSize: '0.9rem', marginTop: '3px' }} className="text-muted">
+            <div style={{ fontSize: '1rem', marginTop: '4px' }} className="text-muted">
               {entry.description}
             </div>
             {!entry.isBuilt && (
               <>
                 {entry.prerequisiteLabel && !entry.isAvailable && (
-                  <div style={{ fontSize: '0.8rem', marginTop: '4px', color: 'var(--text-ghost)' }}>
+                  <div style={{ fontSize: '0.9rem', marginTop: '5px', color: 'var(--text-ghost)' }}>
                     {entry.prerequisiteLabel}
                   </div>
                 )}

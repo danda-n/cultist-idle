@@ -69,11 +69,11 @@ body {
 /* Game layout */
 .game-layout {
   display: grid;
-  grid-template-columns: 320px 1fr 300px;
+  grid-template-columns: 420px 1fr 400px;
   grid-template-rows: auto 1fr;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   min-height: 100vh;
-  padding: var(--space-md);
+  padding: var(--space-lg);
 }
 
 .game-header {
@@ -113,7 +113,7 @@ body {
 
 .panel-title {
   font-family: 'Cinzel', serif;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -123,11 +123,11 @@ body {
 /* Resource bar */
 .resource-bar-track {
   position: relative;
-  height: 10px;
+  height: 14px;
   background-color: var(--bg-elevated);
   border-radius: 2px;
   overflow: visible;
-  margin-top: var(--space-xs);
+  margin-top: var(--space-sm);
 }
 
 .resource-bar-fill {
@@ -150,13 +150,13 @@ body {
 /* Conjure panel */
 .conjure-btn {
   width: 100%;
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
   background-color: var(--accent-primary);
   color: var(--text-primary);
   border: 1px solid var(--accent-dim);
   border-radius: 4px;
   font-family: 'Cinzel', serif;
-  font-size: 1.25rem;
+  font-size: 1.625rem;
   letter-spacing: 0.08em;
   cursor: pointer;
   transition: background-color 0.15s, box-shadow 0.15s;
@@ -188,11 +188,11 @@ body {
 }
 
 .conjure-progress-track {
-  height: 14px;
+  height: 20px;
   background-color: var(--bg-elevated);
   border-radius: 2px;
   overflow: hidden;
-  margin-top: var(--space-xs);
+  margin-top: var(--space-sm);
 }
 
 .conjure-progress-fill {
@@ -206,7 +206,7 @@ body {
 .narrative-message {
   font-style: italic;
   color: var(--text-secondary);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   border-left: 2px solid var(--accent-dim);
   padding-left: var(--space-sm);
   margin-top: var(--space-sm);
@@ -222,13 +222,13 @@ body {
 }
 
 .btn-small {
-  padding: 4px 14px;
+  padding: 6px 20px;
   background-color: var(--bg-elevated);
   color: var(--text-primary);
   border: 1px solid var(--border-dim);
   border-radius: 3px;
   font-family: 'Cinzel', serif;
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: background-color 0.1s;
 }
@@ -258,7 +258,7 @@ body {
 
 .construct-cost {
   font-family: 'Courier Prime', monospace;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
 }
 

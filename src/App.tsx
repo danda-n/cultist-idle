@@ -24,13 +24,13 @@ function App() {
       <header className="game-header">
         <h1
           className="font-display"
-          style={{ fontSize: '1.25rem', color: 'var(--gold-primary)', letterSpacing: '0.08em' }}
+          style={{ fontSize: '1.875rem', color: 'var(--gold-primary)', letterSpacing: '0.08em' }}
         >
           Cultist Idle
         </h1>
         <span
           className="font-heading"
-          style={{ fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase' }}
+          style={{ fontSize: '1rem', color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase' }}
         >
           {m2Reached ? 'The Veil Trembles' : 'The Gathering Begins'}
         </span>

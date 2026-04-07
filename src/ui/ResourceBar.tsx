@@ -21,11 +21,11 @@ export function ResourceBar() {
     <div className="panel">
       <div className="panel-title">Anima</div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-        <span className="text-number" style={{ fontSize: '1.875rem', color: 'var(--gold-primary)' }}>
+        <span className="text-number" style={{ fontSize: '2.75rem', color: 'var(--gold-primary)' }}>
           {formatNumber(resources.anima)}
         </span>
         {ratePerMin > 0 && (
-          <span className="text-number text-green" style={{ fontSize: '1rem' }}>
+          <span className="text-number text-green" style={{ fontSize: '1.5rem' }}>
             {formatRate(ratePerMin)}
           </span>
         )}
@@ -41,7 +41,7 @@ export function ResourceBar() {
         />
       </div>
       {resources.anima >= SOFT_CAP_ANIMA && (
-        <div style={{ fontSize: '0.9rem', marginTop: '4px' }} className="text-warn">
+        <div style={{ fontSize: '1.1rem', marginTop: '6px' }} className="text-warn">
           Above soft cap — passive production reduced to 10%
         </div>
       )}

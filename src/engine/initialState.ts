@@ -46,6 +46,7 @@ export function createInitialState(): GameState {
       conjureActive: false,
       conjureCompletesAt: 0,
       nextCultistId: 1,
+      preciseTutorialSeen: false,
     },
     constructs: {},
     trifecta: {

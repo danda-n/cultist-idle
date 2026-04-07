@@ -15,13 +15,13 @@ const TOAST_DURATION_MS = 8_000
 export function ConjurePanel() {
   const state = useGameStore(s => s.state)
   const clickConjure = useGameStore(s => s.clickConjure)
+  const applyPatch = useGameStore(s => s.applyPatch)
 
   const { meta } = state
   const cooldownMs = getConjureCooldown(state)
 
-  // Progress 0–1, re-computed each render (RAF-driven by game loop)
-  let progress = 0
   const now = Date.now()
+  let progress = 0
   if (meta.conjureActive && meta.conjureCompletesAt > 0) {
     const startedAt = meta.conjureCompletesAt - cooldownMs
     progress = Math.min((now - startedAt) / cooldownMs, 1)
@@ -32,6 +32,14 @@ export function ConjurePanel() {
     !meta.conjureActive &&
     meta.lastConjureCompletedAt > 0 &&
     (now - meta.lastConjureCompletedAt) < CONJURE_PRECISE_WINDOW_MS
+
+  // Show Precise Rite tutorial once: fires after first conjure bar ever completes
+  const hasCompletedOnce = meta.lastConjureCompletedAt > 0
+  const showTutorial = hasCompletedOnce && !meta.preciseTutorialSeen
+
+  function dismissTutorial() {
+    applyPatch({ meta: { ...meta, preciseTutorialSeen: true } })
+  }
 
   // Narrative toast: only fires when flag transitions false → true
   const [activeNarrative, setActiveNarrative] = useState<string | null>(null)
@@ -61,14 +69,48 @@ export function ConjurePanel() {
       toastTimer.current = setTimeout(() => setActiveNarrative(null), TOAST_DURATION_MS)
     }
 
-    return () => {
-      if (toastTimer.current) clearTimeout(toastTimer.current)
-    }
+    return () => { if (toastTimer.current) clearTimeout(toastTimer.current) }
   }, [meta.narrativeSeen10Anima, meta.narrativeSeen25Anima, meta.narrativeSeen50Anima])
 
   return (
     <div className="panel" style={{ textAlign: 'center' }}>
       <div className="panel-title" style={{ textAlign: 'left' }}>Conjuring</div>
+
+      {/* Precise Rite one-time tutorial */}
+      {showTutorial && (
+        <div style={{
+          background: 'var(--bg-elevated)',
+          border: '1px solid var(--gold-dim)',
+          borderRadius: '4px',
+          padding: 'var(--space-md)',
+          marginBottom: 'var(--space-sm)',
+          textAlign: 'left',
+        }}>
+          <div style={{ fontFamily: 'Cinzel, serif', fontSize: '1.1rem', color: 'var(--gold-primary)', marginBottom: '8px' }}>
+            The Precise Rite
+          </div>
+          <div style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+            Each conjure bar takes {formatDuration(cooldownMs)} to fill.
+            The moment it completes, a <span style={{ color: 'var(--gold-primary)', fontWeight: 'bold' }}>golden window</span> opens
+            for 1.5 seconds — the button glows and pulses.
+          </div>
+          <div style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: '1.6', marginTop: '6px' }}>
+            Click <strong style={{ color: 'var(--text-primary)' }}>Conjure</strong> during that window
+            to earn <span style={{ color: 'var(--gold-primary)', fontWeight: 'bold' }}>+3 bonus Anima</span> (11 instead of 8).
+            Miss the window and you still get 8.
+          </div>
+          <div style={{ fontSize: '1rem', color: 'var(--text-muted)', marginTop: '6px', fontStyle: 'italic' }}>
+            Timing your clicks is the fastest way to gather Anima early.
+          </div>
+          <button
+            className="btn-small"
+            style={{ marginTop: '10px', width: '100%' }}
+            onClick={dismissTutorial}
+          >
+            Understood — begin the rite
+          </button>
+        </div>
+      )}
 
       <button
         className={`conjure-btn${inPreciseWindow ? ' conjure-btn-precise' : ''}`}
@@ -77,7 +119,9 @@ export function ConjurePanel() {
       >
         {meta.conjureActive
           ? `Conjuring… (${formatDuration((1 - progress) * cooldownMs)})`
-          : 'Conjure Anima'}
+          : inPreciseWindow
+            ? '✦ Precise Rite Window ✦'
+            : 'Conjure Anima'}
       </button>
 
       {meta.conjureActive && (
@@ -87,8 +131,8 @@ export function ConjurePanel() {
       )}
 
       {inPreciseWindow && (
-        <div style={{ marginTop: '8px', fontSize: '1rem', color: 'var(--gold-primary)' }}>
-          Precise Rite — conjure now for +3 Anima
+        <div style={{ marginTop: '8px', fontSize: '1.25rem', color: 'var(--gold-primary)', fontFamily: 'Cinzel, serif' }}>
+          Click now for +3 bonus Anima!
         </div>
       )}
 
@@ -99,7 +143,7 @@ export function ConjurePanel() {
       )}
 
       {meta.conjureAutomated && (
-        <div style={{ marginTop: '6px', fontSize: '0.875rem' }} className="text-muted">
+        <div style={{ marginTop: '6px', fontSize: '1rem' }} className="text-muted">
           Blood Compact active — conjuring automated
         </div>
       )}
