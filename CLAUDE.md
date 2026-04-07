@@ -3,14 +3,14 @@
 ## Project Context
 
 Browser-based idle/incremental game. React 19 + TypeScript 6 + Vite 8 + Zustand 5 + Tailwind CSS v4.
-Full design: `docs/CONCEPT.md` (v0.5). Implementation order: `docs/dependency-map.md`. 25 open GitHub issues (#1–#26).
+Full design: `docs/CONCEPT.md` (v0.7). Implementation order: `docs/dependency-map.md`. 25 open GitHub issues (#1–#26).
 
 ## Core Rules
 
 1. **Engine contracts first, content data after.** Never hardcode a game value in system logic. All tunable numbers live in `src/data/`.
 2. **Every system is a pure function of state + deltaMs.** Systems receive the current game state and elapsed time, return new state. No side effects inside system logic.
 3. **Save/load is not optional.** Every new piece of state must be serializable and included in the persistence layer from day one.
-4. **Offline progress uses the same tick function.** `tick(deltaMs)` must produce identical results whether called 60 times per second or once with 8 hours of elapsed time.
+4. **Offline progress uses the same tick function.** `tick(state, deltaMs)` is a pure function — identical results online or offline. Edge cases (devotion floor, queued Choice events) are handled by a separate `offlineProcessor(state, deltaMs)` that wraps the tick. See §18 of CONCEPT.md.
 5. **Progressive disclosure in UI.** Never render a system the player hasn't unlocked. Check milestone state before showing any panel.
 
 ## Architecture

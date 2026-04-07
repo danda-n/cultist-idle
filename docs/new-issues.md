@@ -3,6 +3,8 @@
 Living document tracking unresolved gameplay questions and logic issues.
 **All questions must be resolved or explicitly deferred before implementation of the affected system.**
 
+> **Status as of v0.7:** All blocking questions resolved. Implementation may begin.
+
 ---
 
 ## Logic Contradictions
@@ -13,75 +15,33 @@ Living document tracking unresolved gameplay questions and logic issues.
 ### ~~Q2: "The Idle Moment" can't work without Voltis~~ ✅ RESOLVED
 **Resolution (v0.6):** Sustained Channel costs only Anima before Voltis exists. Voltis sustain cost activates when Voltis production begins (milestone 9). Milestone 8 "idle moment" is now at ~4:00h with Anima + Gnosis self-sustaining via Anima-cost-only sustained channel. Timeline compressed in §13.
 
-### Q3: Construct system vs milestone 2 trigger — BLOCKS #19
-**Affects:** #19 (Constructs), #14 (Milestones), Milestone 2
-
-#19 proposes "Altar exists from game start." Milestone 2 (0:20) is "The First Construct — Building system revealed." If Altar already exists, what does the player build at minute 20?
-
-**Needs answer:**
-- a) Altar does NOT exist from start — player builds it at milestone 2
-- b) Altar exists but can be UPGRADED — first upgrade triggers milestone 2
-- c) Different construct entirely (e.g. a Sanctum, a Ritual Circle foundation)
+### ~~Q3: Construct system vs milestone 2 trigger~~ ✅ RESOLVED
+**Resolution (v0.7):** Altar exists from game start as a passive structure (no build UI). At M2, the Build System is revealed. First available action is Altar Tier 1 upgrade — this is the tutorial action for the construct UI. M2 fires on ~50 Anima threshold. Full construct list spec added in §9. Updated in §9, §14.
 
 ### ~~Q4: Voicecaller unlock milestone contradiction~~ ✅ RESOLVED
 **Resolution (v0.6):** Voicecaller now unlocks at milestone 11 (first artifact completed). Milestone table and artifact table aligned in §11 and §13.
 
-### Q5: Choice events that remove cultists vs floor of 3 — BLOCKS #12
-**Affects:** #12 (Expeditions), #7 (Cultists)
-
-Several Choice events permanently remove cultists ("One cultist wants to stay behind"). The global floor of 3 (§6.4) must interact with these.
-
-**Needs answer:**
-- a) Choices that would break the floor simply don't appear in the pool
-- b) The "lose cultist" option is grayed out with explanation
-- c) Floor protection applies — cultist "narrowly escapes" instead
+### ~~Q5: Choice events that remove cultists vs floor of 3~~ ✅ RESOLVED
+**Resolution (v0.7):** Floor-breaking options are greyed out (unselectable) with a one-line explanation ("Your cult cannot spare anyone"). Consistent with sacrifice button behavior (§6.4). Updated in §11.3.
 
 ---
 
 ## Underspecified Systems
 
-### Q6: Channel action values undefined — BLOCKS #10
-**Affects:** #10 (Gateways), #15 (Prestige — Channelling talents)
+### ~~Q6: Channel action values undefined~~ ✅ RESOLVED
+**Resolution (v0.7):** Base channel values defined — costs 15 Anima, returns 25 Gnosis (or Voltis), 60-second cooldown. Devotion affects sustained trickle only; burst channel is always full power. Updated in §8.1.
 
-The Channel burst action (§8.1) has no defined values:
-- Anima cost per channel?
-- Gnosis/Voltis returned per channel?
-- Cooldown duration? (Talent says "Channel cooldown halved" — half of what?)
-- Does devotion affect burst channel output, or only sustained trickle?
-
-**Needs answer:** Base Channel values (cost, output, cooldown). These are tunable but need starting values like Discipline got.
-
-### Q7: Construct system needs a spec — BLOCKS #19
-**Affects:** #19 (Constructs), #14 (Milestones)
-
-This is one of the earliest systems (~0:20) but the least specified. The GitHub issue only has a "proposed" design. Before implementation we need:
-- Complete list of construct types in Layer 1
-- Costs for each
-- Whether constructs have upgrade tiers
-- Exact milestone 2 trigger condition
-- How constructs interact with prestige (gateway memory reduces rebuild cost — by how much?)
+### ~~Q7: Construct system needs a spec~~ ✅ RESOLVED
+**Resolution (v0.7):** Full construct system specified in new §9: 6 constructs across Layer 1, unlock milestones, costs (tunable), effects. Prestige interaction: 40% cost reduction after first Rehearsal, caps at 70% after 3 runs. Updated in §9, §14.
 
 ### ~~Q8: Base parallel expedition cap not in expedition spec~~ ✅ RESOLVED
 **Resolution (v0.6):** Base cap of 2 parallel expeditions (global, not per-planet) now documented in §10.1. Talent keystone upgrades to 3.
 
-### Q9: Research tree cost model undefined — BLOCKS #11
-**Affects:** #11 (Research tree)
+### ~~Q9: Research tree cost model undefined~~ ✅ RESOLVED
+**Resolution (v0.7):** Gnosis-only cost. Research is instant when affordable — no queue, no timers. Phase 1 nodes: 30–75 Gnosis each. Phase 2 branch nodes: 100–150 Gnosis each. Total per branch: ~400 Gnosis. A first run before M8 earns ~450–550 Gnosis — enough for Phase 1 + one full branch. Two-path choice is economic constraint, not artificial lock. Updated in §10.
 
-Phase 2 "can't fully pursue both paths at once" — what enforces this?
-- Gnosis cost per node? How steep?
-- Time cost? Gnosis production rate vs research cost?
-- Is there a research queue, or is research instant when you can afford it?
-
-**Needs answer:** Research node cost structure and what makes the two-path choice meaningful.
-
-### Q10: Stunned cultist mechanics incomplete — BLOCKS #7, #9
-**Affects:** #7 (Cultists), #9 (Devotion)
-
-When floor protection triggers (§6.4), the cultist is "stunned for 5 minutes." But:
-- Where does the stunned cultist go? Removed from all tasks? Counts as idle?
-- Is their gateway slot freed for another cultist to fill?
-- Does the gateway go offline for 5 minutes too, or just the cultist?
-- After stun ends, does the cultist auto-reassign via priority system?
+### ~~Q10: Stunned cultist mechanics incomplete~~ ✅ RESOLVED
+**Resolution (v0.7):** Stun (floor protection trigger) mechanics — cultist is greyed out in assignment panel for 5 min; their slot is freed immediately (can be reassigned); gateway continues at reduced capacity with remaining cultists; cultist auto-reassigns per priority system when stun expires. Gateway does NOT go offline — player covers the gap by reprioritizing (an interesting decision, not dead time). Updated in §6.4.
 
 ### ~~Q11: Which devotion applies to expeditions?~~ ✅ RESOLVED
 **Resolution (v0.6):** Devotion no longer affects expedition speed — only outcome odds. Departure gateway devotion is snapshot at send time. Updated in §10.1. Devotion is per-gateway, not per-cultist — clarified in §7.
@@ -93,48 +53,21 @@ When floor protection triggers (§6.4), the cultist is "stunned for 5 minutes." 
 
 ## Timeline / Sequence Gaps
 
-### Q13: When does devotion decay actually start? — BLOCKS #9
-**Affects:** #9 (Devotion), #14 (Milestones)
+### ~~Q13: When does devotion decay actually start?~~ ✅ RESOLVED
+**Resolution (v0.7):** Option C. Decay starts at M4 (slow rate, ~1.5%/10 min). M7 "Devotion Crisis" is an event that accelerates decay to its normal rate — the problem was always there, it became urgent. Player has seen the gauge moving for ~2 hours; Crisis feels earned not arbitrary. Updated in §7, §14.
 
-Gateway opens at milestone 4 (~0:45h). Devotion Crisis is milestone 7 (~3:00h). ~2.25 hours apart. Options:
-- a) Devotion decay starts at milestone 4 — by milestone 7 it's dropped noticeably, which IS the crisis
-- b) Devotion starts at 100% and doesn't decay until milestone 7 introduces the mechanic
-- c) Devotion exists from milestone 4 but decays very slowly at first, accelerating at milestone 7
+### ~~Q14: First Rehearsal preserves nothing tangible~~ ✅ RESOLVED
+**Resolution (v0.7):** Intentional, but designed to feel worthwhile. M8 Rehearsal gives 2 Boons (increased from 1) + +15% production multiplier (explicit, permanent) + all Phase 1 research auto-complete + 40% cheaper constructs. Research shortcuts alone save 45–60 min in run 2. Run 2 duration: 6–8h after M8 Rehearsal, 4–5h after M10/11 Rehearsal with artifact. Boon table revised (M8: 2, M10: 3, M11: 3). UI shows "The cult remembers:" run-start summary. Updated in §15.
 
-Option (a) means the player discovers a problem retroactively. Option (b) means the system silently changes behavior. Option (c) is the smoothest but most complex.
-
-### Q14: First Rehearsal preserves nothing tangible — INFO
-**Affects:** #15 (Prestige)
-
-With compressed timeline: earliest Rehearsal at milestone 8 (~4:00h, 1 Boon). First artifact at milestone 11 (~7:30h). Rehearsal at milestone 10 (~6:30h, 2 Boons) still precedes first artifact. So first Rehearsal carries zero artifacts — Boons are the only tangible reward.
-
-**Needs answer:** Is this intentional? If so, should the UI set expectations? ("Your Boons will carry forward. Artifacts completed in future runs will persist too.")
-
-### Q15: Sacrifice + Cindermark creates a potential new-player trap — INFO
-**Affects:** #8 (Sacrifice), #13 (Artifacts)
-
-At milestone 3 (~0:25), the player sacrifices a cultist (losing production) and Cindermark becomes craftable (Anima-heavy). But Cindermark realistically completes at ~7:30h. Now that Cindermark gives a +30% Anima boost and doubled sacrifice yields, the reward preview should motivate the player. But they might still dump resources prematurely.
-
-**Needs answer:** Is there UI guidance? (e.g. cost bar showing "12% affordable" to set expectations, plus the reward preview)
+### ~~Q15: Sacrifice + Cindermark creates a potential new-player trap~~ ✅ RESOLVED
+**Resolution (v0.7):** All crafted artifacts display a cost progress bar showing current resource % toward completion. Combined with the always-visible reward preview (already in §12), this sets expectations without editorializing. Applied to all 3 crafted artifacts. Updated in §12.
 
 ---
 
 ## Technical Concerns
 
-### Q16: Offline tick model vs online/offline divergence — BLOCKS #2, #17
-**Affects:** #2 (Engine contracts), #17 (Save/load)
-
-CLAUDE.md rule: `tick(deltaMs)` must produce identical results regardless of call frequency. But:
-- **Devotion floor:** 15% offline, no floor online. Tick function can't know which mode.
-- **Choice events:** Expedition completing offline can't present a Choice — must queue it.
-- **Soft cap transition:** Large deltaMs needs to calculate time-to-cap, then overflow rate for remainder.
-
-**Needs answer:** Adopt one of:
-- a) `tick(deltaMs, isOffline)` — offline flag passed in, systems branch on it
-- b) Pure tick with post-processing — tick runs identically, then an offline wrapper applies floors/queues
-- c) Relax the rule — offline uses a separate "catch-up" function that calls tick in chunks
-
-This is an architecture decision that must be made before #2 Engine contracts.
+### ~~Q16: Offline tick model vs online/offline divergence~~ ✅ RESOLVED
+**Resolution (v0.7):** Option B — pure tick + offline post-processor. `tick(state, deltaMs)` is pure and identical in all modes. `offlineProcessor(state, deltaMs)` wraps it: applies 15% devotion floor post-tick, queues Choice events for display on return. Soft cap math is inside `tick()` via time-to-cap calculation — no offline branching. Architecture documented in §18. Updated in §18, CLAUDE.md.
 
 ---
 
@@ -143,6 +76,6 @@ This is an architecture decision that must be made before #2 Engine contracts.
 | # | Question | Resolution |
 |---|----------|------------|
 | R1 | Discipline cooldown base rate | 3 min per-gateway, 5 min global (§7, #26) |
-| R2 | Trifecta activation timing | Phased at milestones 4/9/10 (§5) |
+| R2 | Trifecta activation timing | Phased at milestones 4/7/8/9 (§5) |
 | R3 | Cultist minimum floor vs devotion collapse | Global floor of 3 (§6.4) |
 | R4 | All 8 missing issues created | #19–#26 on GitHub |
