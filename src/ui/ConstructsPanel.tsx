@@ -1,5 +1,15 @@
+import type { ReactNode } from 'react'
 import { useGameStore } from '../hooks/useGameStore'
 import { formatNumber } from '../utils/format'
+
+/** Wraps numeric tokens (e.g. "6s", "4.8s", "9", "20%") in gold text */
+function renderDescription(text: string): ReactNode[] {
+  return text.split(/(\d+(?:\.\d+)?(?:[smA%/]|\s*Anima\/min)?)/).map((part, i) =>
+    /^\d/.test(part)
+      ? <span key={i} style={{ color: 'var(--gold-primary)', fontWeight: 600 }}>{part}</span>
+      : part
+  )
+}
 import {
   ALTAR_T1_COST_ANIMA,
   ALTAR_T2_COST_ANIMA,
@@ -97,8 +107,8 @@ export function ConstructsPanel() {
                 </span>
               )}
             </div>
-            <div style={{ fontSize: '1rem', marginTop: '4px' }} className="text-muted">
-              {entry.description}
+            <div style={{ fontSize: '1rem', marginTop: '4px' }} className="text-secondary">
+              {renderDescription(entry.description)}
             </div>
             {!entry.isBuilt && (
               <>

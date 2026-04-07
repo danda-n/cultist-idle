@@ -9,6 +9,8 @@ import {
   unassignSacrificeAction,
   buildConstructAction,
   buildGatewayAction,
+  addChannelerAction,
+  removeChannelerAction,
   toggleChannelAction,
   disciplineAction,
   purchaseResearchNodeAction,
@@ -41,6 +43,10 @@ interface GameStore {
   buildConstruct: (type: ConstructType, tier?: 1 | 2) => void
   /** Build a Planet A gateway */
   buildGateway: () => void
+  /** Add one channeling cultist to a gateway */
+  addChanneler: (gatewayId: string) => void
+  /** Remove one channeling cultist from a gateway */
+  removeChanneler: (gatewayId: string) => void
   /** Toggle the Channel rite on a gateway */
   toggleChannel: (gatewayId: string) => void
   /** Invoke Discipline on a gateway */
@@ -103,6 +109,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
   buildGateway: () => {
     const now = Date.now()
     set(store => ({ state: buildGatewayAction(store.state, now) }))
+  },
+
+  addChanneler: (gatewayId: string) => {
+    const now = Date.now()
+    set(store => ({ state: addChannelerAction(store.state, gatewayId, now) }))
+  },
+
+  removeChanneler: (gatewayId: string) => {
+    set(store => ({ state: removeChannelerAction(store.state, gatewayId) }))
   },
 
   toggleChannel: (gatewayId: string) => {

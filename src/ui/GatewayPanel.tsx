@@ -29,6 +29,8 @@ function GatewayCard({ gatewayId }: GatewayCardProps) {
   const cultists = useGameStore(s => s.state.cultists)
   const milestones = useGameStore(s => s.state.milestones)
   const research = useGameStore(s => s.state.research)
+  const addChanneler = useGameStore(s => s.addChanneler)
+  const removeChanneler = useGameStore(s => s.removeChanneler)
   const toggleChannel = useGameStore(s => s.toggleChannel)
   const discipline = useGameStore(s => s.discipline)
   const upgradeGatewayCapacity = useGameStore(s => s.upgradeGatewayCapacity)
@@ -117,20 +119,52 @@ function GatewayCard({ gatewayId }: GatewayCardProps) {
         )}
       </div>
 
-      {/* Capacity */}
-      <div style={{ marginBottom: '10px', fontSize: '1rem' }} className="text-muted">
-        Channeling: {channelingCount} / {gw.capacity} — produces {resourceLabel}
+      {/* Channeling controls */}
+      <div style={{ marginBottom: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+          <span style={{ fontSize: '1rem' }} className="text-secondary">
+            Channeling — produces {resourceLabel}
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <button
+              className="btn-small"
+              style={{ width: '28px', padding: '2px 0' }}
+              disabled={channelingCount <= 0}
+              onClick={() => removeChanneler(gatewayId)}
+            >−</button>
+            <span className="text-number" style={{ minWidth: '40px', textAlign: 'center', fontSize: '1.1rem' }}>
+              {channelingCount} / {gw.capacity}
+            </span>
+            <button
+              className="btn-small"
+              style={{ width: '28px', padding: '2px 0' }}
+              disabled={isStunned || channelingCount >= gw.capacity || idleCount <= 0}
+              onClick={() => addChanneler(gatewayId)}
+            >+</button>
+          </div>
+        </div>
+        {channelingCount === 0 && (
+          <div style={{ fontSize: '0.9rem', fontStyle: 'italic' }} className="text-muted">
+            {isStunned ? 'Stunned — cannot channel' : idleCount <= 0 ? 'No idle cultists available' : 'No cultists channeling'}
+          </div>
+        )}
+        {channelingCount > 0 && channelingCount < gw.capacity && !isStunned && idleCount <= 0 && (
+          <div style={{ fontSize: '0.9rem', fontStyle: 'italic' }} className="text-muted">
+            No idle cultists to add
+          </div>
+        )}
       </div>
 
-      {/* Channel toggle */}
-      <button
-        className="btn-small"
-        style={{ width: '100%', marginBottom: '8px' }}
-        disabled={isStunned || (!gw.channelActive && idleCount <= 0)}
-        onClick={() => toggleChannel(gatewayId)}
-      >
-        {gw.channelActive ? 'End Channel' : 'Begin Channel'}
-      </button>
+      {/* End channel button — only shown when active */}
+      {channelingCount > 0 && (
+        <button
+          className="btn-small"
+          style={{ width: '100%', marginBottom: '8px' }}
+          onClick={() => toggleChannel(gatewayId)}
+        >
+          End Channel (release all)
+        </button>
+      )}
 
       {/* Capacity upgrades */}
       {canUpgradeT2 && (

@@ -186,6 +186,74 @@ export function buildGatewayAction(state: GameState, now: number): GameState {
 }
 
 /**
+ * Add one channeling cultist to a gateway (up to its capacity).
+ * - Requires: idle cultist, no stun, channelingCount < capacity.
+ * - Sets channelActive=true if it was false.
+ */
+export function addChannelerAction(state: GameState, gatewayId: string, now: number): GameState {
+  const gw = state.gateways[gatewayId]
+  if (!gw) return state
+  if (gw.stunUntil > now) return state
+
+  const channelingCount = state.cultists.assignments.filter(
+    a => a.role === 'channel' && a.gatewayId === gatewayId
+  ).length
+  if (channelingCount >= gw.capacity) return state
+
+  const idleCount = state.cultists.count - state.cultists.assignments.length
+  if (idleCount <= 0) return state
+
+  const newId = String(state.meta.nextCultistId)
+  return {
+    ...state,
+    meta: { ...state.meta, nextCultistId: state.meta.nextCultistId + 1 },
+    cultists: {
+      ...state.cultists,
+      assignments: [
+        ...state.cultists.assignments,
+        { cultistId: newId, role: 'channel' as const, gatewayId },
+      ],
+    },
+    gateways: {
+      ...state.gateways,
+      [gatewayId]: { ...gw, channelActive: true },
+    },
+  }
+}
+
+/**
+ * Remove one channeling cultist from a gateway.
+ * - Sets channelActive=false when the last channeler is removed.
+ */
+export function removeChannelerAction(state: GameState, gatewayId: string): GameState {
+  const gw = state.gateways[gatewayId]
+  if (!gw) return state
+
+  const idx = state.cultists.assignments.findLastIndex(
+    a => a.role === 'channel' && a.gatewayId === gatewayId
+  )
+  if (idx === -1) return state
+
+  const assignments = [
+    ...state.cultists.assignments.slice(0, idx),
+    ...state.cultists.assignments.slice(idx + 1),
+  ]
+
+  const remainingCount = assignments.filter(
+    a => a.role === 'channel' && a.gatewayId === gatewayId
+  ).length
+
+  return {
+    ...state,
+    cultists: { ...state.cultists, assignments },
+    gateways: {
+      ...state.gateways,
+      [gatewayId]: { ...gw, channelActive: remainingCount > 0 },
+    },
+  }
+}
+
+/**
  * Toggle the channel rite on/off for a gateway.
  * - Enabling: requires an idle cultist and no active stun.
  * - Disabling: removes all channel assignments for this gateway.

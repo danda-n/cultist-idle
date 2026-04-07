@@ -142,9 +142,10 @@ body {
   top: -4px;
   width: 2px;
   height: 16px;
-  background-color: var(--state-warn-text);
+  background-color: #ffffff;
   border-radius: 1px;
-  opacity: 0.8;
+  opacity: 1;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
 }
 
 /* Conjure panel */

@@ -42,7 +42,7 @@ export function createInitialState(): GameState {
       narrativeSeen25Anima: false,
       narrativeSeen50Anima: false,
       conjureAutomated: false,
-      lastConjureCompletedAt: 0,
+      lastConjureCompletedAt: now, // opens Precise Rite window immediately on fresh start
       conjureActive: false,
       conjureCompletesAt: 0,
       nextCultistId: 1,
