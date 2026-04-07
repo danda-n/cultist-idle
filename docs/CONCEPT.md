@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.13 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.14 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -195,6 +195,7 @@ The player should discipline when the gauge hits ~70% — roughly every 60 min a
 - Trifecta imbalance and devotion decay must not both demand attention simultaneously unless player has neglected both for extended time
 - The Discipline action is infrequent and atmospheric — a ritual, not a chore
 - **Offline devotion floor:** During offline time, devotion cannot decay below 15% per gateway. This prevents permanent cultist loss while the player cannot intervene. On return, a gateway at 15% devotion is a clear "fix this" signal without permanent punishment. Online: the devotion meter has no floor — it can reach 0% and trigger collapse. Collapse is still subject to the cultist count floor (§6.4): at 3 cultists, the cultist is stunned, not lost. These are two different floors: the 15% offline floor protects the devotion *meter*; the floor-of-3 protects the cultist *count*.
+- **Return signal:** On return from offline, any gateway below 30% devotion is flagged with a red indicator in the main UI. 30% gives the player ~30 minutes before collapse at the normal decay rate — enough time to act, clear enough to see immediately.
 
 **Prestige interaction:** Each run unlocks permanent Devotion Upgrades — higher starting devotion, slower decay. By run 3–4 it's background noise. Never fully disappears in Layer 1.
 
@@ -333,7 +334,7 @@ Each additional cultist reduces timer by ~25%. With 2 parallel slots and 2-culti
 
 - Base expedition timer depends on destination and cultist count (more cultists = faster, per table above)
 - Devotion does NOT affect expedition speed — devotion is a gateway mechanic, not an expedition mechanic. Expedition risk is determined by devotion at the *departure gateway* (snapshot at send time), affecting outcome odds only (see §11.2), not timer.
-- Multiple expeditions run in parallel (base cap: 2, upgradeable to 3 via talent keystone)
+- Multiple expeditions run in parallel (base cap: 2, upgradeable to 3 via talent keystone). **Run 1 cap is always 2** — the 3rd slot requires the Expedition keystone talent (2 Boons), first available after M8 Rehearsal. This is intentional: run 1 introduces the expedition system without full parallel complexity.
 - Early expeditions (before Voltis) are free. Once Voltis exists, each active expedition costs Voltis per minute to sustain the open gateway:
   - Planet A: **5 Voltis/min**
   - Planet B: **8 Voltis/min**
@@ -420,7 +421,7 @@ Corruption is active in Layer 1. When a corrupted artifact is taken, one debuff 
 **Cleansing cost: 200 Gnosis** (flat, any debuff). Always visible on the artifact panel with cost shown upfront.
 
 - Second corruption auto-cleanses the first at half cost (100 Gnosis), then applies the new debuff
-- No corruption can reduce a resource below its natural production floor
+- "Natural production floor" = 0/min. No debuff can push a resource production rate below zero. If a debuff would do so, the rate is capped at 0 — but the debuff still displays as active in the UI and the full 200 Gnosis cleansing cost still applies
 - The Voidwreath major choice ("Cleanse now (costs 200 Gnosis)") uses the standard cleansing cost
 
 ---
@@ -572,6 +573,8 @@ Player triggers Rehearsal at checkpoints (milestones 8, 10, or 11). Sacrifices p
 
 > **Design note:** Completed artifacts persisting across Rehearsal is a core motivator. It gives every run a tangible trophy and makes the Summoning achievable through accumulated effort across multiple prestige cycles. Players should always feel "I kept something" after a Rehearsal.
 
+> **Artifact bonus activation:** All persisted artifact bonuses activate at game start in subsequent runs — no gate, no delay. The player feels powerful from turn 1. Exception: Hungering Lens bonuses still require Planet B to be open (its own built-in condition, unchanged by this rule).
+
 **Run start summary:** On each new run, a brief summary shows: "The cult remembers: +X% production. Research auto-completed: Y nodes. Construct costs reduced: Z%." Boons available to spend. No explanation needed — numbers tell the story.
 
 **First Rehearsal (M8):** Carries no artifacts (none yet completed). Rewards: 2 Boons + +15% production memory + all Phase 1 research auto-complete + 40% cheaper constructs. This combination meaningfully compresses run 2 — the research shortcuts alone save 45–60 minutes in early game. If at least one artifact is completed before Rehearsing (possible for aggressive players), it persists as well.
@@ -637,7 +640,7 @@ Closing the game: *"the cult is working, I'll check back later."* Not anxiety. T
 
 Edge cases are handled by a separate **offline post-processor** that wraps the tick for catch-up:
 - **Devotion floor (15%):** Applied after all ticks resolve, not inside tick. Online play has no floor — active neglect still risks collapse.
-- **Choice events queued:** Expedition completing offline cannot present an interactive Choice. The offline processor queues these for display when the player returns.
+- **Choice events queued:** Expedition completing offline cannot present an interactive Choice. The offline processor queues these for display when the player returns. **Max 5 queued events** — displayed one at a time on return. If the queue would exceed 5, overflow events auto-resolve as "Return" (safe, no loot, no choice presented). Player receives a single notification: "X expedition outcomes were resolved automatically while you were away."
 - **Soft cap math:** Handled *inside* `tick()` via time-to-cap calculation and overflow rate for the remainder — no offline branching needed.
 
 Architecture:
