@@ -100,7 +100,7 @@ function GatewayCard({ gatewayId }: GatewayCardProps) {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
           <span style={{ fontSize: '1rem' }} className="text-muted">Devotion</span>
           <span style={{ fontSize: '1rem', color: devotionColorVar }}>
-            {Math.floor(gw.devotion)}%
+            {Math.round(gw.devotion)}%
           </span>
         </div>
         <div style={{ height: '8px', borderRadius: '4px', backgroundColor: 'var(--surface-1)', overflow: 'hidden' }}>
