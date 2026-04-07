@@ -1,5 +1,5 @@
 # CULTIST IDLE — Concept Document
-> Version 0.7 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
+> Version 0.8 | April 2026 | Status: Systems Locked (Layer 1) | All issues tracked in GitHub
 
 ---
 
@@ -66,10 +66,11 @@ Browser-based idle/incremental game. Minimal UI noise. Meaningful decisions. Dar
 Each resource works independently. Cross-dependencies create *costs* (Anima to channel, Voltis to automate), not *penalties*. When all three resources are above a threshold simultaneously, the player earns a **Harmony bonus** — a global production multiplier (e.g. +15-25%). Losing Harmony isn't a punishment — it's losing a bonus. The player can choose to focus on one resource and sacrifice efficiency, or maintain balance for the boost. Upgrading one resource never *breaks* anything — it just means the other two haven't caught up yet for the bonus.
 
 **Phased introduction:**
-1. **Milestone 4 (~0:45h):** First link — Gnosis channel costs Anima. Player learns "one resource feeds another."
-2. **Milestone 7 (~3:00h):** Second link — Voltis production benefits from Gnosis research level. Two of three links active.
-3. **Milestone 8 (~4:00h):** Third link — Anima automation costs Voltis. Full triangle closed. Harmony bonus available.
-4. **Milestone 9 (~5:00h):** Trifecta self-sustaining possible. Player has had ~4 hours of gradually increasing complexity.
+1. **Milestone 4 (~0:45h):** First link — Gnosis channel costs Anima. Player learns "one resource feeds another." One-directional: Anima → Gnosis.
+2. **Milestone 8 (~4:00h):** Second link — Gnosis research investment boosts Anima automation rate. The Anima ⟷ Gnosis loop closes: Anima fuels Gnosis channelling, and Gnosis research improves Anima output. Self-sustain between two resources becomes possible.
+3. **Milestone 9 (~5:00h):** Third and fourth links — Voltis arrives. Anima automation now costs Voltis. Voltis production benefits from Gnosis research level. Full triangle active. Harmony bonus unlocks.
+
+> **Note:** The Trifecta has four cross-connections across three resources (each resource feeds both others). The first two activate before Voltis exists. The final two activate when Voltis arrives at M9. §5 previously listed a "M7 second link" — that was a version mismatch. M7 is the Devotion Crisis; the second Trifecta link is M8.
 
 **Soft cap — Slow Overflow:**
 Above the resource cap, production slows dramatically but never fully stops. Creates a natural rhythm of spending to keep flowing. Never bricks a run. Overflow rate: ~10% of normal production above cap. Overnight idle accumulates meaningful progress without skipping 10 steps — soft cap ensures the player returns to a nudge forward, not a leap.
@@ -102,7 +103,7 @@ Cultists distribute themselves automatically based on **player-set priorities**.
 **Slots per task:**
 - Each gateway has a capacity of 1–3 cultists (upgradeable)
 - Each expedition requires 1–3 cultists (player chooses how many to commit)
-- More cultists on a gateway = higher throughput but more devotion surface to manage
+- More cultists on a gateway = higher throughput, and higher stakes per devotion collapse (more cultists can be stunned per event). Devotion is one meter per gateway — there is no additional management complexity per cultist, but the cost of neglect scales with how many cultists are assigned.
 
 ### 6.4 Minimum Cultist Floor
 
@@ -112,7 +113,7 @@ Cultists distribute themselves automatically based on **player-set priorities**.
 - **Expedition loss:** Cultists "narrowly escape" — they return empty-handed but alive.
 - **Sacrifice:** Cannot sacrifice if it would drop below 3. Button grayed out with explanation.
 
-The Devotion keystone talent ("collapse impossible, gateway goes offline") still has value: it prevents the 5-minute stun penalty entirely and keeps the gateway at full capacity.
+The Devotion keystone talent ("collapse impossible — stun eliminated") still has value: it prevents the 5-minute stun and the associated slot vacancy, keeping the gateway at full capacity throughout.
 
 **Stun mechanics:**
 - Stunned cultist is shown as greyed-out in the assignment panel
@@ -246,7 +247,11 @@ Both paths reach the same endgame capability. Playstyle choice, not power level.
 ## 11. Expedition System — "Into the Void"
 
 ### 11.1 Sending
-- Assign 1–3 cultists via priority system
+
+**Unlock:** Expeditions become available when Planet A gateway opens (Milestone 4). The gateway is both the channelling site and the departure point for expeditions — the player can send cultists through it or channel from it, but cultists on an expedition are not available for gateway channelling until they return.
+
+**Cultist commitment model:** Expeditions are launched actively by the player (tap "Send Expedition"). The player chooses how many cultists to commit (1–3) at launch time. The **priority system determines where those cultists are drawn from** — if the priority order is Expeditions > Gateway B, cultists are pulled from Gateway B's slot first to staff the expedition. On return, cultists re-fill slots according to the current priority order. The player controls the launch and the headcount; the priority system handles sourcing and recovery.
+
 - Base expedition timer depends on destination and cultist count (more cultists = faster)
 - Devotion does NOT affect expedition speed — devotion is a gateway mechanic, not an expedition mechanic. Expedition risk is determined by devotion at the *departure gateway* (snapshot at send time), affecting outcome odds only (see §11.2), not timer.
 - Multiple expeditions run in parallel (base cap: 2, upgradeable to 3 via talent keystone)
@@ -345,7 +350,7 @@ Boons are spent **between runs** at the Rehearsal screen. Most nodes cost 1 Boon
 - *(Keystone, 2pts)* Devotion collapse impossible — cultists refuse to leave, gateway stays online, stun penalty eliminated
 
 **Channelling (3 nodes)**
-- Channel burst gives +50% Anima
+- Channel burst gives +50% output (Gnosis or Voltis)
 - Sustained Channel costs 30% less Voltis
 - Channel cooldown halved (60s base → 30s)
 
@@ -369,23 +374,48 @@ Each is a moment — flavour, visual beat, arrival feeling. Early milestones are
 | 1 | **The First Conjuring** | Core loop begins | ~0:02 |
 | 2 | **The First Construct** | Build system revealed; first Altar upgrade available | ~0:10 |
 | 3 | **The Sacrifice** | First automation (passive Anima); Cindermark craftable; Ossuary buildable | ~0:25 |
-| 4 | **The Gateway Opens** | Planet A accessible; first Trifecta link (Gnosis costs Anima); devotion decay begins (slow); Warding Stones buildable | ~0:45 |
-| 5 | **First Gnosis** | Research system unlocks; Voidwreath expedition available; Scrying Pool buildable | ~1:15 |
+| 4 | **The Gateway Opens** | Planet A accessible; expedition system unlocks; first Trifecta link (Gnosis costs Anima); devotion decay begins (slow); Warding Stones buildable | ~0:45 |
+| 5 | **First Gnosis** | Research system unlocks; Scrying Pool buildable | ~1:15 |
 | 6 | **The First Research** | Research Phase 2 branches; Whisperlock craftable; Binding Circle buildable | ~2:00 |
 | 7 | **Devotion Crisis** | Devotion decay accelerates to normal rate; Discipline action introduced (if not used yet) | ~3:00 |
-| 8 | **The Idle Moment** | Anima + Gnosis self-sustain; Hungering Lens expedition; second Trifecta link; Rehearsal available; Altar Tier 2 buildable | ~4:00 |
-| 9 | **The Discovery** | Planet B found; Voltis production begins; third Trifecta link; Harmony bonus available; Unbinding craftable | ~5:00 |
-| 10 | **The Trifecta** | Full idle loop; Rehearsal available | ~6:30 |
+| 8 | **The Idle Moment** | Anima + Gnosis self-sustain; Hungering Lens expedition available; second Trifecta link; Rehearsal available; Altar Tier 2 buildable | ~4:00 |
+| 9 | **The Discovery** | Planet B found; Voltis production begins; third + fourth Trifecta links; Harmony bonus available; Unbinding craftable | ~5:00 |
+| 10 | **The Trifecta** | Full idle loop active; Rehearsal available | ~6:30 |
 | 11 | **The First Artifact** | First artifact completed (any of the 6); ritual circle stirs; Voicecaller expedition available; Rehearsal available | ~7:30 |
-| 12 | **The Hunt** | All 6 artifacts visible | ~8:30 |
+| 12 | **The Hunt** | All remaining artifact unlock conditions now reachable; final pursuit phase begins | ~8:30 |
 | 13 | **The Gathering** | 4+ artifacts completed; final push | ~9:30 |
 | 14 | **THE SUMMONING** | Layer 1 complete | ~10–12h |
 
+### 14.1 Milestone Trigger Conditions
+
+Every milestone needs an explicit programmatic trigger. Time estimates are approximate — triggers are condition-based, not time-based.
+
+| # | Trigger condition |
+|---|---|
+| 1 | Game start |
+| 2 | ~50 Anima accumulated |
+| 3 | Player performs first sacrifice |
+| 4 | Gateway construction complete (Anima cost paid + build confirmed) |
+| 5 | First 25 Gnosis gathered (any source) |
+| 6 | Phase 1 research tree fully purchased |
+| 7 | Any gateway devotion drops below 60% for the first time |
+| 8 | Gnosis sustained channel active AND passive Anima production rate exceeds Anima consumption rate |
+| 9 | Gnosis crosses the Planet B discovery threshold (specific Gnosis total, defined in `src/data/`) |
+| 10 | All three resources simultaneously above Harmony threshold for 60+ seconds |
+| 11 | First artifact completed (any of the 6) |
+| 12 | All 5 remaining artifact unlock milestones have been reached (i.e. all are now pursuable, not necessarily completed) |
+| 13 | 4 artifacts completed |
+| 14 | All 6 artifacts completed |
+
 > **Milestone 2 note:** The Altar exists from game start as a passive structure (the site of the First Conjuring). At M2, the Build System becomes interactive — the Altar upgrade is the tutorial action that teaches the construct panel. M2 fires on a small Anima threshold (~50 Anima), not a player action.
+
+> **Milestone 5 note:** Previously the milestone table listed "Voidwreath expedition available" at M5. This was removed — expeditions unlock at M4 when Planet A gateway opens. Any Planet A expedition can yield Voidwreath once the player is in the right progression window; it is not a separately unlockable expedition type.
 
 > **Milestone 7 note:** Devotion decay has been happening slowly since M4 — the Crisis is not a new mechanic appearing but an existing one accelerating. The player has seen the gauge moving for ~2 hours. M7 makes it urgent.
 
 > **Milestone 11 note:** This triggers on the *first completed artifact*, regardless of which one. While Cindermark is craftable from milestone 3, its resource cost is tuned so that completion realistically occurs around this timing window. If a player manages to complete one earlier through aggressive play, the milestone fires early — that's a reward, not a bug.
+
+> **Milestone 12 note:** "All 6 artifacts visible" was previous language — corrected. The artifact screen shows silhouettes for all 6 slots from the start (§12). M12 fires when all 5 remaining artifacts become pursuable (their unlock milestone conditions are met), signalling to the player that nothing is gated anymore — only time and resources stand between them and the Summoning.
 
 ---
 
@@ -517,6 +547,15 @@ Game loop, resource tick, devotion decay, and research tree interfaces get writt
 ---
 
 ## 20. Open Questions (Remaining)
+
+**Design risks (watch during playtesting):**
+
+| # | Risk | Notes |
+|---|---|---|
+| D1 | **Pre-M3 early game thinness** — 25 min with conjuring as primary action. Two notable moments (M2 Altar, M3 sacrifice) but thin connective tissue. Only a problem if conjuring feedback is weak. Needs strong animation/sound/fill response to feel atmospheric rather than tedious. | Implementation risk, not design fix |
+| D2 | **Research branch payoff asymmetry** — Acceleration path pays off immediately (faster expeditions, higher Voltis yield from M5/M9 onward). Automation path pays off later (Overseer's Rite, Harmony boost only meaningful once full Trifecta is active at M9+). In run 1, Acceleration may be the obvious choice. Intentional if Automation is the "comfort" choice for runs 2–4 when Harmony is consistently maintained. Verify the Automation path is genuinely compelling from run 2 onward, not just theoretically equal. | Verify during balance pass |
+
+**Unresolved (need playtesting to confirm):**
 
 | # | Question | Priority | Status |
 |---|---|---|---|
